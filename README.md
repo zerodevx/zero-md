@@ -79,10 +79,18 @@ it contains the suite of [default Prism themes](https://github.com/PrismJS/prism
 
 Import the corresponding **markdown** and **highlight** style modules
 ***before*** importing `<zero-md>` via the usual `<link rel="import" href="...">`
-syntax.
+syntax. For example,
+
+```html
+<!-- Load both markdown and highlight themes first -->
+<link rel="import" href="bower_components/zero-md/markdown-theme/default.html">
+<link rel="import" href="bower_components/zero-md/highlight-theme/default.html">
+<!-- Then load <zero-md> component -->
+<link rel="import" href="bower_components/zero-md/zero-md.html">
+```
 
 Building your own theme? `<zero-md>` loads styles at element creation time
-using:
+using the new **style module** syntax:
 
 ```html
 <style include="zero-md-markdown-theme"></style>
@@ -118,6 +126,9 @@ And finally import it:
   <zero-md file="my-file.md"></zero-md>
 </body>
 ```
+
+Similarly, for **syntax highlighting** styling rules, create a `<dom-module>`
+with an ID of `zero-md-highlight-theme`.
 
 
 ### Demo

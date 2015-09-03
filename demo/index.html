@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>&lt;zero-md&gt; demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <!--<script>window.Polymer=window.Polymer||{};window.Polymer.dom='shadow';</script>-->
+
+  <link rel="import" href="../highlight-themes/default.html">
+  <link rel="import" href="../markdown-themes/default.html">
+  <link rel="import" href="../zero-md.html">
+
+</head>
+<body unresolved>
+  <style>
+    .container {
+      min-width: 200px;
+      max-width: 790px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+  </style>
+
+  <div class="container">
+    <zero-md file="../README.md"></zero-md>
+  </div>
+
+</body>
+</html>

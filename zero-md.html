@@ -1,0 +1,79 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2015 Jason JC Lee <zerodevx@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<script src='../marked/lib/marked.js'></script>
+<script src="../prism/prism.js" data-manual></script>
+
+<dom-module id="zero-md">
+  <template>
+    <style include="zero-md-highlight-theme"></style>
+    <style include="zero-md-markdown-theme"></style>
+    <iron-ajax id="feed" url="[[file]]" handle-as="text" on-response="_responseHandler"></iron-ajax>
+    <div id="content"></div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "zero-md",
+    properties: {
+      file: { type: String, value: "", observer: "_fileChanged" },
+      text: { type: String, value: "", observer: "_textChanged" },
+      _md: { type: String, observer: "_mdChanged" }
+    },
+    ready: function () {
+      if (this.file) { this.$.feed.generateRequest(); } else { this._md = this.text; }
+    },
+    _fileChanged: function (n, o) {
+      if (!n) { this._textChanged(); } else { this.$.feed.generateRequest(); }
+    },
+    _textChanged: function (n, o) {
+      if (!this.file && !o) { this._md = this.text; }
+    },
+    _mdChanged: function (n, o) {
+      Polymer.dom(this.$.content).innerHTML = (this._md) ? marked(this._md, {highlight: this._highlight.bind(this)}) : "";
+    },
+    _responseHandler: function (e) {
+      if (this.$.feed.lastResponse) {
+        this._md = this.$.feed.lastResponse.toString();
+        this.fire("zero-md-file-loaded");
+      } else {
+        console.warn("[zero-md] AJAX error, fall back to `text`", e);
+        this.file = "";
+      }
+    },
+    _highlight: function (code, lang) {
+      return Prism.highlight(code, this._detectLang(code, lang));
+    },
+    _detectLang: function(code, lang) { // thanks @robdodson
+      if (!lang) { return code.match(/^\s*</) ? Prism.languages.markup : Prism.languages.javascript; }
+      if (lang === 'js' || lang.substr(0, 2) === 'es') { return Prism.languages.javascript; }
+      if (lang === 'css') { return Prism.languages.css; }
+      if (lang === 'c') { return Prism.langauges.clike; }
+      return Prism.languages.markup;
+    }
+  });
+</script>

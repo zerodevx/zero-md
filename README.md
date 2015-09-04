@@ -1,4 +1,4 @@
-v0.1.0
+v0.1.1
 
 # `<zero-md>`
 
@@ -41,7 +41,7 @@ Basic usage:
   ```
 
 
-### The problem with Google's component
+### The problem with Google's components
 
 Styling for PolymerElements' original
 [`<marked-element>`](https://github.com/PolymerElements/marked-element)
@@ -187,3 +187,4 @@ workflow.
 ### Version history
 
 1. 2015-09-01: v0.1.0 - initial commit.
+2. 2015-09-04: v0.1.1 - minor patches to default markdown theme.

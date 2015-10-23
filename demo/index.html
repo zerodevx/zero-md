@@ -6,16 +6,17 @@
   <title>&lt;zero-md&gt; demo</title>
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <!--<script>window.Polymer=window.Polymer||{};window.Polymer.dom='shadow';</script>-->
+  <script>window.Polymer=window.Polymer||{};window.Polymer.dom='shadow';</script>
 
-  <link rel="import" href="../highlight-themes/default.html">
-  <link rel="import" href="../markdown-themes/default.html">
   <link rel="import" href="../zero-md.html">
+  <link rel="stylesheet" href="../../prism/themes/prism.css">
+  <link rel="stylesheet" href="../markdown-themes/default.css">
 
 </head>
 <body unresolved>
+
   <style>
-    .container {
+    .md-html {
       min-width: 200px;
       max-width: 790px;
       margin: 0 auto;
@@ -23,9 +24,64 @@
     }
   </style>
 
-  <div class="container">
-    <zero-md file="../README.md"></zero-md>
-  </div>
+  <h3>&lt;zero-md&gt; demo</h3>
+  <button id="btn_file">Render HTML from external Markdown file</button><br><br>
+  <button id="btn_text">Render HTML from `text` attribute</button><br><br>
+  <button id="btn_reload">Reload Markdown from XMP tag and re-render</button><br>
+  <zero-md>
+    <div class="md-html"></div>
+    <xmp>
+# `<zero-md>`
+
+### Markdown placed inside `<xmp>` tag
+
+The markdown that's wrapped inside the `<xmp>` tag is loaded **once** at
+runtime. If changes to the markdown are made during runtime, manually call
+the `reload()` method.
+
+The *quick* brown **fox** jumps ***over*** the ~~lazy~~ dog.
+
+```html
+<html>
+<head>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../zero-md.html">
+  <link rel="stylesheet" href="../../prism/themes/prism.css">
+  <link rel="stylesheet" href="../markdown-themes/default.css">
+</head>
+<body>
+  <zero-md>
+    <div class="md-html"></div>
+    <xmp>
+      Hello World
+    </ xmp>
+  </zero-md>
+</body>
+</html>
+```
+    </xmp>
+  </zero-md>
+
+  <script>
+    var app = document.querySelector("zero-md");
+    document.querySelector("#btn_file").addEventListener("click", function (e) {
+      app.file = "demo.md";
+    });
+    document.querySelector("#btn_text").addEventListener("click", function (e) {
+      app.text = '# `<zero-md>`\n### Markdown loaded from `text` attribute\nThe markdown string can be directly passed into the `text` attribute of the `<zero-md>` element. Any changes will be immediately reflected.\n\nThe *quick* brown **fox** jumps ***over*** the ~~lazy~~ dog.\n\n' +
+        '```html\n<html>\n<head>\n' +
+        '  <script src="../../webcomponentsjs/webcomponents-lite.js"><//script>\n```' +
+        '  <link rel="import" href="../zero-md.html">\n' +
+        '  <link rel="stylesheet" href="../../prism/themes/prism.css">\n' +
+        '  <link rel="stylesheet" href="../markdown-themes/default.css">\n</head>\n<body>\n' +
+        '  <zero-md text="Hello World">\n    <div class="md-html"></div>\n  </zero-md>\n</body>\n</html>\n```';
+
+    });
+    document.querySelector("#btn_reload").addEventListener("click", function (e) {
+      app.reload();
+    });
+
+  </script>
 
 </body>
 </html>

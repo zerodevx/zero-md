@@ -1,0 +1,231 @@
+/**
+ * prism.js Coy theme for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/tshedor/workshop-wp-theme (Example: http://workshop.kansan.com/category/sessions/basics or http://workshop.timshedor.com/category/sessions/basics);
+ * @author Tim  Shedor
+ */
+
+.md-html code[class*="language-"],
+.md-html pre[class*="language-"] {
+  color: black;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+.md-html pre[class*="language-"] {
+  position: relative;
+  margin: .5em 0;
+  -webkit-box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+  -moz-box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+  box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+  border-left: 10px solid #358ccb;
+  background-color: #fdfdfd;
+  background-image: -webkit-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-image: -moz-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-image: -ms-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-image: -o-linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-size: 3em 3em;
+  background-origin: content-box;
+  overflow: visible;
+  max-height: 30em;
+}
+
+.md-html code[class*="language"] {
+  max-height: inherit;
+  height: 100%;
+  padding: 0 1em;
+  display: block;
+  overflow: auto;
+}
+
+/* Margin bottom to accomodate shadow */
+.md-html :not(pre) > code[class*="language-"],
+.md-html pre[class*="language-"] {
+  background-color: #fdfdfd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+}
+
+/* Inline code */
+.md-html :not(pre) > code[class*="language-"] {
+  position: relative;
+  padding: .2em;
+  -webkit-border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  -ms-border-radius: 0.3em;
+  -o-border-radius: 0.3em;
+  border-radius: 0.3em;
+  color: #c92c2c;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.md-html pre[class*="language-"]:before,
+.md-html pre[class*="language-"]:after {
+  content: '';
+  z-index: -2;
+  display: block;
+  position: absolute;
+  bottom: 0.75em;
+  left: 0.18em;
+  width: 40%;
+  height: 20%;
+  -webkit-box-shadow: 0px 13px 8px #979797;
+  -moz-box-shadow: 0px 13px 8px #979797;
+  box-shadow: 0px 13px 8px #979797;
+  -webkit-transform: rotate(-2deg);
+  -moz-transform: rotate(-2deg);
+  -ms-transform: rotate(-2deg);
+  -o-transform: rotate(-2deg);
+  transform: rotate(-2deg);
+}
+
+.md-html :not(pre) > code[class*="language-"]:after,
+.md-html pre[class*="language-"]:after {
+  right: 0.75em;
+  left: auto;
+  -webkit-transform: rotate(2deg);
+  -moz-transform: rotate(2deg);
+  -ms-transform: rotate(2deg);
+  -o-transform: rotate(2deg);
+  transform: rotate(2deg);
+}
+
+.md-html .token.comment,
+.md-html .token.block-comment,
+.md-html .token.prolog,
+.md-html .token.doctype,
+.md-html .token.cdata {
+  color: #7D8B99;
+}
+
+.md-html .token.punctuation {
+  color: #5F6364;
+}
+
+.md-html .token.property,
+.md-html .token.tag,
+.md-html .token.boolean,
+.md-html .token.number,
+.md-html .token.function-name,
+.md-html .token.constant,
+.md-html .token.symbol,
+.md-html .token.deleted {
+  color: #c92c2c;
+}
+
+.md-html .token.selector,
+.md-html .token.attr-name,
+.md-html .token.string,
+.md-html .token.char,
+.md-html .token.function,
+.md-html .token.builtin,
+.md-html .token.inserted {
+  color: #2f9c0a;
+}
+
+.md-html .token.operator,
+.md-html .token.entity,
+.md-html .token.url,
+.md-html .token.variable {
+  color: #a67f59;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.md-html .token.atrule,
+.md-html .token.attr-value,
+.md-html .token.keyword,
+.md-html .token.class-name {
+  color: #1990b8;
+}
+
+.md-html .token.regex,
+.md-html .token.important {
+  color: #e90;
+}
+
+.md-html .language-css .token.string,
+.md-html .style .token.string {
+  color: #a67f59;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.md-html .token.important {
+  font-weight: normal;
+}
+
+.md-html .token.bold {
+  font-weight: bold;
+}
+.md-html .token.italic {
+  font-style: italic;
+}
+
+.md-html .token.entity {
+  cursor: help;
+}
+
+.md-html .namespace {
+  opacity: .7;
+}
+
+@media screen and (max-width: 767px) {
+  .md-html pre[class*="language-"]:before,
+  .md-html pre[class*="language-"]:after {
+    bottom: 14px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
+}
+
+/* Plugin styles */
+.md-html .token.tab:not(:empty):before,
+.md-html .token.cr:before,
+.md-html .token.lf:before {
+  color: #e0d7d1;
+}
+
+/* Plugin styles: Line Numbers */
+.md-html pre[class*="language-"].line-numbers {
+  padding-left: 0;
+}
+
+.md-html pre[class*="language-"].line-numbers code {
+  padding-left: 3.8em;
+}
+
+.md-html pre[class*="language-"].line-numbers .line-numbers-rows {
+  left: 0;
+}
+
+/* Plugin styles: Line Highlight */
+.md-html pre[class*="language-"][data-line] {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+.md-html pre[data-line] code {
+  position: relative;
+  padding-left: 4em;
+}
+.md-html pre .line-highlight {
+  margin-top: 0;
+}

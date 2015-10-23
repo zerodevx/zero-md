@@ -1,0 +1,126 @@
+/**
+ * prism.js Dark theme for JavaScript, CSS and HTML
+ * Based on the slides of the talk “/Reg(exp){2}lained/”
+ * @author Lea Verou
+ */
+
+.md-html code[class*="language-"],
+.md-html pre[class*="language-"] {
+  color: white;
+  text-shadow: 0 -.1em .2em black;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+@media print {
+  .md-html code[class*="language-"],
+  .md-html pre[class*="language-"] {
+    text-shadow: none;
+  }
+}
+
+.md-html pre[class*="language-"],
+.md-html :not(pre) > code[class*="language-"] {
+  background: hsl(30, 20%, 25%);
+}
+
+/* Code blocks */
+.md-html pre[class*="language-"] {
+  padding: 1em;
+  margin: .5em 0;
+  overflow: auto;
+  border: .3em solid hsl(30, 20%, 40%);
+  border-radius: .5em;
+  box-shadow: 1px 1px .5em black inset;
+}
+
+/* Inline code */
+.md-html :not(pre) > code[class*="language-"] {
+  padding: .15em .2em .05em;
+  border-radius: .3em;
+  border: .13em solid hsl(30, 20%, 40%);
+  box-shadow: 1px 1px .3em -.1em black inset;
+}
+
+.md-html .token.comment,
+.md-html .token.prolog,
+.md-html .token.doctype,
+.md-html .token.cdata {
+  color: hsl(30, 20%, 50%);
+}
+
+.md-html .token.punctuation {
+  opacity: .7;
+}
+
+.md-html .namespace {
+  opacity: .7;
+}
+
+.md-html .token.property,
+.md-html .token.tag,
+.md-html .token.boolean,
+.md-html .token.number,
+.md-html .token.constant,
+.md-html .token.symbol {
+  color: hsl(350, 40%, 70%);
+}
+
+.md-html .token.selector,
+.md-html .token.attr-name,
+.md-html .token.string,
+.md-html .token.char,
+.md-html .token.builtin,
+.md-html .token.inserted {
+  color: hsl(75, 70%, 60%);
+}
+
+.md-html .token.operator,
+.md-html .token.entity,
+.md-html .token.url,
+.md-html .language-css .token.string,
+.md-html .style .token.string,
+.md-html .token.variable {
+  color: hsl(40, 90%, 60%);
+}
+
+.md-html .token.atrule,
+.md-html .token.attr-value,
+.md-html .token.keyword {
+  color: hsl(350, 40%, 70%);
+}
+
+.md-html .token.regex,
+.md-html .token.important {
+  color: #e90;
+}
+
+.md-html .token.important,
+.md-html .token.bold {
+  font-weight: bold;
+}
+.md-html .token.italic {
+  font-style: italic;
+}
+
+.md-html .token.entity {
+  cursor: help;
+}
+
+.md-html .token.deleted {
+  color: red;
+}

@@ -65,8 +65,16 @@ SOFTWARE.
       if (lang === 'c') { return Prism.langauges.clike; }
       return Prism.languages.markup;
     },
+    /**
+     * The `marked-render-complete` event is fired once Markdown to HTML
+     * conversion has finished, and the DOM has been populated via the resulting
+     * HTML.
+     *
+     * @event marked-render-complete
+     */
     _generateMd: function () {
       Polymer.dom(this._output).innerHTML = marked(this.text, {highlight: this._highlight.bind(this)});
+      this.fire('marked-render-complete');
     },
     _fileChanged: function (n, o) {
       if (this._observe && n) { this._generateRequest(); }

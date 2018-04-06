@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>-->
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <link rel="import" href="../src/zero-md.html">
+</head>
+<body>
+
+  <style>
+    zero-md {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 45px;
+    }
+    @media (max-width: 767px) {
+      zero-md {
+        padding: 15px;
+      }
+	  }
+  </style>
+
+  <zero-md id="app" src="example.md" manual-render>
+    <template>
+      <!--<style>
+        p { color: red; }
+      </style>-->
+
+      <!--<xmp>
+# This is my markdown yo
+H~~ell~~o *W*o**r**l***d***!
+      </xmp>-->
+    </template>
+  </zero-md>
+
+  <test-fixture id="basic">
+    <template>
+      <zero-md manual-render></zero-md>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('unit tests', function() {
+
+      /*
+      var server;
+      before(function() { server = sinon.fakeServer.create(); });
+      after(function() { server.restore(); });
+      server.respondWith('GET', 'mock-script.js', [200, {'Content-Type': 'application/javascript'}, 'if (!window.MockScript) { window.MockScript = {} } else { window.MockScript.doubleLoad = true; console.log("ERR mock script loaded twice"); }']);
+      */
+
+      describe('_loadScript()', function() {
+        var el = fixture('basic');
+
+        it('should load script only once if two instances called together', function(done) {
+          Promise.all([
+              el._loadScript('mock-script.js', typeof window.MockScript, 'mock-loaded'),
+              setTimeout(function() {
+                el._loadScript('mock-script.js', typeof window.MockScript, 'mock-loaded')
+              }, 50)
+            ]).then(function() {
+              expect(typeof window.MockScript).to.equal('object');
+              expect(typeof window.MockScript.doubleLoaded).to.equal('undefined');
+              done();
+            });
+        });
+
+        it('rejects when _loadScript errors', function(done) {
+          el._loadScript('does-not-exist.js', 'undefined', 'load-script-error-test', 'async')
+            .then(function() {
+              done('Failed');
+            }).catch(function() {
+              done();
+            });
+        });
+
+      });
+
+      describe('_getStylesheet()', function() {
+        var el = fixture('basic');
+
+        it('should ajax get stylesheet only once (from cache) if two instances called together', function(done) {
+          var delayedGet = new Promise(function(resolve) {
+            setTimeout(function() {
+              el._getStylesheet('mock-css.css').then(function(data) {
+                resolve(data);
+              });
+            }, 50);
+          });
+          Promise.all([
+            el._getStylesheet('mock-css.css').then(function(data) {
+              window.ZeroMdStore['mock-css.css'].data = 'test string';
+              return data;
+            }),
+            delayedGet
+          ]).then(function(data) {
+            expect(data[1]).to.equal('test string');
+            done();
+          });
+        });
+
+      });
+
+      describe('_getInputs()', function() {
+
+        it('gets from light dom first when `src` and `xmp` both exist', function(done) {
+          var el = fixture('basic');
+          el.setAttribute('src', 'mock-md.md');
+          var tpl = document.createElement('template');
+          tpl.innerHTML = '<xmp># xmp markdown</xmp>';
+          el.appendChild(tpl);
+          el._getInputs().then(function(data) {
+            expect(data).to.equal('# xmp markdown');
+            done();
+          });
+        });
+
+        it('gets from `src` when `xmp` does not exist', function(done) {
+          var el = fixture('basic');
+          el.setAttribute('src', 'mock-md.md');
+          el._getInputs().then(function(data) {
+            expect(data).to.equal('# mock markdown');
+            done();
+          });
+        });
+
+      });
+
+      describe('_stampDom()', function() {
+
+        it('should stamp into Shadow DOM', function() {
+          var el = fixture('basic');
+          el._stampDom('<p>test string</p>');
+          expect(el.shadowRoot).to.be.not.null;
+        });
+
+        it('should stamp into Light DOM if `no-shadow` is asserted', function() {
+          var el = fixture('basic');
+          el.setAttribute('no-shadow', '');
+          el._stampDom('<p>test string</p>');
+          expect(el.querySelectorAll('p').length).to.equal(1);
+        });
+
+        it('should clear Shadow if next stamp in Light', function() {
+          var el = fixture('basic');
+          el._stampDom('<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>test string</p></div>');
+          el.setAttribute('no-shadow', '');
+          el._stampDom('<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>test string</p></div>');
+          expect(el.shadowRoot.querySelectorAll('p').length).to.equal(0);
+          expect(el.querySelectorAll('p').length).to.equal(1);
+        });
+
+        it('should clear Light if next stamp in Shadow', function() {
+          var el = fixture('basic');
+          el.setAttribute('no-shadow', '');
+          el._stampDom('<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>test string</p></div>');
+          el.removeAttribute('no-shadow');
+          el._stampDom('<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>test string</p></div>');
+          expect(el.shadowRoot.querySelectorAll('p').length).to.equal(1);
+          expect(el.querySelectorAll('p').length).to.equal(0);
+        });
+
+
+      });
+
+
+
+    });
+  </script>
+
+</body>
+</html>

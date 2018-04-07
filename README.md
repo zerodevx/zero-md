@@ -211,7 +211,11 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
   cd zero-md && python -m SimpleHTTPServer 8000
   ```
 
-2. Run tests from your [browser](http://localhost:8000/test/zero-md_test.html).
+2. Run tests from your browser.
+
+  ```
+  http://localhost:8000/test/zero-md_test.html
+  ```
 
 3. Lint your code.
 
@@ -267,7 +271,9 @@ For `css-urls`, please ensure that the value is an **Array** in **valid JSON** f
 |----------|-------------|-------------|
 | render() | *none*      | Starts the markdown conversion and stamps into DOM. |
 
-If changes are made to `<zero-md>` attributes or `<template>` children dynamically, call the `render()` on that instance to force a re-render.
+By default, each instance will automatically call the `render()` method on start-up. To prevent this behavior, add the attribute `manual-render` to your `<zero-md>` element, and manually call this method to begin rendering.
+
+Note that if changes are made to `<zero-md>` attributes or `<template>` children dynamically, call the `render()` method on that instance to force a re-render.
 
 
 ### Convenience Events
@@ -292,7 +298,7 @@ Google it! Or try [here](https://github.com/jasonm23/markdown-css-themes), [here
 In short, don't worry about it. Though the tag has been deprecated for 20 years, and it is still implemented in modern browsers today. It's the only tag that suits such purpose, by allowing true *pre-formatted* content to be written as-is within the confines of the HTML document without endless escaping. Use it.
 
 
-**v1.0.0 is completely different**
+**v1.0.0 is completely different!**
 
 Yes it is. v1.0.0 is **absolutely breaking** and **not** compatible with previous versions. Code is entirely re-written based on the new [Custom Elements v1 specs](https://www.w3.org/TR/custom-elements/) with lots of ES6 goodness. It runs natively in modern browsers and is incredibly light and performant. This serves as a great showcase for how far we've come with Custom Elements, Web Components, its ideas, usage and patterns.
 

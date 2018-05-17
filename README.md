@@ -1,4 +1,4 @@
-v1.0.0
+v1.1.0
 
 # `<zero-md>`
 
@@ -26,7 +26,7 @@ Because web components. All in ~100 lines of code.
 2. Import `<zero-md>` web component.
   ```html
   <!-- Load element definition via HTMLImports -->
-  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.0.0/build/zero-md.html">
+  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
   ```
 
 3. Profit!
@@ -129,17 +129,19 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
     <title>EXAMPLE SITE TITLE</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
-    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.0.0/build/zero-md.html">
-  </head>
-  <body>
+    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
+
     <style>
       /* Edit your header styles here */
-      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; color: white; background-color: #424242; }
-      zero-md { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 56px auto 0 auto; padding: 45px; }
+      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; background-color: #424242; color: white; }
+      body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 56px auto 0 auto; padding: 45px; }
       @media (max-width: 767px) {
-		    zero-md { padding: 15px; }
-	    }
+        header { font-size: 15px; }
+        body { padding: 15px; }
+      }
     </style>
+  </head>
+  <body>
 
     <!-- Edit your Markdown URL file location here -->
     <zero-md src="https://example.com/EXAMPLE.md"></zero-md>
@@ -172,7 +174,7 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
 2. zero-md.html
 
   ```html
-  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.0.0/build/zero-md.html">
+  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
   ```
 
 ### Install Locally
@@ -288,40 +290,54 @@ Note that if changes are made to `<zero-md>` attributes or `<template>` children
 
 ## Themes
 
-Google it! Or try [here](https://github.com/jasonm23/markdown-css-themes), [here](https://github.com/ebidel/markdown-css-themes) or [here](https://github.com/PrismJS/prism-themes).
+[Google](https://www.google.com.sg/search?q=markdown+css+themes) [it!](https://www.google.com.sg/search?q=syntax+highlight+css+themes) Or try [here](https://github.com/jasonm23/markdown-css-themes), [here](https://github.com/ebidel/markdown-css-themes) or [here](https://github.com/PrismJS/prism-themes).
+
+Load your theme stylesheets by setting the `css-urls` attribute. Check out the [published attributes](#published-attributes) API.
 
 
 ## Implementation Notes
 
 **The `<xmp>` tag is deprecated!**
 
-In short, don't worry about it. Though the tag has been deprecated for 20 years, and it is still implemented in modern browsers today. It's the only tag that suits such purpose, by allowing true *pre-formatted* content to be written as-is within the confines of the HTML document without endless escaping. Use it.
+In short, don't worry about it. Though the tag has been deprecated for 20 years, browser vendors (generally) try their hardest not to break the web. It is still implemented in modern browsers today. It's the only tag that suits such purpose, by allowing true *pre-formatted* content to be written as-is within the confines of the HTML document without endless escaping. Use it.
 
+**v1.x is completely different!**
 
-**v1.0.0 is completely different!**
+Yes it is. v1.x is **absolutely breaking** and **not** compatible with previous versions. Code is entirely re-written based on the new [Custom Elements v1 specs](https://www.w3.org/TR/custom-elements/) with lots of ES6 goodness. It runs natively in modern browsers and is incredibly light and performant. This serves as a great showcase for how far we've come with Custom Elements, Web Components, its ideas, usage and patterns.
 
-Yes it is. v1.0.0 is **absolutely breaking** and **not** compatible with previous versions. Code is entirely re-written based on the new [Custom Elements v1 specs](https://www.w3.org/TR/custom-elements/) with lots of ES6 goodness. It runs natively in modern browsers and is incredibly light and performant. This serves as a great showcase for how far we've come with Custom Elements, Web Components, its ideas, usage and patterns.
+**Anchor links support added!**
+
+Referencing [this Github issue](https://github.com/zerodevx/zero-md/issues/4), a shout-out to @alexroseb for raising this. So the native browser handler for an `<a>` link that points to an element `id` doesn't pierce through shadow DOM - and I missed it. It's a feature, not a bug. Really!
+
 
 ## License
 
-MIT.
+MIT
 
 
 ## Version history
 
-1. 2015-09-01: v0.1.0
-  * Initial commit.
-2. 2015-09-04: v0.1.1
-  * Minor patches to default markdown theme.
-3. 2015-10-23: v0.2.0
-  * **Breaking changes** and is incompatible with earlier versions.
-  * Remove `style-module` usage - instead mandate a child container element
-    with `class="md-html"` for simpler styling.
-  * Remove `<iron-ajax>` dependency.
-  * Remove `zero-md-file-loaded` convenience event.
-  * Add `reload()` method to dynamically reload content inside `<xmp>` tags.
-  * Completely rewrite rendering algorithm. Smaller, lighter and faster!
-4. 2018-04-06: v1.0.0
-  * **Breaking changes** and is incompatible with earlier versions.
-  * Completely re-written, updated to 2018 patterns, and runs natively.
-  * Please use this one instead.
+**v1.1.0** - 2018-05-17
+* Add anchor links feature.
+* Update boilerplate to correct layout in Firefox.
+* Update CDN links for `markedjs` to v0.3.19 and `prismjs` to v1.14.0.
+
+**v1.0.0** - 2018-04-06
+* **Breaking changes**, first major release and incompatible with earlier v0.x versions.
+* **Completely re-written**, updated to 2018 patterns, and runs natively. Please read the docs and use this one instead.
+
+**v0.2.0** - 2015-10-23
+* Breaking changes and is incompatible with earlier versions.
+* Remove `style-module` usage - instead mandate a child container element
+  with `class="md-html"` for simpler styling.
+* Remove `<iron-ajax>` dependency.
+* Remove `zero-md-file-loaded` convenience event.
+* Add `reload()` method to dynamically reload content inside `<xmp>` tags.
+* Completely rewrite rendering algorithm. Smaller, lighter and faster!
+
+**v0.1.1** - 2015-09-04
+* Minor patches to default markdown theme.
+
+**v0.1.0** - 2015-09-01
+* Initial commit.
+

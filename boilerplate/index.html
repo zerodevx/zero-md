@@ -10,17 +10,19 @@
     <title>EXAMPLE SITE TITLE</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
-    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.0.0/build/zero-md.html">
-  </head>
-  <body>
+    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
+
     <style>
       /* Edit your header styles here */
-      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; color: white; background-color: #424242; }
-      zero-md { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 56px auto 0 auto; padding: 45px; }
+      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; background-color: #424242; color: white; }
+      body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 56px auto 0 auto; padding: 45px; }
       @media (max-width: 767px) {
-		    zero-md { padding: 15px; }
-	    }
+        header { font-size: 15px; }
+        body { padding: 15px; }
+      }
     </style>
+  </head>
+  <body>
 
     <!-- Edit your Markdown URL file location here -->
     <zero-md src="https://example.com/EXAMPLE.md"></zero-md>

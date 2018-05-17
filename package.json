@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Ridiculously simple markdown displayer - a native web component based on Custom Elements v1 specs to load and display an external MD file.",
   "main": "index.html",
   "directories": {

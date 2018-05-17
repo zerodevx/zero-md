@@ -1,18 +1,23 @@
 class ZeroMd extends HTMLElement {
 
-  get version() { return '1.0.0'; }
+  get version() { return '1.1.0'; }
   get src() { return this.getAttribute('src'); }
   get manualRender() { return this.hasAttribute('manual-render'); }
   get noShadow() { return this.hasAttribute('no-shadow'); }
-  get markedUrl() { return this.getAttribute('marked-url') || 'https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.17/marked.min.js'; }
-  get prismUrl() { return this.getAttribute('prism-url') || 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/prism.min.js'; }
+  get markedUrl() { return this.getAttribute('marked-url') || 'https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js'; }
+  get prismUrl() { return this.getAttribute('prism-url') || 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js'; }
   get cssUrls() {
     let attr = this.getAttribute('css-urls');
-    return attr ? JSON.parse(attr) : ['https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism.min.css'];
+    return attr ? JSON.parse(attr) : ['https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css'];
   }
 
   connectedCallback() {
     if (!window.ZeroMdStore) { window.ZeroMdStore = {}; }
+    this.addEventListener('click', this._hijackLinks.bind(this));
+    this.addEventListener('zero-md-rendered', function handler() {
+      this.removeEventListener('zero-md-rendered', handler);
+      window.setTimeout(() => { this._scrollTo(window.location.hash); });
+    }.bind(this));
     if (!this.manualRender) { this.render(); }
     this._fire('zero-md-ready');
   }
@@ -149,6 +154,20 @@ class ZeroMd extends HTMLElement {
         resolve(start + end);
       }
     });
+  }
+
+  _scrollTo(selector) {
+    if (!selector || !this.shadowRoot) { return; }
+    let el = this.shadowRoot.querySelector(selector);
+    if (el) { el.scrollIntoView(); }
+  }
+
+  _hijackLinks(ev) {
+    let path = ev.path || ev.composedPath();
+    if (path[0].tagName !== 'A') { return; }
+    ev.preventDefault();
+    this._scrollTo(path[0].hash);
+    window.location = path[0].href;
   }
 
   render() {

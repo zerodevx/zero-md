@@ -245,9 +245,9 @@ In order of priority, `<zero-md>` first tries to retrieve the markdown string fr
 
 Likewise, for CSS styles, `<zero-md>` first tries to retrieve the styles defined in `<template><style>...</style></template>`; if none, `<zero-md>` next attempts to retrieve *all* the external stylesheets defined in the `css-urls` attribute array.
 
-By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.17/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
+By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
 
-For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
+For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
 
 ### Published Attributes
 
@@ -255,9 +255,9 @@ For styles, by default the `css-urls` list contains a Github markdown stylesheet
 |-------------------|------------|-------------|
 | src               | String     | URL location to `GET` the markdown text file via ajax. |
 | manual-render     | Boolean    | If set, disables auto-rendering of this instance. Call the `render()` function start manually. |
-| marked-url        | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.17/marked.min.js`. URL of the Marked JS library. |
-| prism-url         | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/prism.min.js`. URL of the Prism JS library. |
-| css-urls          | String     | Defaults to `["https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism.min.css"]`. An array of stylesheet URLs to apply to this instance. |
+| marked-url        | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js`. URL of the Marked JS library. |
+| prism-url         | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js`. URL of the Prism JS library. |
+| css-urls          | String     | Defaults to `["https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css"]`. An array of stylesheet URLs to apply to this instance. |
 | no-shadow         | Boolean    | If set, renders and stamps this instance into **Light DOM** instead. Please know what you're doing. |
 
 For `css-urls`, please ensure that the value is an **Array** in **valid JSON** format. For example:

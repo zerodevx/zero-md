@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Ridiculously simple markdown displayer - a native web component based on Custom Elements v1 specs to load and display an external MD file.",
   "main": "index.html",
   "directories": {
@@ -17,17 +17,10 @@
   },
   "keywords": [
     "webcomponents",
-    "web-components",
     "customelements",
-    "custom-elements",
-    "markdown",
-    "highlight",
-    "html",
-    "converter",
+    "markdown-to-html",
     "marked",
-    "prism",
-    "ajax",
-    "polymer"
+    "prism"
   ],
   "author": "Jason Lee <jason@zerodevx.com>",
   "license": "MIT",

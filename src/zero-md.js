@@ -158,7 +158,7 @@ class ZeroMd extends HTMLElement {
 
   _scrollTo(selector) {
     if (!selector || !this.shadowRoot) { return; }
-    let el = this.shadowRoot.querySelector(selector);
+    let el = this.shadowRoot.getElementById(selector.substr(1));
     if (el) { el.scrollIntoView(); }
   }
 

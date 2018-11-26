@@ -1,4 +1,4 @@
-v1.1.0
+v1.2.0
 
 # `<zero-md>`
 
@@ -6,34 +6,56 @@ Ridiculously simple markdown displayer - a native web component based on [Custom
 
 Instantly create beautiful HTML pages from Markdown. Like it isn't easy enough.
 
-**BREAKING CHANGE**: So it's time for a major update. Much have changed since the last - [browser support is wide enough](https://caniuse.com/#search=components) and [the Internet is ready](https://www.webcomponents.org/) - so we're removing the need for [Polymer](https://www.polymer-project.org/) for a no-sugar, low-fat diet. We're going [native](https://developers.google.com/web/fundamentals/web-components/)!
-
-Though it's already remarkably trivial to render markdown into HTML ([Marked](https://github.com/markedjs/marked)) and syntax-highlight ([Prism](https://github.com/PrismLibrary/Prism)) when necessary, `<zero-md>` does this better, automagically rendering into its own self-contained Shadow DOM container, while encapsulating implementation details into one embarassingly easy-to-use package.
+While it's already remarkably trivial to render markdown into HTML ([Marked](https://github.com/markedjs/marked)) and syntax-highlight ([Prism](https://github.com/PrismLibrary/Prism)), `<zero-md>` does this better, automagically rendering into its own self-contained Shadow DOM container, while encapsulating implementation details into one embarassingly easy-to-use package.
 
 Because web components. All in ~100 lines of code.
+
+**Update** - 2018-11-26 - The community-agreed standard pattern of importing webcomponents is now via [ES Modules](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/import). Consequently, `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes) from Chrome. Don't worry though, your old code will still work since `HTMLImports` will fall-back to polyfill. For best performance however, do update your existing code to use ES Modules way.
 
 
 ## Let's get this money
 
-### Basic usage
+### Basic usage (recommended)
 
-1. Load `webcomponents-loader.js`.
-  ```html
-  <!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
-  ```
+1. Import [webcomponents-loader.js](https://github.com/webcomponents/webcomponentsjs).
+
+```html
+<!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
+<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
+```
 
 2. Import `<zero-md>` web component.
-  ```html
-  <!-- Load element definition via HTMLImports -->
-  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
-  ```
+
+```html
+<!-- Load element definition via ES Modules -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
+```
 
 3. Profit!
-  ```html
-  <!-- Simply set the `src` attribute to your MD file and win -->
-  <zero-md src="https://www.example.com/my-markdown.md"></zero-md>
-  ```
+
+```html
+<!-- Simply set the `src` attribute to your MD file and win -->
+<zero-md src="https://www.example.com/my-markdown.md"></zero-md>
+```
+
+
+### Async usage
+
+```html
+<head>
+  ...
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js" defer></script>
+  <script type="module">
+    WebComponents.waitFor(() => {
+      let el = document.createElement('script');
+      el.src = 'https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js';
+      document.head.appendChild(el);
+    });
+  </script>
+  ...
+</head>
+```
+
 
 ### Advanced usage
 
@@ -128,8 +150,8 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
     <meta name="description" content="EXAMPLE SITE DESCRIPTION">
     <title>EXAMPLE SITE TITLE</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
-    <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
 
     <style>
       /* Edit your header styles here */
@@ -168,14 +190,16 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
 1. webcomponents-loader.js
 
   ```html
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
   ```
 
 2. zero-md.html
 
   ```html
-  <link rel="import" href="https://cdn.rawgit.com/zerodevx/zero-md/v1.1.0/build/zero-md.html">
+  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
   ```
+
+`<zero-md>` can then be used anywhere in your document `<body>`.
 
 ### Install Locally
 
@@ -196,11 +220,11 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
   ```html
   <head>
     <script src="./bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-    <link rel="import" href="./build/zero-md.html">
+    <script type="module" src="./build/zero-md.html"></script>
   </head>
   <body>
     <zero-md marked-url="./bower_components/marked/marked.min.js"
-            prism-url="./bower_components/prism/prism.js">
+             prism-url="./bower_components/prism/prism.js">
     </zero-md>
   </body>
   ```
@@ -245,19 +269,19 @@ In order of priority, `<zero-md>` first tries to retrieve the markdown string fr
 
 Likewise, for CSS styles, `<zero-md>` first tries to retrieve the styles defined in `<template><style>...</style></template>`; if none, `<zero-md>` next attempts to retrieve *all* the external stylesheets defined in the `css-urls` attribute array.
 
-By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
+By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdn.jsdelivr.net/npm/marked@0/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
 
-For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
+For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
 
 ### Published Attributes
 
 | Attribute         | Type       | Description |
 |-------------------|------------|-------------|
 | src               | String     | URL location to `GET` the markdown text file via ajax. |
-| manual-render     | Boolean    | If set, disables auto-rendering of this instance. Call the `render()` function start manually. |
-| marked-url        | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js`. URL of the Marked JS library. |
-| prism-url         | String     | Defaults to `https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js`. URL of the Prism JS library. |
-| css-urls          | String     | Defaults to `["https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css"]`. An array of stylesheet URLs to apply to this instance. |
+| manual-render     | Boolean    | If set, disables auto-rendering of this instance. Call the `render()` function to start manually. |
+| marked-url        | String     | Defaults to `https://cdn.jsdelivr.net/npm/marked@0/marked.min.js`. URL of the Marked JS library. |
+| prism-url         | String     | Defaults to `https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js`. URL of the Prism JS library. |
+| css-urls          | String     | Defaults to `["https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css", "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"]`. An array of stylesheet URLs to apply to this instance. |
 | no-shadow         | Boolean    | If set, renders and stamps this instance into **Light DOM** instead. Please know what you're doing. |
 
 For `css-urls`, please ensure that the value is an **Array** in **valid JSON** format. For example:
@@ -317,14 +341,19 @@ MIT
 
 ## Version history
 
+**v1.2.0** - 2018-11-26
+* Since `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes), migrating webcomponent import pattern to ES Modules.
+* Update all CDN links to [jsDelivr](https://jsdelivr.com) and pin with semver.
+* Per [#6](https://github.com/zerodevx/zero-md/issues/6), use `getElementById` instead to prevent DOM exception error messages.
+
 **v1.1.0** - 2018-05-17
 * Add anchor links feature.
 * Update boilerplate to correct layout in Firefox.
 * Update CDN links for `markedjs` to v0.3.19 and `prismjs` to v1.14.0.
 
 **v1.0.0** - 2018-04-06
-* **Breaking changes**, first major release and incompatible with earlier v0.x versions.
-* **Completely re-written**, updated to 2018 patterns, and runs natively. Please read the docs and use this one instead.
+* **Breaking changes**, major release and incompatible with earlier v0.x versions.
+* **Completely re-written**, updated to 2018 patterns, removes the need for [Polymer](https://polymer-project.org) and runs natively for a no-sugar, low-fat diet. Please read the docs and upgrade accordingly.
 
 **v0.2.0** - 2015-10-23
 * Breaking changes and is incompatible with earlier versions.

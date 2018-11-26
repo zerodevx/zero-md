@@ -4,11 +4,11 @@ class ZeroMd extends HTMLElement {
   get src() { return this.getAttribute('src'); }
   get manualRender() { return this.hasAttribute('manual-render'); }
   get noShadow() { return this.hasAttribute('no-shadow'); }
-  get markedUrl() { return this.getAttribute('marked-url') || 'https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.19/marked.min.js'; }
-  get prismUrl() { return this.getAttribute('prism-url') || 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.min.js'; }
+  get markedUrl() { return this.getAttribute('marked-url') || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js'; }
+  get prismUrl() { return this.getAttribute('prism-url') || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js'; }
   get cssUrls() {
     let attr = this.getAttribute('css-urls');
-    return attr ? JSON.parse(attr) : ['https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css'];
+    return attr ? JSON.parse(attr) : ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
   }
 
   connectedCallback() {
@@ -158,7 +158,7 @@ class ZeroMd extends HTMLElement {
 
   _scrollTo(selector) {
     if (!selector || !this.shadowRoot) { return; }
-    let el = this.shadowRoot.querySelector(selector);
+    let el = this.shadowRoot.getElementById(selector.substr(1));
     if (el) { el.scrollIntoView(); }
   }
 

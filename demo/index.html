@@ -6,10 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Ridiculously simple markdown displayer - a native web component based on Custom Elements v1 specs to load and display an external MD file.">
     <title>&lt;zero-md&gt; Demo</title>
-    <link rel="canonical" href="https://zerodevx.github.io/zero-md">
+    <link rel="canonical" href="https://zerodevx.github.io/zero-md/demo/index.html">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.1.0/webcomponents-loader.js"></script>
-    <link rel="import" href="../build/zero-md.html">
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js" defer></script>
+
+    <script type="module">
+      WebComponents.waitFor(() => {
+        let el = document.createElement('script');
+        el.src = '../src/zero-md.js';
+        document.head.appendChild(el);
+      });
+    </script>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66946548-3"></script>
     <script>

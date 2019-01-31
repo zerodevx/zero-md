@@ -1,4 +1,4 @@
-v1.2.0
+v1.2.1
 
 # `<zero-md>`
 
@@ -10,7 +10,7 @@ While it's already remarkably trivial to render markdown into HTML ([Marked](htt
 
 Because web components. All in ~100 lines of code.
 
-**Update** - 2018-11-26 - The community-agreed standard pattern of importing webcomponents is now via [ES Modules](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/import). Consequently, `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes) from Chrome. Don't worry though, your old code will still work since `HTMLImports` will fall-back to polyfill. For best performance however, do update your existing code to use ES Modules way.
+**Update** - 2018-11-26 - The community-agreed standard pattern of importing webcomponents is now via [ES Modules](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/import). Consequently, `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes) from Chrome. Don't worry - your old code still works since `HTMLImports` falls-back to polyfill. For better performance however, do update your existing code to load using ES Modules instead.
 
 
 ## Let's get this money
@@ -180,10 +180,7 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
 
 `<zero-md>` works fantastically well for publishing quick project pages, info, news, homepages etc. It doesn't get easier than this.
 
-
-## Installation
-
-### CDN
+## CDN
 
 The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<head>`:
 
@@ -199,9 +196,10 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
   <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
   ```
 
-`<zero-md>` can then be used anywhere in your document `<body>`.
+3. `<zero-md>` can then be used anywhere in your document `<body>`.
 
-### Install Locally
+
+## Install Locally
 
 1. Clone the repo.
 
@@ -229,7 +227,7 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
   </body>
   ```
 
-### Development
+## Development
 
 1. Start your favourite web server.
 
@@ -297,7 +295,7 @@ For `css-urls`, please ensure that the value is an **Array** in **valid JSON** f
 |----------|-------------|-------------|
 | render() | *none*      | Starts the markdown conversion and stamps into DOM. |
 
-By default, each instance will automatically call the `render()` method on start-up. To prevent this behavior, add the attribute `manual-render` to your `<zero-md>` element, and manually call this method to begin rendering.
+By default, each instance automatically calls the `render()` method on start-up. To prevent this behavior, add the attribute `manual-render` to your `<zero-md>` element, and manually call this method to begin rendering.
 
 Note that if changes are made to `<zero-md>` attributes or `<template>` children dynamically, call the `render()` method on that instance to force a re-render.
 
@@ -340,6 +338,9 @@ MIT
 
 
 ## Version history
+
+**v1.2.1** - 2019-01-31
+* Patch anchor links to support CMD+clicks.
 
 **v1.2.0** - 2018-11-26
 * Since `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes), migrating webcomponent import pattern to ES Modules.

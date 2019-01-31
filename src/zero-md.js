@@ -1,6 +1,6 @@
 class ZeroMd extends HTMLElement {
 
-  get version() { return '1.1.0'; }
+  get version() { return 'v1.2.1'; }
   get src() { return this.getAttribute('src'); }
   get manualRender() { return this.hasAttribute('manual-render'); }
   get noShadow() { return this.hasAttribute('no-shadow'); }
@@ -166,8 +166,12 @@ class ZeroMd extends HTMLElement {
     let path = ev.path || ev.composedPath();
     if (path[0].tagName !== 'A') { return; }
     ev.preventDefault();
-    this._scrollTo(path[0].hash);
-    window.location = path[0].href;
+    if (ev.metaKey) {
+      window.open(window.location.href  + path[0].hash, '_blank');
+    } else {
+      this._scrollTo(path[0].hash);
+      window.location = path[0].href;
+    }
   }
 
   render() {

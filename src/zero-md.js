@@ -166,8 +166,12 @@ class ZeroMd extends HTMLElement {
     let path = ev.path || ev.composedPath();
     if (path[0].tagName !== 'A') { return; }
     ev.preventDefault();
-    this._scrollTo(path[0].hash);
-    window.location = path[0].href;
+    if (ev.metaKey) {
+      window.open(window.location.href  + path[0].hash, '_blank');
+    } else {
+      this._scrollTo(path[0].hash);
+      window.location = path[0].href;
+    }
   }
 
   render() {

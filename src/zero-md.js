@@ -1,6 +1,6 @@
 class ZeroMd extends HTMLElement {
 
-  get version() { return '1.1.0'; }
+  get version() { return 'v1.2.1'; }
   get src() { return this.getAttribute('src'); }
   get manualRender() { return this.hasAttribute('manual-render'); }
   get noShadow() { return this.hasAttribute('no-shadow'); }

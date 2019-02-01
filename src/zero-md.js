@@ -166,9 +166,15 @@ class ZeroMd extends HTMLElement {
     let path = ev.path || ev.composedPath();
     if (path[0].tagName !== 'A') { return; }
 
+    // check that it's a hash-link case
     const link = path[0];
-    if (link.hash && link.href === window.location.href) {
-      this._scrollTo(path[0].hash);
+    if (link.hash && (link.origin + link.pathname) === (window.location.origin + window.location.pathname)) {
+      if (ev.metaKey) {
+        window.open(link.href, '_blank');
+      } else {
+        this._scrollTo(link.hash);
+        window.location = link.href;
+      }
       ev.preventDefault();
     }
   }

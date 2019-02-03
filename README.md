@@ -1,4 +1,4 @@
-v1.2.1
+v1.2.2
 
 # `<zero-md>`
 
@@ -338,6 +338,9 @@ MIT
 
 
 ## Version history
+
+**v1.2.2** 2019-02-03
+* Really fix meta-click links [#8](https://github.com/zerodevx/zero-md/issues/8), thanks [@ernsheong](https://github.com/ernsheong)!
 
 **v1.2.1** - 2019-01-31
 * Patch anchor links to support CMD+clicks.

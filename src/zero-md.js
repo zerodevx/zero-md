@@ -165,12 +165,17 @@ class ZeroMd extends HTMLElement {
   _hijackLinks(ev) {
     let path = ev.path || ev.composedPath();
     if (path[0].tagName !== 'A') { return; }
-    ev.preventDefault();
-    if (ev.metaKey) {
-      window.open(window.location.href  + path[0].hash, '_blank');
-    } else {
-      this._scrollTo(path[0].hash);
-      window.location = path[0].href;
+
+    // check that it's a hash-link case
+    const link = path[0];
+    if (link.hash && (link.origin + link.pathname) === (window.location.origin + window.location.pathname)) {
+      if (ev.metaKey) {
+        window.open(link.href, '_blank');
+      } else {
+        this._scrollTo(link.hash);
+        window.location = link.href;
+      }
+      ev.preventDefault();
     }
   }
 

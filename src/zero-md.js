@@ -8,7 +8,10 @@ class ZeroMd extends HTMLElement {
   get prismUrl() { return this.getAttribute('prism-url') || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js'; }
   get cssUrls() {
     let attr = this.getAttribute('css-urls');
-    return attr ? JSON.parse(attr) : ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
+    return
+        attr ? JSON.parse(attr)
+      : window.ZeroMdCssUrls ? window.ZeroMdCssUrls
+      : ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
   }
 
   connectedCallback() {

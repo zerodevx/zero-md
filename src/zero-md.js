@@ -149,7 +149,7 @@
 
     _buildStyles() {
       return new Promise(resolve => {
-        let start = '<style class="markdown-style">:host{display:block;contain:content;}';
+        let start = '<style class="markdown-style">:host{display:block;position:relative;contain:content;}';
         let end = '</style>';
         // First try reading from light DOM template
         let tpl = this.querySelector('template') && this.querySelector('template').content.querySelector('style') || false;

@@ -19,10 +19,10 @@
       window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
       window.ZeroMd.config.prismUrl = window.ZeroMd.config.prismUrl || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
       window.ZeroMd.config.cssUrls = window.ZeroMd.config.cssUrls || ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
+      window.ZeroMd.cache = window.ZeroMd.cache || {};
     }
 
     connectedCallback() {
-      if (!window.ZeroMdStore) { window.ZeroMdStore = {}; }
       this.addEventListener('click', this._hijackLinks.bind(this));
       this.addEventListener('zero-md-rendered', function handler() {
         this.removeEventListener('zero-md-rendered', handler);
@@ -58,13 +58,13 @@
       return new Promise((resolve, reject) => {
         if (check !== 'undefined') { resolve(); return; }
         // Handle race condition when multiple instances loaded at runtime
-        if (window.ZeroMdStore.hasOwnProperty(evt)) {
+        if (window.ZeroMd.cache.hasOwnProperty(evt)) {
           window.addEventListener(evt, function handler() {
             window.removeEventListener(evt, handler);
             resolve();
           });
         } else {
-          window.ZeroMdStore[evt] = true;
+          window.ZeroMd.cache[evt] = true;
           let el = document.createElement('script');
           for (let attr of attrs) el.setAttribute(attr, '');
           el.onload = () => { this._fire(evt); resolve(); };
@@ -78,20 +78,20 @@
     _getStylesheet(url) {
       return new Promise((resolve, reject) => {
         // Check cache if stylesheet already downloaded
-        if (window.ZeroMdStore[url]) {
-          if (window.ZeroMdStore[url].loaded) {
-            resolve(window.ZeroMdStore[url].data);
+        if (window.ZeroMd.cache[url]) {
+          if (window.ZeroMd.cache[url].loaded) {
+            resolve(window.ZeroMd.cache[url].data);
           } else {
             window.addEventListener(url, function handler() {
               window.removeEventListener(url, handler);
-              resolve(window.ZeroMdStore[url].data);
+              resolve(window.ZeroMd.cache[url].data);
             });
           }
         } else {
-          window.ZeroMdStore[url] = { loaded: false, data: '' };
+          window.ZeroMd.cache[url] = { loaded: false, data: '' };
           this._ajaxGet(url).then(data => {
-            window.ZeroMdStore[url].data = data;
-            window.ZeroMdStore[url].loaded = true;
+            window.ZeroMd.cache[url].data = data;
+            window.ZeroMd.cache[url].loaded = true;
             this._fire(url);
             resolve(data);
           }, err => reject(err));

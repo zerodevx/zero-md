@@ -94,7 +94,7 @@ H~~ell~~o *W*o**r**l***d***!
           });
           Promise.all([
             el._getStylesheet('mock-css.css').then(function(data) {
-              window.ZeroMdStore['mock-css.css'].data = 'test string';
+              window.ZeroMd.cache['mock-css.css'].data = 'test string';
               return data;
             }),
             delayedGet

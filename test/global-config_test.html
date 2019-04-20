@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <script>
+    var ZeroMd = {};
+    ZeroMd.config = {
+      cssUrls: [
+        'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/avenir-white.css',
+        'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-atom-dark.css'
+      ]
+    };
+  </script>
+  <script src="../src/zero-md.js"></script>
+</head>
+<body>
+
+  <!--
+  <test-fixture id="basic">
+    <template>
+      <zero-md manual-render></zero-md>
+    </template>
+  </test-fixture>
+  -->
+
+  <zero-md id="basic" src="./example.md"></zero-md>
+
+  <script>
+    describe('test global config', function() {
+
+      it('should overwrite defaults if global is set', function(done) {
+        var el = document.querySelector('#basic');
+        el.addEventListener('zero-md-rendered', function() {
+          expect(window.ZeroMd.cache[ZeroMd.config.cssUrls[0]]).to.not.be.undefined;
+          expect(window.ZeroMd.cache[ZeroMd.config.cssUrls[1]]).to.not.be.undefined;
+          done();
+        });
+      });
+
+    });
+  </script>
+
+</body>
+</html>

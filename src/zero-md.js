@@ -5,11 +5,20 @@
     get src() { return this.getAttribute('src'); }
     get manualRender() { return this.hasAttribute('manual-render'); }
     get noShadow() { return this.hasAttribute('no-shadow'); }
-    get markedUrl() { return this.getAttribute('marked-url') || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js'; }
-    get prismUrl() { return this.getAttribute('prism-url') || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js'; }
+    get markedUrl() { return this.getAttribute('marked-url') || window.ZeroMd.config.markedUrl; }
+    get prismUrl() { return this.getAttribute('prism-url') || window.ZeroMd.config.prismUrl; }
     get cssUrls() {
       let attr = this.getAttribute('css-urls');
-      return attr ? JSON.parse(attr) : ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
+      return attr ? JSON.parse(attr) : window.ZeroMd.config.cssUrls;
+    }
+
+    constructor() {
+      super();
+      window.ZeroMd = window.ZeroMd || {};
+      window.ZeroMd.config = window.ZeroMd.config || {};
+      window.ZeroMd.config.markedUrl = window.ZeroMd.config.markedUrl || 'https://cdn.jsdelivr.net/npm/marked@0/marked.min.js';
+      window.ZeroMd.config.prismUrl = window.ZeroMd.config.prismUrl || 'https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js';
+      window.ZeroMd.config.cssUrls = window.ZeroMd.config.cssUrls || ['https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css', 'https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css'];
     }
 
     connectedCallback() {

@@ -1,4 +1,4 @@
-v1.2.2
+v1.3.0
 
 # `<zero-md>`
 
@@ -10,25 +10,23 @@ While it's already remarkably trivial to render markdown into HTML ([Marked](htt
 
 Because web components. All in ~100 lines of code.
 
-**Update** - 2018-11-26 - The community-agreed standard pattern of importing webcomponents is now via [ES Modules](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/import). Consequently, `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes) from Chrome. Don't worry - your old code still works since `HTMLImports` falls-back to polyfill. For better performance however, do update your existing code to load using ES Modules instead.
-
 
 ## Let's get this money
 
-### Basic usage (recommended)
+### Basic usage via CDN (recommended)
 
 1. Import [webcomponents-loader.js](https://github.com/webcomponents/webcomponentsjs).
 
 ```html
 <!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
 ```
 
 2. Import `<zero-md>` web component.
 
 ```html
-<!-- Load element definition via ES Modules -->
-<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
+<!-- Load the element definition -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
 ```
 
 3. Profit!
@@ -44,11 +42,11 @@ Because web components. All in ~100 lines of code.
 ```html
 <head>
   ...
-  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js" defer></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
   <script type="module">
     WebComponents.waitFor(() => {
       let el = document.createElement('script');
-      el.src = 'https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js';
+      el.src = 'https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js';
       document.head.appendChild(el);
     });
   </script>
@@ -63,8 +61,9 @@ Because web components. All in ~100 lines of code.
 
   ```html
   <!-- Pass in an array of CSS URLs via the `css-urls` attribute in valid JSON format -->
-  <zero-md css-urls='["https://example.com/styles/custom-markdown.css", "https://example.com/styles/custom-highlight.css"]'
-           src="https://example.com/my-markdown.md">
+  <zero-md
+    css-urls='["https://example.com/styles/custom-markdown.css", "https://example.com/styles/custom-highlight.css"]'
+    src="https://example.com/my-markdown.md">
   </zero-md>
   ```
 
@@ -150,8 +149,8 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
     <meta name="description" content="EXAMPLE SITE DESCRIPTION">
     <title>EXAMPLE SITE TITLE</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
 
     <style>
       /* Edit your header styles here */
@@ -180,26 +179,56 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
 
 `<zero-md>` works fantastically well for publishing quick project pages, info, news, homepages etc. It doesn't get easier than this.
 
-## CDN
 
-The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<head>`:
+## Install locally
 
-1. webcomponents-loader.js
+1. Install via NPM.
 
-  ```html
-  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.js"></script>
+  ```
+  npm install --save zero-md
   ```
 
-2. zero-md.html
+2. Optionally install [webcomponents.js](https://www.npmjs.com/package/@webcomponents/webcomponentsjs), [Prism](https://www.npmjs.com/package/prismjs) and [Marked](https://www.npmjs.com/package/marked) if you wish to host them yourself.
 
-  ```html
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/build/zero-md.min.js"></script>
+  ```
+  npm install --save @webcomponents/webcomponentsjs prismjs marked
   ```
 
-3. `<zero-md>` can then be used anywhere in your document `<body>`.
+3. Use locally.
+
+  ```html
+  <head>
+    ...
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script>
+      // Set global configs.
+      // Declare before importing `zero-md` element. These settings will apply to all instances of `zero-md`.
+      window.ZeroMd = {
+        config: {
+          // Basically, we want to point all library references to our local ones instead.
+          prismUrl: '/node_modules/prismjs/prism.js',
+          markedUrl: '/node_modules/marked/marked.min.js',
+          cssUrls: [
+            '/styles/my-cool-markdown-theme.css',
+            '/styles/bling-highlight-colors.css'
+          ]
+        }
+      };
+    </script>
+    <script type="module" src="./node_modules/zero-md/src/zero-md.js"></script>
+    ...
+  </head>
+  <body>
+    ...
+    <zero-md src="/markdown/my-super-good-post.md"></zero-md>
+    ...
+    <zero-md src="/markdown/some-nice-testimonials.md"></zero-md>
+    ...
+  </body>
+  ```
 
 
-## Install Locally
+## Develop and contribute
 
 1. Clone the repo.
 
@@ -213,45 +242,33 @@ The easiest way to use `<zero-md>` is to load from CDNs. Place into document `<h
   npm install && bower install
   ```
 
-3. Use locally.
-
-  ```html
-  <head>
-    <script src="./bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-    <script type="module" src="./build/zero-md.html"></script>
-  </head>
-  <body>
-    <zero-md marked-url="./bower_components/marked/marked.min.js"
-             prism-url="./bower_components/prism/prism.js">
-    </zero-md>
-  </body>
-  ```
-
-## Development
-
-1. Start your favourite web server.
+3. Start your favourite web server.
 
   ```
-  cd zero-md && python -m SimpleHTTPServer 8000
+  python -m SimpleHTTPServer 8000
   ```
 
-2. Run tests from your browser.
+4. Run tests from your browser.
 
   ```
   http://localhost:8000/test/zero-md_test.html
   ```
 
-3. Lint your code.
+5. Lint your code.
 
   ```
   npm run lint
   ```
 
-4. Build.
+6. And build it if you wish to.
 
   ```
   npm run build
   ```
+
+7. Noticed a bug? Have a feature request? Raise an [issue](https://github.com/zerodevx/zero-md/issues).
+
+8. Or even better, open a [PR](https://github.com/zerodevx/zero-md/pulls)!
 
 
 ## Demo
@@ -267,19 +284,89 @@ In order of priority, `<zero-md>` first tries to retrieve the markdown string fr
 
 Likewise, for CSS styles, `<zero-md>` first tries to retrieve the styles defined in `<template><style>...</style></template>`; if none, `<zero-md>` next attempts to retrieve *all* the external stylesheets defined in the `css-urls` attribute array.
 
+
+### Host styles
+
+By default, each `<zero-md>` instance has the following styles applied to itself.
+
+```css
+:host {
+  display: block;
+  position: relative;
+  contain: content;
+}
+```
+
+These are [sensible defaults](https://github.com/zerodevx/zero-md/issues/13) that should apply to most use-cases and also help normalise behavior across browsers - since the `contain` CSS property is [only implemented in Chrome](https://developer.mozilla.org/en-US/docs/Web/CSS/contain). The beauty of web components is that you can easily override these defaults from outside the element to suit your needs.
+
+```html
+<style>
+  #my-element {
+    display: inline-block;
+    contain: none;
+  }
+</style>
+<zero-md id="my-element" src="example.md"></zero-md>
+```
+
+
+### Default configs
+
 By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdn.jsdelivr.net/npm/marked@0/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
 
 For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
+
+| Attribute         | Type       | Default value  |
+|-------------------|------------|----------------|
+| marked-url        | String     | `https://cdn.jsdelivr.net/npm/marked@0/marked.min.js` |
+| prism-url         | String     | `https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js` |
+| css-urls          | Array      | `["https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css", "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"]` |
+
+
+These defaults can be overridden **globally** by setting the `ZeroMd.config` global. Note that setting the global config will apply to **all** instances of `<zero-md>` in the document.
+
+```html
+<head>
+  ...
+  <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    // Set global configs.
+    // Declare before importing `zero-md` element. These settings will apply to all instances of `zero-md`.
+    window.ZeroMd = {
+      config: {
+        cssUrls: [
+          '/styles/my-markdown-theme.css',
+          '/styles/my-highlight-theme.css'
+        ]
+      }
+    };
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+</head>
+<body>
+  ...
+  <!-- So we don't have to repeat `css-urls='["a.css","b.css"]'` over and over again. -->
+  <zero-md src="https://example.com/markdown/post1.md"></zero-md>
+  ...
+  <zero-md src="https://example.com/markdown/post2.md"></zero-md>
+  ...
+</body>
+```
+
+1. When setting global config, ensure that the `window.ZeroMd.config` object is defined **before** importing the `<zero-md>` element definition.
+
+2. The following configs are exposed (in camelCase): `markedUrl`, `prismUrl` and `cssUrls`.
+
 
 ### Published Attributes
 
 | Attribute         | Type       | Description |
 |-------------------|------------|-------------|
 | src               | String     | URL location to `GET` the markdown text file via ajax. |
-| manual-render     | Boolean    | If set, disables auto-rendering of this instance. Call the `render()` function to start manually. |
-| marked-url        | String     | Defaults to `https://cdn.jsdelivr.net/npm/marked@0/marked.min.js`. URL of the Marked JS library. |
-| prism-url         | String     | Defaults to `https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js`. URL of the Prism JS library. |
-| css-urls          | String     | Defaults to `["https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css", "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"]`. An array of stylesheet URLs to apply to this instance. |
+| manual-render     | Boolean    | If set, disables auto-rendering of this instance. Call the `render()` function on that instance to start manually. |
+| marked-url        | String     | URL of the Marked JS library. |
+| prism-url         | String     | URL of the Prism JS library. |
+| css-urls          | String     | An array of stylesheet URLs to apply to this instance in **valid JSON**. |
 | no-shadow         | Boolean    | If set, renders and stamps this instance into **Light DOM** instead. Please know what you're doing. |
 
 For `css-urls`, please ensure that the value is an **Array** in **valid JSON** format. For example:
@@ -289,30 +376,42 @@ For `css-urls`, please ensure that the value is an **Array** in **valid JSON** f
 <zero-md css-urls='["./styles/markdown-stylesheet.css", "./styles/highlight-stylesheet.css"]'></zero-md>
 ```
 
+
 ### Public Methods
 
-| Method   | Parameters  | Description |
-|----------|-------------|-------------|
+| Method   | Parameters  | Description                                         |
+|----------|-------------|-----------------------------------------------------|
 | render() | *none*      | Starts the markdown conversion and stamps into DOM. |
 
-By default, each instance automatically calls the `render()` method on start-up. To prevent this behavior, add the attribute `manual-render` to your `<zero-md>` element, and manually call this method to begin rendering.
+By default, each instance automatically calls the `render()` method on start-up. To prevent this behavior, add the attribute `manual-render` to your `<zero-md>` element, and manually call this method to begin rendering. For example:
+
+```html
+<zero-md id="my-element" manual-render src="example.md"></zero-md>
+...
+<script>
+  let el = document.querySelector('#my-element');
+  el.render();
+</script>
+```
 
 Note that if changes are made to `<zero-md>` attributes or `<template>` children dynamically, call the `render()` method on that instance to force a re-render.
 
 
 ### Convenience Events
 
-| Event Name            | Description |
-|-----------------------|-------------|
-| zero-md-ready         | Fired after `<zero-md>` is connected. |
-| zero-md-marked-ready  | Fired after the Marked JS library is loaded. |
-| zero-md-prism-ready   | Fired after the Prism JS library is loaded. |
-| zero-md-rendered      | Fired after markdown is converted, syntax is highlighted, and contents stamped to DOM. |
+| Event Name            | Description                                                                      |
+|-----------------------|----------------------------------------------------------------------------------|
+| zero-md-ready         | Fired after `<zero-md>` is connected.                                            |
+| zero-md-marked-ready  | Fired after Marked JS library has loaded.                                        |
+| zero-md-prism-ready   | Fired after Prism JS library has loaded.                                         |
+| zero-md-rendered      | Fired after markdown converted, syntax highlighted, and contents stamped to DOM. |
 
 
 ## Themes
 
 [Google](https://www.google.com.sg/search?q=markdown+css+themes) [it!](https://www.google.com.sg/search?q=syntax+highlight+css+themes) Or try [here](https://github.com/jasonm23/markdown-css-themes), [here](https://github.com/ebidel/markdown-css-themes) or [here](https://github.com/PrismJS/prism-themes).
+
+Themes are just standard CSS stylesheets that can be applied to an instance of `<zero-md>`. One of the coolest feature of web components is *encapsulation* - so these styles will not bleed out of its shadow DOM and affect the rest of the document.
 
 Load your theme stylesheets by setting the `css-urls` attribute. Check out the [published attributes](#published-attributes) API.
 
@@ -329,7 +428,7 @@ Yes it is. v1.x is **absolutely breaking** and **not** compatible with previous 
 
 **Anchor links support added!**
 
-Referencing [this Github issue](https://github.com/zerodevx/zero-md/issues/4), a shout-out to @alexroseb for raising this. So the native browser handler for an `<a>` link that points to an element `id` doesn't pierce through shadow DOM - and I missed it. It's a feature, not a bug. Really!
+Referencing [this Github issue](https://github.com/zerodevx/zero-md/issues/4), a shout-out to [@alexroseb](https://github.com/alexroseb) for raising this. So the native browser handler for an `<a>` link that points to an element `id` doesn't pierce through shadow DOM - and I missed it. It's a feature, not a bug. Really!
 
 
 ## License
@@ -339,14 +438,19 @@ MIT
 
 ## Version history
 
-**v1.2.2** 2019-02-03
+**v1.3.0** - 2019-04-21
+* Exposes the `ZeroMd.config` global to set default values applying to **all** instances of `<zero-md>` in the document. (Ref: PR[#12](https://github.com/zerodevx/zero-md/pull/12)) - thanks [@bennypowers](https://github.com/bennypowers)!
+* Update default host CSS to help normalise behavior across browsers. Fixes [#13](https://github.com/zerodevx/zero-md/issues/13) - thanks [@bennypowers](https://github.com/bennypowers)!
+* Publish on NPM to support modern workflows per [#11](https://github.com/zerodevx/zero-md/issues/11).
+
+**v1.2.2** - 2019-02-03
 * Really fix meta-click links [#8](https://github.com/zerodevx/zero-md/issues/8), thanks [@ernsheong](https://github.com/ernsheong)!
 
 **v1.2.1** - 2019-01-31
 * Patch anchor links to support CMD+clicks.
 
 **v1.2.0** - 2018-11-26
-* Since `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes), migrating webcomponent import pattern to ES Modules.
+* The community-agreed standard pattern of importing webcomponents is now via [ES Modules](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/import). Consequently, `HTMLImports` will soon be [deprecated](https://www.polymer-project.org/blog/2017-10-18-upcoming-changes) from Chrome. Don't worry - your old code still works since `HTMLImports` falls-back to polyfill. For better performance however, do update your existing code to load using ES Modules instead.
 * Update all CDN links to [jsDelivr](https://jsdelivr.com) and pin with semver.
 * Per [#6](https://github.com/zerodevx/zero-md/issues/6), use `getElementById` instead to prevent DOM exception error messages.
 

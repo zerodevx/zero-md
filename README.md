@@ -1,4 +1,4 @@
-v1.3.0
+v1.3.1
 
 # `<zero-md>`
 
@@ -437,6 +437,10 @@ MIT
 
 
 ## Version history
+
+**v1.3.1** - 2019-4-22
+* Actually build for v1.3.1 (fixes [#15](https://github.com/zerodevx/zero-md/issues/15)).
+* Automate the chore of version bumping else I keep missing things.
 
 **v1.3.0** - 2019-04-21
 * Exposes the `ZeroMd.config` global to set default values applying to **all** instances of `<zero-md>` in the document. (Ref: PR[#12](https://github.com/zerodevx/zero-md/pull/12)) - thanks [@bennypowers](https://github.com/bennypowers)!

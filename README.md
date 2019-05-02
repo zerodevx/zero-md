@@ -314,7 +314,7 @@ These are [sensible defaults](https://github.com/zerodevx/zero-md/issues/13) tha
 
 By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdn.jsdelivr.net/npm/marked@0/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
 
-For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
+For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overriding that attribute with an array of URLs in valid JSON format.
 
 | Attribute         | Type       | Default value  |
 |-------------------|------------|----------------|

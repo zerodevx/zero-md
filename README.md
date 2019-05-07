@@ -201,8 +201,8 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
     ...
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script>
-      // Set global configs.
-      // Declare before importing `zero-md` element. These settings will apply to all instances of `zero-md`.
+      // Set global configs. Declare before importing `zero-md` element.
+      // These settings will apply to all instances of `zero-md`.
       window.ZeroMd = {
         config: {
           // Basically, we want to point all library references to our local ones instead.
@@ -215,7 +215,7 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
         }
       };
     </script>
-    <script type="module" src="./node_modules/zero-md/src/zero-md.js"></script>
+    <script type="module" src="/node_modules/zero-md/src/zero-md.js"></script>
     ...
   </head>
   <body>
@@ -314,7 +314,7 @@ These are [sensible defaults](https://github.com/zerodevx/zero-md/issues/13) tha
 
 By default, `<zero-md>` loads the ([Marked](https://github.com/markedjs/marked)) JS library from CDN [here](https://cdn.jsdelivr.net/npm/marked@0/marked.min.js); and the ([Prism](https://github.com/PrismLibrary/Prism)) JS library from [here](https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js). These URL locations can be overridden by setting the `marked-url` and `prism-url` attributes respectively.
 
-For styles, by default the `css-urls` list contains a Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overridding that attribute with an array of URLs in valid JSON format.
+For styles, by default the `css-urls` attribute contains a list of Github markdown stylesheet from [here](https://cdn.jsdelivr.net/npm/github-markdown-css@2/github-markdown.min.css), and a light-themed highlight stylesheet from [here](https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css). The defaults can be overridden by setting that attribute with an array of URLs in **valid JSON format**.
 
 | Attribute         | Type       | Default value  |
 |-------------------|------------|----------------|
@@ -330,8 +330,8 @@ These defaults can be overridden **globally** by setting the `ZeroMd.config` glo
   ...
   <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
-    // Set global configs.
-    // Declare before importing `zero-md` element. These settings will apply to all instances of `zero-md`.
+    // Set global configs. Declare before importing `zero-md` element.
+    // These settings will apply to all instances of `zero-md`.
     window.ZeroMd = {
       config: {
         cssUrls: [

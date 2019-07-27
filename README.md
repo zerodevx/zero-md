@@ -1,4 +1,5 @@
-v1.3.1
+![GitHub release](https://img.shields.io/github/release/zerodevx/zero-md)
+![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md)
 
 # `<zero-md>`
 

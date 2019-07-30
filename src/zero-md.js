@@ -1,7 +1,7 @@
 (function() {
   window.customElements.define('zero-md', class extends HTMLElement {
 
-    get version() { return 'v1.3.1'; }
+    get version() { return 'v1.3.2'; }
     get src() { return this.getAttribute('src'); }
     get manualRender() { return this.hasAttribute('manual-render'); }
     get noShadow() { return this.hasAttribute('no-shadow'); }

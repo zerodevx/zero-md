@@ -439,6 +439,9 @@ MIT
 
 ## Version history
 
+**v1.3.2** - 2019-7-31
+* Maintenance update of dev dependencies.
+
 **v1.3.1** - 2019-4-22
 * Actually build for v1.3.1 (fixes [#15](https://github.com/zerodevx/zero-md/issues/15)).
 * Automate the chore of version bumping else I keep missing things.

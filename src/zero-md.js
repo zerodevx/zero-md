@@ -120,7 +120,7 @@
       if (!lang) { return code.match(/^\s*</) ? window.Prism.languages.markup : window.Prism.languages.javascript; }
       if (window.Prism.languages.hasOwnProperty(lang)) { return window.Prism.languages[lang]; }
       if (lang.substr(0, 2) === 'es') { return window.Prism.languages.javascript; }
-      if (lang === 'c') { return window.Prism.langauges.clike; }
+      if (lang === 'c') { return window.Prism.languages.clike; }
       return window.Prism.languages.markup;
     }
 

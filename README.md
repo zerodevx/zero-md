@@ -23,6 +23,12 @@ Because web components. All in ~100 lines of code.
 <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
 ```
 
+Note: It seems there has been a regression in `webcomponentsjs` that broke support for Firefox `v60` as reported in [#19](https://github.com/zerodevx/zero-md/issues/19). If you need to support super old Firefoxes, it's recommended to pin `webcomponentsjs` to `v2.2.10`.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.min.js"></script>
+```
+
 2. Import `<zero-md>` web component.
 
 ```html
@@ -439,10 +445,15 @@ MIT
 
 ## Version history
 
-**v1.3.2** - 2019-7-31
+**v1.3.3** - 2020-01-07
+* Fixed typo that broke C syntax highlighting - thanks [@TheUnlocked](https://github.com/TheUnlocked)! (ref: [PR#21](https://github.com/zerodevx/zero-md/pull/21))
+* Add usage note on webcomponentsjs polyfill regression in FFv60. (ref: [#19](https://github.com/zerodevx/zero-md/issues/19))
+* Update dependencies.
+
+**v1.3.2** - 2019-07-31
 * Maintenance update of dev dependencies.
 
-**v1.3.1** - 2019-4-22
+**v1.3.1** - 2019-04-22
 * Actually build for v1.3.1 (fixes [#15](https://github.com/zerodevx/zero-md/issues/15)).
 * Automate the chore of version bumping else I keep missing things.
 

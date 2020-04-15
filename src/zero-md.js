@@ -142,19 +142,7 @@
                      this._loadScript(this.markedUrl, typeof window.marked, 'zero-md-marked-ready', 'async'),
                      this._loadScript(this.prismUrl, typeof window.Prism, 'zero-md-prism-ready', 'async', 'data-manual')])
           .then(data => {
-		let md = data[0];
-
-		const toc = /[TOC]/gmi;
-		md = md.replace(toc, 'ttoocc');
-		 
-		const options = {
-              		renderer: renderer,
-              		highlight: this._prismHighlight.bind(this)
-            	};
-
-            const html = window.marked(md, Object.assign(options, window.ZeroMd.markedjs.options));
-
-	    resolve('<div class="markdown-body">' + html + '</div>');
+            resolve('<div class="markdown-body">' + window.marked(data[0], { highlight: this._prismHighlight.bind(this) }) + '</div>');
           }, err => { reject(err); });
       });
     }

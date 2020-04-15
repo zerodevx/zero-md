@@ -1,4 +1,6 @@
-# The Ultimate Lorem Ipsum Markdown
+[TOC]
+
+# Theeyb  Ultimate Lorem Ipsum Markdown
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P

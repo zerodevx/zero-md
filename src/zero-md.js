@@ -144,23 +144,25 @@
           .then(data => {
 
             const renderer = new window.marked.Renderer();
-            
+            let tableOfContent = '';
             renderer.heading = (text, level) => {
               const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/mi) || [null, text,];
-              const id = userId || pure.toLowerCase().replace(/[^\w]+/g, '-');
+              const id = userId || pure.toLowerCase().replace(/[^\w]+/g, '-'); 
+              const space = '&ensp;';
+              tableOfContent += `${space.repeat(2 * level)}<a href="#${id}">${pure}</a><br>`;
               return `<h${level} id="${id}">${pure}</h${level}>`;
             };
 
             let md = data[0];
-           // marked(md, { renderer })
-           // const toc = /\[toc\]/i;
-           // md = md.replace(toc, );
 
-           const options = {
-            renderer: renderer,
-            highlight: this._prismHighlight.bind(this)
-          };
-            const html = window.marked(md, Object.assign(options, window.ZeroMd.markedjs.options));
+            const options = {
+              renderer: renderer,
+              highlight: this._prismHighlight.bind(this)
+            };
+            let html = window.marked(md, options);
+
+            const toc = /\[toc\]/i;
+            html = html.replace(toc, tableOfContent);
 
             resolve('<div class="markdown-body">' + window.marked(html, { highlight: this._prismHighlight.bind(this) }) + '</div>');
           }, err => { reject(err); });

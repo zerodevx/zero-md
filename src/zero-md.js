@@ -142,7 +142,27 @@
                      this._loadScript(this.markedUrl, typeof window.marked, 'zero-md-marked-ready', 'async'),
                      this._loadScript(this.prismUrl, typeof window.Prism, 'zero-md-prism-ready', 'async', 'data-manual')])
           .then(data => {
-            resolve('<div class="markdown-body">' + window.marked(data[0], { highlight: this._prismHighlight.bind(this) }) + '</div>');
+
+            const renderer = new window.marked.Renderer();
+            
+            renderer.heading = (text, level) => {
+              const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/mi) || [null, text,];
+              const id = userId || pure.toLowerCase().replace(/[^\w]+/g, '-');
+              return `<h${level} id="${id}">${pure}</h${level}>`;
+            };
+
+            let md = data[0];
+           // marked(md, { renderer })
+           // const toc = /\[toc\]/i;
+           // md = md.replace(toc, );
+
+           const options = {
+            renderer: renderer,
+            highlight: this._prismHighlight.bind(this)
+          };
+            const html = window.marked(md, Object.assign(options, window.ZeroMd.markedjs.options));
+
+            resolve('<div class="markdown-body">' + window.marked(html, { highlight: this._prismHighlight.bind(this) }) + '</div>');
           }, err => { reject(err); });
       });
     }

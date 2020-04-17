@@ -1,3 +1,5 @@
+[TOC]
+
 # The Ultimate Lorem Ipsum Markdown
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).

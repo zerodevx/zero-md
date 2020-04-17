@@ -1,6 +1,4 @@
-[TOC]
-
-# Thee ddtimate Lorem Ipsum Markdown
+# The Ultimate Lorem Ipsum Markdown
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
@@ -21,7 +19,7 @@ sonitu, dato dixisse dulci Laiades.
 Permulcetque dant, admonitorque quam poenas. Olivae haec hostesque formidine sub
 memorante nullum; quoque massa usum videri.
 
-### Qua ad Lesbon zonae {#hello}
+## Qua ad Lesbon zonae
 
 Illam credulitate [nil oculis](http://quamquetamen.net/huicadest.aspx) si genis
 utraque Minyeidas patres visa [coepit](http://laevaque.org/) est dedit cervix et

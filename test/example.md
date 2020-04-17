@@ -5,7 +5,7 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
-## Anchor link test
+## На русском языке
 Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.
 
 ## Concidit caput certo flere pedum

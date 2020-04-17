@@ -152,7 +152,7 @@
               const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/mi) || [null, text,];
               const id = userId || pure.toLowerCase().replace(/[^\w]+/g, '-'); 
               const space = '&ensp;';
-              tableOfContents += `${space.repeat(2 * level)}<a href="#${id}">${pure}</a><br>`;
+              tableOfContents += `${space.repeat(4 * (level - 1))}<a href="#${id}">${pure}</a><br>`;
                           
               return `<h${level} id="${id}">${pure}</h${level}>`;
             };

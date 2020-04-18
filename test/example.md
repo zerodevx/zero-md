@@ -5,10 +5,10 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
-## На русском языке
+## На русском языке {#first header}
 Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.
 
-## Concidit caput certo flere pedum
+## Concidit caput certo flere pedum {#second-header}
 
 *Lorem* markdownum implet caedisque dextrasque doluit timor idcirco **isque
 favillae** aliquid nobilitate posuit. Hortis tuo ferunt sanguine latuerunt
@@ -21,7 +21,7 @@ sonitu, dato dixisse dulci Laiades.
 Permulcetque dant, admonitorque quam poenas. Olivae haec hostesque formidine sub
 memorante nullum; quoque massa usum videri.
 
-## Qua ad Lesbon zonae
+## Qua ad Lesbon zonae {#fourth_header}
 
 Illam credulitate [nil oculis](http://quamquetamen.net/huicadest.aspx) si genis
 utraque Minyeidas patres visa [coepit](http://laevaque.org/) est dedit cervix et

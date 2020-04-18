@@ -152,9 +152,10 @@
               const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/mi) || [null, text,];
               const id = userId || pure.toLowerCase().replace(/[^a-zа-яё]+/g, '-'); 
               const space = '&ensp;';
-              tableOfContents += `${space.repeat(4 * (level - 1))}<a href="#${encodeURI(id)}">${pure}</a><br>`;
+              tableOfContents += `${space.repeat(4 * (level - 1))}<a href="#${id}">${pure}</a><br>`;
               
-              return `<h${level}><a id="${encodeURI(id)}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
+              return `<h${level}>${(encodeURI(id) === id) ? '' : `<span id="${encodeURI(id)}"></span>`}
+              <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`;
             };
 
             let md = data[0];

@@ -40,7 +40,7 @@
     _ajaxGet(url) {
       return new Promise((resolve, reject) => {
         if (!url) { reject(url); return; }
-        const absoluteUrl = url.startsWith('http') ? url : window.ZeroMd.config.baseUrl + url;
+        const absoluteUrl = url.trim().startsWith('http') ? url : window.ZeroMd.config.baseUrl + url;
         let req = new XMLHttpRequest();
         let handler = err => {
           console.warn('[zero-md] Error getting file', absoluteUrl);

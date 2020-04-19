@@ -21,7 +21,7 @@ sonitu, dato dixisse dulci Laiades.
 Permulcetque dant, admonitorque quam poenas. Olivae haec hostesque formidine sub
 memorante nullum; quoque massa usum videri.
 
-## **На русском языке с жирным подчекиванием**
+## На русском языке с **жирным подчеркиванием** и *курсивом*
 
 Illam credulitate [nil oculis](http://quamquetamen.net/huicadest.aspx) si genis
 utraque Minyeidas patres visa [coepit](http://laevaque.org/) est dedit cervix et

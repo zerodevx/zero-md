@@ -86,3 +86,7 @@ typings/
 
 
 # End of https://www.gitignore.io/api/node,bower
+
+.DS_Store
+test/.DS_Store
+.gitignore.swp

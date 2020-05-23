@@ -87,6 +87,16 @@ H~~ell~~o *W*o**r**l***d***!
       </xmp>
     </template>
   </zero-md>
+
+  <zero-md>
+    <!-- Or directly use a script tag with type "text/markdown" -->
+    <script type="text/markdown">
+      # Markdown in Script tags is automatically dedented
+      
+      > So you don't have to worry about how much whitespace 
+      > you have to the left of your markdown block
+    </script>
+  </zero-md>
   ```
 
 3. Or pass your own CSS definitions directly into the element.
@@ -428,6 +438,8 @@ Load your theme stylesheets by setting the `css-urls` attribute. Check out the [
 **The `<xmp>` tag is deprecated!**
 
 In short, don't worry about it. Though the tag has been deprecated for 20 years, browser vendors (generally) try their hardest not to break the web. It is still implemented in modern browsers today. It's the only tag that suits such purpose, by allowing true *pre-formatted* content to be written as-is within the confines of the HTML document without endless escaping. Use it.
+
+Alternatively, you can append a `<script type="text/markdown">` element directly to the `<zero-md>` element.
 
 **v1.x is completely different!**
 

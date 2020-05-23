@@ -102,8 +102,10 @@
     _getInputs() {
       return new Promise((resolve, reject) => {
         // First try reading from light DOM template
-        let tpl = this.querySelector('template') && this.querySelector('template').content.querySelector('xmp') || false;
-        if (tpl) { resolve(tpl.textContent); return; }
+        let xmp = this.querySelector('template') && this.querySelector('template').content.querySelector('xmp') || false;
+        let script = this.querySelector('script[type="text/markdown"]') || false;
+        if (xmp) {resolve(xmp.textContent);return;}
+        if (script) {resolve(dedent(script.textContent));return;}
         // Next try reading from `src` attribute
         this._ajaxGet(this.src)
           .then(data => resolve(data))
@@ -197,4 +199,10 @@
         });
     }
   });
+  
+  function dedent(str) {
+    str = str.replace(/^\n/, "");
+    let match = str.match(/^\s+/);
+    return match ? str.replace(new RegExp("^"+match[0], "gm"), "") : str;
+  } 
 }(window, document));

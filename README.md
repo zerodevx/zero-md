@@ -445,6 +445,9 @@ MIT
 
 ## Version history
 
+**v1.3.4** - 2020-06-10
+* Update dependencies.
+
 **v1.3.3** - 2020-01-07
 * Fixed typo that broke C syntax highlighting - thanks [@TheUnlocked](https://github.com/TheUnlocked)! (ref: [PR#21](https://github.com/zerodevx/zero-md/pull/21))
 * Add usage note on webcomponentsjs polyfill regression in FFv60. (ref: [#19](https://github.com/zerodevx/zero-md/issues/19))

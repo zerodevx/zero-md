@@ -24,20 +24,20 @@
     "/test/"
   ],
   "bowerLocker": {
-    "lastUpdated": "2019-04-21T06:46:17.741Z",
+    "lastUpdated": "2020-09-20T07:57:07.204Z",
     "lockedVersions": {
       "accessibility-developer-tools": "2.12.0",
       "async": "1.5.2",
       "chai": "3.5.0",
       "lodash": "3.10.1",
-      "marked": "0.6.0",
+      "marked": "0.6.3",
       "mocha": "3.5.3",
-      "prism": "1.15.0",
+      "prism": "1.21.0",
       "sinon-chai": "2.14.0",
       "sinonjs": "1.17.1",
       "stacky": "1.3.2",
       "test-fixture": "3.0.0",
-      "web-component-tester": "6.5.0",
+      "web-component-tester": "6.5.1",
       "webcomponentsjs": "1.3.3"
     }
   },
@@ -46,14 +46,14 @@
     "async": "a47eef3dac38d593180b1e2eaed7b512b022cb9f",
     "chai": "57c85f624a7e19ffaf1a2c7d07d81180db17bec7",
     "lodash": "ef20b4290cc4fe7551c82a552ea7ffa76548eec8",
-    "marked": "88a856137646c183196ce96632c290d78ab27ee0",
+    "marked": "124c57690eaf97b0b173c8bcfb780ba7ec74db7e",
     "mocha": "1ff41a05a599e8bffe90b2b13597b01a2031b88f",
-    "prism": "7d084d5f17fa40d3451d46cac605308382c9c499",
+    "prism": "b123d331d9de8eae55f7c049a4073400fca1c06c",
     "sinon-chai": "3ddf66c1d706aa14178753587d038a104153fb60",
     "sinonjs": "9b970e7b8ff7fcb95d2c4d9a41b33370af764fc9",
     "stacky": "fa297bb077559544c56b4a123c05df2ff97e9fdc",
     "test-fixture": "05caebd9ecbb464024455923bd351d2ba640932e",
-    "web-component-tester": "0fc9578a61862266820c4ce11b2be5fa3c2241a5",
+    "web-component-tester": "d81ce20bfacc829613c26381b67a03a58cea3849",
     "webcomponentsjs": "0dc4cd2cb4233e0e63ee8bd3ee5db90035856933"
   },
   "dependencies": {
@@ -61,14 +61,14 @@
     "async": "https://github.com/caolan/async.git#a47eef3dac38d593180b1e2eaed7b512b022cb9f",
     "chai": "https://github.com/chaijs/chai.git#57c85f624a7e19ffaf1a2c7d07d81180db17bec7",
     "lodash": "https://github.com/lodash/lodash.git#ef20b4290cc4fe7551c82a552ea7ffa76548eec8",
-    "marked": "https://github.com/chjj/marked.git#88a856137646c183196ce96632c290d78ab27ee0",
+    "marked": "https://github.com/chjj/marked.git#124c57690eaf97b0b173c8bcfb780ba7ec74db7e",
     "mocha": "https://github.com/mochajs/mocha.git#1ff41a05a599e8bffe90b2b13597b01a2031b88f",
-    "prism": "https://github.com/PrismJS/prism.git#7d084d5f17fa40d3451d46cac605308382c9c499",
+    "prism": "https://github.com/PrismJS/prism.git#b123d331d9de8eae55f7c049a4073400fca1c06c",
     "sinon-chai": "https://github.com/domenic/sinon-chai.git#3ddf66c1d706aa14178753587d038a104153fb60",
-    "sinonjs": "https://github.com/blittle/sinon.js.git#9b970e7b8ff7fcb95d2c4d9a41b33370af764fc9",
+    "sinonjs": "https://github.com/Polymer/sinon.js.git#9b970e7b8ff7fcb95d2c4d9a41b33370af764fc9",
     "stacky": "https://github.com/PolymerLabs/stacky.git#fa297bb077559544c56b4a123c05df2ff97e9fdc",
     "test-fixture": "https://github.com/PolymerElements/test-fixture.git#05caebd9ecbb464024455923bd351d2ba640932e",
-    "web-component-tester": "https://github.com/Polymer/web-component-tester.git#0fc9578a61862266820c4ce11b2be5fa3c2241a5",
+    "web-component-tester": "https://github.com/Polymer/web-component-tester.git#d81ce20bfacc829613c26381b67a03a58cea3849",
     "webcomponentsjs": "https://github.com/Polymer/webcomponentsjs.git#0dc4cd2cb4233e0e63ee8bd3ee5db90035856933"
   }
 }

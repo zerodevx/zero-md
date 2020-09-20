@@ -199,10 +199,10 @@
         });
     }
   });
-  
+
   function dedent(str) {
-    str = str.replace(/^\n/, "");
+    str = str.replace(/^\n/, '');
     let match = str.match(/^\s+/);
-    return match ? str.replace(new RegExp("^"+match[0], "gm"), "") : str;
-  } 
+    return match ? str.replace(new RegExp('^'+match[0], 'gm'), '') : str;
+  }
 }(window, document));

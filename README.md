@@ -458,7 +458,7 @@ MIT
 ## Version history
 
 **v1.4.0** - 2020-09-20
-* Add support for `<script type="text/markdown">` with dedenting - thanks [@bennypowers](https://github.com/bennypowers)! (ref: https://github.com/zerodevx/zero-md/pull/29)
+* Add support for `<script type="text/markdown">` with dedenting - thanks [@bennypowers](https://github.com/bennypowers)! (ref: [#29](https://github.com/zerodevx/zero-md/pull/29))
 * Update dependencies.
 
 **v1.3.4** - 2020-06-10

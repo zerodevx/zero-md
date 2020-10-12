@@ -37,7 +37,9 @@ and consuming the component directly should suffice.
 </body>
 ```
 
-CDN: `https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js`
+**NOTE: V2 is in pre-release for now, so reference the exact version in the CDN URL.**
+
+CDN: `https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2.0.0-rc.1/dist/zero-md.min.js`
 
 ### Use in web project
 
@@ -184,7 +186,7 @@ Instead, the `zero-md-ready` event guarantees that everything is ready, and that
 
 Fork, clone, `npm i`, checkout new branch, develop, lint, test, commit, raise a PR.
 
-Lint using [Standardjs](https://github.com/standard/standard) rules:
+Lint using [standard](https://github.com/standard/standard) rules:
 
 ```bash
 $ npm run lint

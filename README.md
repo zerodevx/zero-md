@@ -1,78 +1,203 @@
-# web-component-starter
+![GitHub package.json version](https://img.shields.io/github/package-json/v/zerodevx/zero-md)
+![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md)
 
-An opinionated starter template to quickly scaffold shareable native web-components.
+# &lt;zero-md&gt;
 
-Comes with:
+> Ridiculously simple zero-config markdown displayer
 
-- [x] Rollup build
-- [x] Dev server with live-reload
-- [x] Mocha/Chai for browser-run testing
-- [x] Standardjs for linting
+A native markdown-to-html web component based on [Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/)
+to load and display an external MD file. Under the hood, it uses [marked](https://github.com/markedjs/marked) for
+super-fast markdown transformation, and [Prism](https://github.com/PrismJS/prism) for feature-packed syntax
+highlighting - automagically rendering into its own self-contained shadow DOM container, while encapsulating
+implementation details into one embarassingly easy-to-use package.
 
-The beauty of this template is in its simplicity - it's a bare-bones setup that requires only a few dependencies,
-with a well-tested tooling pipeline that's not overly complicated, and easily extensible.
+**NOTE: This is the V2 branch. If you're looking for the older version, see the [V1 branch](https://github.com/zerodevx/zero-md/tree/v1).**
 
-## Install
+V2 is in pre-release and detailed documentation is work-in-progress. Stay tuned!
 
-Clone this project with `degit` and install dependencies.
+## Basic usage
 
-```bash
-$ npx degit zerodevx/web-component-starter my-element
-$ cd my-element
-$ npm i
+### Via CDN (recommended)
+
+`zero-md` is designed to be zero-config with good defaults. For most use-cases, just importing the script from CDN
+and consuming the component directly should suffice.
+
+```html
+<head>
+  ...
+  <!-- Import element definition -->
+  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  ...
+</head>
+<body>
+  ...
+  <!-- Profit! -->
+  <zero-md src="/example.md"></zero-md>
+  ...
+</body>
 ```
 
-## Usage
+CDN: `https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js`
 
-### Develop
+### Use in web project
 
-Run the dev server.
+Install the package.
+
+**NOTE: V2 is in pre-release for now, so install using the `@next` tag.**
 
 ```bash
-$ npm run dev
+$ npm i -D zero-md@next
 ```
 
-This serves the `test/` directory at `http://localhost:5000` with file-watching and live-reload capabilities.
-
-Develop the web-component at `src/index.js` - the example component template showcases some common
-[Custom Elements v1](https://developers.google.com/web/fundamentals/web-components/customelements) coding patterns.
-Bare modules import can be used.
-
-### Test
-
-Tests are integrated and run inside your browser during development. Write tests using Mocha BDD with Chai asserts
-at `test/index.spec.js`. A convenience `add()` function is included - it creates the test fixture, appends it into
-DOM, and returns the node.
+Import the class, register the element, and use anywhere.
 
 ```js
-...
-it('creates showdowRoot', () => {
-  const fixture = add(`<my-element name="test"></my-element>`)
-  assert.exists(fixture.shadowRoot)
-  fixture.remove()
-})
+// Import the element definition
+import ZeroMd from 'zero-md'
+
+// Register the custom element
+customElements.define('zero-md', ZeroMd)
+
+// Render anywhere
+app.render(`<zero-md src=${src}></zero-md>`, target)
 ```
 
-### Lint
+## Migrating from V1 to V2
 
-Lint your code with `Standardjs` rules.
+1. Support for `<xmp>` tag is removed; use `<script type="text/markdown">` instead.
+
+```html
+<!-- Previous -->
+<zero-md>
+  <template>
+    <xmp>
+# `This` is my [markdown](example.md)
+    </xmp>
+  </template>
+</zero-md>
+
+<!-- Now -->
+<zero-md>
+  <!-- No need to wrap with <template> tag -->
+  <script type="text/markdown">
+# `This` is my [markdown](example.md)
+  </script>
+</zero-md>
+
+<!-- If you need your code to be pretty, -->
+<zero-md>
+  <!-- set `data-dedent` to opt-in to dedent the text during render -->
+  <script type="text/markdown" data-dedent>
+    # It is important to be pretty
+    So having spacing makes me happy.
+  </script>
+</zero-md>
+```
+
+2. Markdown source behaviour has changed. Think of `<script type="text/markdown">` as a "fallback".
+
+```html
+<!-- Previous -->
+<zero-md src="will-not-render.md">
+  <template>
+    <xmp>
+# This has first priority and will be rendered instead of `will-not-render.md`
+    </xmp>
+  </template>
+<zero-md>
+
+<!-- Now -->
+<zero-md src="will-render-unless-falsy.md">
+  <script type="text/markdown">
+# This will NOT be rendered *unless* `src` resolves to falsy
+  </script>
+<zero-md>
+```
+
+3. The `css-urls` attribute is deprecated. Use `<link rel="stylesheet">` instead.
+
+```html
+<!-- Previously -->
+<zero-md src="example.md" css-urls='["/style1.css", "/style2.css"]'><zero-md>
+
+<!-- Now, this... -->
+<zero-md src="example.md"></zero-md>
+
+<!-- ...is actually equivalent to this -->
+<zero-md src="example.md">
+  <template>
+    <!-- These are the default stylesheets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css">
+  </template>
+</zero-md>
+
+<!-- So, to apply your own external stylesheets... -->
+<zero-md src="example.md">
+  <!-- ...you overwrite the default template -->
+  <template>
+    <!-- Use <link> tags to reference your own stylesheets -->
+    <link rel="stylesheet" href="/style1.css">
+    <link rel="stylesheet" href="/style2.css">
+    <!-- You can even apply additional styles -->
+    <style>
+      p {
+        color: red;
+      }
+    </style>
+  </template>
+</zero-md>
+
+<!-- If you like the default stylesheets but wish to apply some overrides -->
+<zero-md src="example.md">
+  <!-- Set `data-merge` to "append" to apply this template AFTER the default template -->
+  <!-- Or "prepend" to apply this template BEFORE. -->
+  <template data-merge="append">
+    <style>
+      p {
+        color: red;
+      }
+    </style>
+  </template>
+</zero-md>
+```
+
+4. The attributes `marked-url` and `prism-url` are deprecated. To load `marked` or `prism` from another
+location, simply load their scripts *before* importing `zero-md`.
+
+```html
+<head>
+  ...
+  <script defer src="/lib/marked.js"></script>
+  <script defer src="/lib/prism.js"></script>
+  <script type="module" src="/lib/zero-md.min.js"></script>
+</head>
+
+```
+
+5. The global config object has been renamed from `ZeroMd.config` to `ZeroMdConfig`.
+
+6. The convenience events `zero-md-marked-ready` and `zero-md-prism-ready` are removed and **will no longer fire**.
+Instead, the `zero-md-ready` event guarantees that everything is ready, and that render can begin.
+
+## Contribute
+
+Fork, clone, `npm i`, checkout new branch, develop, lint, test, commit, raise a PR.
+
+Lint using [Standardjs](https://github.com/standard/standard) rules:
 
 ```bash
 $ npm run lint
 ```
 
-And fix warnings automatically.
+Start test server:
 
 ```bash
-$ npx standard --fix
+$ npm run test
 ```
 
-### Build
+Run browser tests at http://localhost:5000
 
-Build your component.
+## License
 
-```bash
-$ npm run build
-```
-
-This creates the Rollup minified bundle into `dist/index.min.js` that is useful for consumption via CDN.
+ISC

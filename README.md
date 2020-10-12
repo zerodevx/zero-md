@@ -1,4 +1,4 @@
-![GitHub release](https://img.shields.io/github/release/zerodevx/zero-md)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/zerodevx/zero-md/v1)
 ![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md)
 
 # `<zero-md>`

@@ -16,9 +16,12 @@ export default {
     json(),
     !production && serve({
       port: 5000,
-      contentBase: ['test', 'node_modules']
+      contentBase: ['test', '']
     }),
-    !production && livereload('test'),
+    !production && livereload({
+      watch: ['test', 'docs'],
+      extraExts: ['.md']
+    }),
     production && terser()
   ],
   watch: {

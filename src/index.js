@@ -6,7 +6,6 @@ export class ZeroMd extends HTMLElement {
   get manualRender () { return this.hasAttribute('manual-render') }
   set manualRender (val) { this.reflect('manual-render', val) }
   get noShadow () { return this.hasAttribute('no-shadow') }
-  set noShadow (val) { this.reflect('no-shadow', val) }
 
   reflect (name, val) {
     if (val === false) {
@@ -126,7 +125,7 @@ export class ZeroMd extends HTMLElement {
 
   // Hijack same-doc anchor hash links
   clicked (ev) {
-    if (this.noShadow || ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey || ev.defaultPrevented) {
+    if (!this.shadowRoot || ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey || ev.defaultPrevented) {
       return
     }
     const a = ev.path ? ev.path[0] : ev.composedPath()[0]

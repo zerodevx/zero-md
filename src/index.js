@@ -101,16 +101,17 @@ export class ZeroMd extends HTMLElement {
     })
   }
 
-  // Load a url or load (sequentially) an array of urls via <script> tags
-  async loadScript (urls) {
+  // Load a url or load (in order) an array of urls via <script> tags
+  loadScript (urls) {
     urls = this.arrify(urls)
-    for (let a = 0; a < urls.length; a++) {
-      const [url, ...attrs] = this.arrify(urls[a])
+    return Promise.all(urls.map(item => {
+      const [url, ...attrs] = this.arrify(item)
       const el = document.createElement('script')
       el.src = url
+      el.async = false
       attrs.forEach(attr => el.setAttribute(attr, ''))
-      await this.onload(document.head.appendChild(el))
-    }
+      return this.onload(document.head.appendChild(el))
+    }))
   }
 
   // Scroll to selected element

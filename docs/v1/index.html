@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- Edit your site info here -->
+    <meta name="description" content="Ridiculously simple markdown displayer - a native web component based on Custom Elements v1 specs to load and display an external MD file.">
+    <title>&lt;zero-md&gt; Instantly publish HTML from Markdown</title>
+    <link rel="canonical" href="https://zerodevx.github.io/zero-md/">
+
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66946548-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-66946548-3');
+    </script>
+
+    <style>
+      /* Edit your header styles here */
+      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; background-color: #424242; color: white; }
+      body { box-sizing: border-box; min-width: 200px; max-width: 980px; margin: 56px auto 0 auto; padding: 45px; }
+      @media (max-width: 767px) {
+        header { font-size: 15px; }
+        body { padding: 15px; }
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- Edit your Markdown URL source file here -->
+    <zero-md class="app" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/README.md"></zero-md>
+
+    <!-- Edit your header title here -->
+    <header class="header">&lt;zero-md&gt; Instantly publish HTML from Markdown</header>
+
+    <!-- Edit your Github ribbon here (https://github.com/blog/273-github-ribbons) -->
+    <a href="https://github.com/zerodevx/zero-md">
+      <img
+        style="position: fixed; top: 0; right: 0; border: 0;"
+        src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+        alt="Fork me on GitHub"
+        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
+    </a>
+
+  </body>
+</html>

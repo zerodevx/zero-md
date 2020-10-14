@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ridiculously simple markdown displayer - a native web component based on Custom Elements v1 specs to load and display an external MD file.">
+    <title>&lt;zero-md&gt; Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dhg/Skeleton@2/css/skeleton.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-66946548-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-66946548-3');
+    </script>
+  </head>
+  <body>
+    <style>
+      header { font-family: sans-serif; font-size: 20px; text-align: center; position: fixed; width: 100%; line-height: 42px; top: 0; left: 0; background-color: #424242; color: white; }
+      body {
+        box-sizing: border-box;
+        padding: 42px 0 0 0;
+      }
+      #demo1 {
+        box-sizing: border-box;
+        width: 100%;
+        height: 50vh;
+        overflow: scroll;
+        padding: 0 24px;
+        border: 1px solid gray;
+      }
+    </style>
+
+    <div class="container">
+      <h4>1. &lt;zero-md&gt; is self-contained.</h4>
+      <p>Different markdown and highlight styles can be applied to an instance without affecting other instances, or the rest of the document.</p>
+      <div class="row">
+        <div class="five columns">
+          <select class="u-full-width" id="demo1_ms">
+            <option value="0" selected>Select Markdown Style</option>
+            <option value="1">Style 1</option>
+            <option value="2">Style 2</option>
+            <option value="3">Style 3</option>
+            <option value="4">Style 4</option>
+            <option value="5">Style 5</option>
+            <option value="6">Style 6</option>
+            <option value="7">Style 7</option>
+            <option value="8">Style 8</option>
+          </select>
+        </div>
+        <div class="five columns">
+          <select class="u-full-width" id="demo1_hs">
+            <option value="0" selected>Select Hightlight Style</option>
+            <option value="1">Style 1</option>
+            <option value="2">Style 2</option>
+            <option value="3">Style 3</option>
+            <option value="4">Style 4</option>
+            <option value="5">Style 5</option>
+            <option value="6">Style 6</option>
+            <option value="7">Style 7</option>
+            <option value="8">Style 8</option>
+          </select>
+        </div>
+        <div class="two columns">
+          <button id="demo1_btn" class="u-full-width button-primary">RENDER</button>
+        </div>
+
+      </div>
+      <br>
+      <zero-md id="demo1" src="example.md"></zero-md>
+
+
+      <!-- Add more demos -->
+
+    </div>
+
+    <header class="header">&lt;zero-md&gt; Demo</header>
+    <a href="https://github.com/zerodevx/zero-md">
+      <img
+        style="position: fixed; top: 0; right: 0; border: 0;"
+        src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+        alt="Fork me on GitHub"
+        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png">
+    </a>
+
+    <script>
+      document.querySelector('#demo1_btn').addEventListener('click', function() {
+        var el = document.querySelector('#demo1');
+        var mList = [
+          'https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/avenir-white.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/foghorn.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/swiss.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/markdown1.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/markdown4.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/markdown7.css',
+          'https://raw.githubusercontent.com/jasonm23/markdown-css-themes/gh-pages/markdown10.css'
+        ];
+        var hList = [
+          'https://cdnjs.cloudflare.com/ajax/libs/prism/1.11.0/themes/prism.min.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-atom-dark.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-dark.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-earth.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-forest.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-light.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-sea.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-duotone-space.css',
+          'https://raw.githubusercontent.com/PrismJS/prism-themes/master/themes/prism-xonokai.css'
+        ];
+        var ms = document.querySelector('#demo1_ms');
+        var hs = document.querySelector('#demo1_hs');
+        var cssList = [mList[parseInt(ms.value)], hList[parseInt(hs.value)]];
+        el.setAttribute('css-urls', JSON.stringify(cssList));
+        el.render();
+      });
+    </script>
+  </body>
+</html>

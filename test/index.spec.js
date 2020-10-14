@@ -58,10 +58,8 @@ describe('unit tests', () => {
 
   describe('getters and setters', () => {
     let f
-    beforeEach(() => {
-      f = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
-    })
-    afterEach(() => f.remove())
+    before(() => { f = add(`<zero-md src="dummy.md" manual-render></zero-md>`) })
+    after(() => f.remove())
 
     it('src reflects', () => {
       assert(f.src === 'dummy.md')
@@ -74,8 +72,8 @@ describe('unit tests', () => {
     })
 
     it('boolean reflects', () => {
-      f.noShadow = true
-      assert(f.hasAttribute('no-shadow'))
+      f.manualRender = false
+      assert(!f.hasAttribute('manual-render'))
     })
   })
 

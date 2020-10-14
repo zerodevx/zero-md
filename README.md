@@ -39,7 +39,7 @@ and consuming the component directly should suffice.
 
 **NOTE: V2 is in pre-release for now, so reference the exact version in the CDN URL.**
 
-CDN: `https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2.0.0-rc.1/dist/zero-md.min.js`
+CDN: `https://cdn.jsdelivr.net/npm/zero-md@next/dist/zero-md.min.js`
 
 ### Use in web project
 

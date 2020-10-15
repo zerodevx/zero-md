@@ -164,9 +164,10 @@ export class ZeroMd extends HTMLElement {
 
   highlight (container) {
     const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
-    unhinted.forEach(node => {
+    unhinted.forEach(n => {
       // Dead simple language detection :)
-      node.classList.add(`language-${node.innerText.match(/^\s*</) ? 'markup' : 'js'}`)
+      const lang = n.innerText.match(/^\s*</) ? 'markup' : n.innerText.match(/^\s*(\$|#)/) ? 'bash' : 'js'
+      n.classList.add(`language-${lang}`)
     })
     window.Prism.highlightAllUnder(container)
   }

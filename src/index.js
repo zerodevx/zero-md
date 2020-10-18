@@ -59,7 +59,10 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
-    this.root.addEventListener('click', this.clicked.bind(this))
+    this.clicked = this.clicked.bind(this)
+    if (this.shadowRoot) {
+      this.shadowRoot.addEventListener('click', this.clicked)
+    }
   }
 
   connectedCallback () {
@@ -68,7 +71,9 @@ export class ZeroMd extends HTMLElement {
   }
 
   disconnectedCallback () {
-    this.root.removeEventListener('click', this.clicked.bind(this))
+    if (this.shadowRoot) {
+      this.shadowRoot.removeEventListener('click', this.clicked)
+    }
   }
 
   waitForReady () {
@@ -124,14 +129,13 @@ export class ZeroMd extends HTMLElement {
 
   // Hijack same-doc anchor hash links
   clicked (ev) {
-    if (!this.shadowRoot || ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey || ev.defaultPrevented) {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey || ev.defaultPrevented) {
       return
     }
     const a = ev.target.closest('a')
-    if (!a || !a.hash || a.host !== location.host || a.pathname !== location.pathname) {
-      return
+    if (a && a.hash && a.host === location.host && a.pathname === location.pathname) {
+      this.goto(a.hash)
     }
-    this.goto(a.hash)
   }
 
   clearDom () {

@@ -60,7 +60,7 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
-    this.addEventListener('click', this.clicked)
+    this.root.addEventListener('click', this.clicked.bind(this))
   }
 
   connectedCallback () {
@@ -69,7 +69,7 @@ export class ZeroMd extends HTMLElement {
   }
 
   disconnectedCallback () {
-    this.removeEventListener('click', this.clicked)
+    this.root.removeEventListener('click', this.clicked.bind(this))
   }
 
   waitForReady () {
@@ -128,8 +128,8 @@ export class ZeroMd extends HTMLElement {
     if (!this.shadowRoot || ev.ctrlKey || ev.metaKey || ev.altKey || ev.shiftKey || ev.defaultPrevented) {
       return
     }
-    const a = ev.path ? ev.path[0] : ev.composedPath()[0]
-    if (a.tagName !== 'A' || !a.hash || a.host !== location.host || a.pathname !== location.pathname) {
+    const a = ev.target.closest('a')
+    if (!a || !a.hash || a.host !== location.host || a.pathname !== location.pathname) {
       return
     }
     this.goto(a.hash)

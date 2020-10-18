@@ -139,10 +139,7 @@ export class ZeroMd extends HTMLElement {
   }
 
   clearDom () {
-    if (this.shadowRoot) {
-      this.shadowRoot.innerHTML = ''
-    }
-    const nodes = this.querySelectorAll('[class^=markdown]')
+    const nodes = this.root.querySelectorAll('[class^=markdown]')
     nodes.forEach(n => n.remove())
   }
 

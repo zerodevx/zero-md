@@ -79,16 +79,17 @@ describe('unit tests', () => {
 
   describe('clearDom()', () => {
     let f
-    after(() => f.remove())
+    afterEach(() => f.remove())
 
     it('clears light dom', () => {
-      f = add(`<zero-md manual-render><template><link rel="stylesheet" href="test.css"></template><div class="markdown-style"><style>p{color:red;}</style></div><div class="markdown-body"><p>Test</p></div></zero-md>`)
+      f = add(`<zero-md manual-render no-shadow><template><link rel="stylesheet" href="test.css"></template><div class="markdown-style"><style>p{color:red;}</style></div><div class="markdown-body"><p>Test</p></div></zero-md>`)
       f.clearDom()
       assert(f.querySelectorAll('[class^=markdown]').length === 0)
       assert(f.querySelector('template').content.querySelectorAll('link').length > 0)
     })
 
     it('clears shadow dom', () => {
+      f = add(`<zero-md manual-render></zero-md>`)
       f.shadowRoot.innerHTML = `<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>Test</p></div>`
       f.clearDom()
       assert(f.shadowRoot.innerHTML === '')

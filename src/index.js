@@ -176,7 +176,7 @@ export class ZeroMd extends HTMLElement {
   buildStyles () {
     const get = query => {
       const node = this.querySelector(query)
-      return node ? node.innerHTML : ''
+      return node ? node.innerHTML || ' ' : ''
     }
     const urls = this.arrify(this.config.cssUrls)
     const html = `<div class="markdown-styles"><style>${

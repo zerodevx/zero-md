@@ -124,6 +124,12 @@ describe('unit tests', () => {
       const s = f.buildStyles().firstElementChild.innerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
+
+    it('allows passing an empty template to override default template', () => {
+      f = add(`<zero-md manual-render><template></template></zero-md>`)
+      const s = f.buildStyles()
+      assert(s.querySelectorAll('link').length === 0)
+    })
   })
 
   describe('buildMd()', () => {

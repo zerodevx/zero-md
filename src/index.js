@@ -5,7 +5,6 @@ export class ZeroMd extends HTMLElement {
   set src (val) { this.reflect('src', val) }
   get manualRender () { return this.hasAttribute('manual-render') }
   set manualRender (val) { this.reflect('manual-render', val) }
-  get noShadow () { return this.hasAttribute('no-shadow') }
 
   reflect (name, val) {
     if (val === false) {
@@ -42,7 +41,7 @@ export class ZeroMd extends HTMLElement {
       ...defaults,
       ...window.ZeroMdConfig
     }
-    this.root = this.noShadow ? this : this.attachShadow({ mode: 'open' })
+    this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
         !!window.marked || this.loadScript(this.config.markedUrl),

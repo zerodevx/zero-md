@@ -141,6 +141,19 @@ if (export > soft_ssl_zif) {
 }
 ```
 
+HTML + JS:
+
+```html
+<zero-md id="app" src="example.md" manual-render></zero-md>
+<script>
+  document.querySelector('#app').render({
+    baseUrl: 'foo/',
+    gfm: false,
+    ...
+  })
+</script>
+```
+
 Cristati ab est adfusaque, qui dubites clamore, coetus pecudumque salictis.
 Cupit **talia geminique magnae** lumina postquam urnaque ferae *promittere
 vimque aera*, unius augent odium solane; quo Phoebus possent? Lege inmeritam

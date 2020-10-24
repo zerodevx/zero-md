@@ -30,7 +30,7 @@ export class ZeroMd extends HTMLElement {
     this.config = {
       markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@1/marked.min.js',
       prismUrl: [
-        ['https://cdn.jsdelivr.net/gh/PrismJS/prism@1/components/prism-core.min.js', 'data-manual'],
+        ['https://cdn.jsdelivr.net/gh/PrismJS/prism@1/prism.min.js', 'data-manual'],
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js'
       ],
       cssUrls: [

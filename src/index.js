@@ -19,7 +19,7 @@ export class ZeroMd extends HTMLElement {
   }
 
   attributeChangedCallback (name, old, val) {
-    if (name === 'src' && old !== null && old !== val && !this.manualRender) {
+    if (name === 'src' && this.connected && !this.manualRender && val !== old) {
       this.render()
     }
   }
@@ -66,6 +66,7 @@ export class ZeroMd extends HTMLElement {
   }
 
   connectedCallback () {
+    this.connected = true
     this._resolve()
     delete this._resolve
   }

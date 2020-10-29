@@ -119,9 +119,9 @@ export class ZeroMd extends HTMLElement {
   }
 
   // Scroll to selected element
-  goto (sel) {
-    if (sel) {
-      const el = this.root.querySelector(sel)
+  goto (id) {
+    if (id) {
+      const el = this.root.getElementById(id.substring(1))
       if (el) {
         el.scrollIntoView()
       }

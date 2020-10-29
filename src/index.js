@@ -92,6 +92,10 @@ export class ZeroMd extends HTMLElement {
     }))
   }
 
+  tick () {
+    return new Promise(resolve => requestAnimationFrame(resolve))
+  }
+
   // Coerce anything into an array
   arrify (any) {
     return any ? (Array.isArray(any) ? any : [any]) : []
@@ -231,6 +235,7 @@ export class ZeroMd extends HTMLElement {
     const css = this.buildStyles()
     const md = this.buildMd(opts)
     await this.stampDom(css)
+    await this.tick()
     await this.stampDom(await md)
     this.fire('zero-md-rendered')
   }

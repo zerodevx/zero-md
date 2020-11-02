@@ -1,13 +1,14 @@
 {
   "name": "zero-md",
-  "version": "2.0.0-rc.4",
+  "version": "2.0.0",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "main": "src/index.js",
   "type": "module",
   "module": "src/index.js",
   "scripts": {
-    "test": "rollup -c -w",
+    "dev": "rollup -c -w",
+    "test": "npm run dev",
     "lint": "standard --verbose | snazzy",
     "build": "rollup -c",
     "prepublishOnly": "npm run lint && npm run build"
@@ -21,12 +22,12 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "chai": "^4.2.0",
     "mocha": "^8.2.0",
-    "rollup": "^2.32.1",
+    "rollup": "^2.33.1",
     "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-serve": "^1.0.4",
+    "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "snazzy": "^9.0.0",
-    "standard": "^16.0.0"
+    "standard": "^16.0.1"
   },
   "standard": {
     "ignore": [

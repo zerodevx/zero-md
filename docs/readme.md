@@ -12,9 +12,10 @@ implementation details into one embarassingly easy-to-use package.
 
 Featuring:
 
-* Same-doc hash link scrolls inside shadow container
-* Automatic code highlighting for >200 languages
-* Code language detection for unhinted code blocks
-* Supports relative URLs in markdown files
-* Allows custom styles to be merged with default styles
-* Automatic re-render when `src` changes
+* Automated hash-link scrolls
+* Built-in FOUC prevention
+* Automatically rewrite URLs relative to `src`
+* Automatically re-render when `src` changes
+* Support for >200 code languages with detection for unhinted code blocks
+* Easy styling mechanism
+* Highly extensible

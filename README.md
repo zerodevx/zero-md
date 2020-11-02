@@ -15,12 +15,13 @@ implementation details into one embarassingly easy-to-use package.
 
 Featuring:
 
-- [x] Same-doc hash link scrolls inside shadow container
-- [x] Automatic code highlighting for >200 languages
-- [x] Code language detection for unhinted code blocks
-- [x] Supports relative URLs in markdown files
-- [x] Allows custom styles to be merged with default styles
-- [x] Automatic re-render when `src` changes
+- [x] Automated hash-link scrolls
+- [x] Built-in FOUC prevention
+- [x] Automatically rewrite URLs relative to `src`
+- [x] Automatically re-render when `src` changes
+- [x] Support for >200 code languages with detection for unhinted code blocks
+- [x] Easy styling mechanism
+- [x] Highly extensible
 
 Documentation: https://zerodevx.github.io/zero-md/
 
@@ -196,18 +197,6 @@ This is the fall-back markdown that will **only show** when `src` is falsy.
 </zero-md>
 ```
 
-## Advanced Usage
-
-https://zerodevx.github.io/zero-md/advance-usage/
-
-## Attributes And Helpers
-
-https://zerodevx.github.io/zero-md/attributes-and-helpers/
-
-## Configuration
-
-https://zerodevx.github.io/zero-md/configuration/
-
 ## Migrating from V1 to V2
 
 1. Support for `<xmp>` tag is removed; use `<script type="text/markdown">` instead.
@@ -353,10 +342,22 @@ location, simply load their scripts *before* importing `zero-md`.
 6. The convenience events `zero-md-marked-ready` and `zero-md-prism-ready` are removed and **will no longer fire**.
 Instead, the `zero-md-ready` event guarantees that everything is ready, and that render can begin.
 
+## Advanced Usage
+
+https://zerodevx.github.io/zero-md/advanced-usage/
+
+## Attributes And Helpers
+
+https://zerodevx.github.io/zero-md/attributes-and-helpers/
+
+## Configuration
+
+https://zerodevx.github.io/zero-md/configuration/
+
 ## License
 
 ISC
 
-## Version history
+## Version History
 
 Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.

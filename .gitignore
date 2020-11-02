@@ -2,6 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node
 
 tmp/
+test/build
+test/scratch.html
 
 ### macOS ###
 # General

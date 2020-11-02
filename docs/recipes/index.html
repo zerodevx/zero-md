@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Recipes</title>
+
+  <base href="https://zerodevx.github.io/zero-md/">
+  <script>
+    if (location.protocol === 'http:') {
+      document.querySelector('base').href = 'http://127.0.0.1:5000/docs/'
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Seaweed+Script&display=swap">
+  <link rel="stylesheet" href="styles.css">
+
+  <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-66946548-3', 'auto');
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/navaid@1/dist/navaid.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@next/dist/zero-md.min.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+
+<body>
+
+  <header class="header container">
+    <h1 style="font-family:'Seaweed Script',sans-serif">&lt;zero-md&gt;</h1>
+    <div>
+      <a href="https://github.com/zerodevx/zero-md" title="Fork me on Github">
+        <img
+          src="https://img.shields.io/github/package-json/v/zerodevx/zero-md?style=for-the-badge&logo=github&label=fork+me+on+github"
+          alt="version">
+      </a>
+    </div>
+  </header>
+
+  <div class="nav-wrap container">
+    <div>
+      <nav class="nav"></nav>
+    </div>
+  </div>
+
+  <main class="offset container">
+    <zero-md class="app" manual-render>
+      <template data-merge="append">
+        <style>
+          .markdown-body pre>code {
+            font-size: 0.875rem;
+          }
+          @media (max-width: 640px) {
+            .markdown-body ul {
+              margin-left: 1.125rem;
+            }
+          }
+        </style>
+      </template>
+      <script type="text/markdown"># 404
+>Oops
+
+A **rose** by any other name would smell as sweet.</script>
+    </zero-md>
+  </main>
+
+  <footer>ISC LICENSE</footer>
+</body>
+</html>

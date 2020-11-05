@@ -290,7 +290,7 @@ Create a beautiful HTML web page from Markdown in literally 1 minute. Copy and p
 
 ## Demo
 
-[This page](https://raw.githubusercontent.com/zerodevx/zero-md/master/index.html), actually. Or for a more comprehensive example demonstrating the various features, [try this](https://zerodevx.github.io/zero-md/demo).
+[This page](https://raw.githubusercontent.com/zerodevx/zero-md/main/docs/v1/index.html), actually. Or for a more comprehensive example demonstrating the various features, [try this](https://zerodevx.github.io/zero-md/v1/demo/).
 
 
 ## API

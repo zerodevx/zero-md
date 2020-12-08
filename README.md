@@ -457,6 +457,9 @@ MIT
 
 ## Version history
 
+**v1.4.2** - 2020-12-08
+* Update docs.
+
 **v1.4.1** - 2020-11-02
 * Maintenance update.
 

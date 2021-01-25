@@ -1,5 +1,3 @@
-import { version } from '../package.json'
-
 export class ZeroMd extends HTMLElement {
   get src () { return this.getAttribute('src') }
   set src (val) { this.reflect('src', val) }
@@ -26,7 +24,7 @@ export class ZeroMd extends HTMLElement {
 
   constructor (defaults) {
     super()
-    this.version = version
+    this.version = '$VERSION'
     this.config = {
       markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@1/marked.min.js',
       prismUrl: [

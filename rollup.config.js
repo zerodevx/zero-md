@@ -1,4 +1,5 @@
-import json from '@rollup/plugin-json'
+import replace from '@rollup/plugin-replace'
+import pkg from './package.json'
 import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
@@ -16,7 +17,7 @@ const build = {
     file: 'dist/zero-md.min.js'
   },
   plugins: [
-    json(),
+    replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
     resolve(),
     terser()
   ]
@@ -31,7 +32,7 @@ const buildLegacy = {
     file: 'dist/zero-md.legacy.min.js'
   },
   plugins: [
-    json(),
+    replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
     resolve(),
     babel({ babelHelpers: 'bundled' }),
     commonjs(),
@@ -47,7 +48,6 @@ const dev = {
     file: 'test/build/bundle.js'
   },
   plugins: [
-    json(),
     resolve(),
     !production && serve({
       port: 5000,

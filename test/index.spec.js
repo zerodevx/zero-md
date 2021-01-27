@@ -293,6 +293,27 @@ describe('unit tests', () => {
     })
   })
 
+  describe('running console tests - please ensure no error messages generated in console', () => {
+    it('element should reconnect properly', async () => {
+      console.log('Running element reconnection test... (this should not generate any errors)')
+      let count = 0
+      const handler = () => count++
+      window.addEventListener('zero-md-ready', handler)
+      const el = document.createElement('zero-md')
+      el.setAttribute('manual-render', '')
+      let node = document.body.appendChild(el)
+      await tick()
+      node.remove()
+      await tick()
+      node = document.body.appendChild(el)
+      await tick()
+      node.remove()
+      window.removeEventListener('zero-md-ready', handler)
+      assert(count === 2)
+      console.log('Complete')
+    })
+  })
+
   describe('other cool features', () => {
 
   })

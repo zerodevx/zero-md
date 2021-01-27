@@ -46,47 +46,49 @@ export class ZeroMd extends HTMLElement {
         !!window.Prism || this.loadScript(this.config.prismUrl)
       ])
     }
-    this.ready = new Promise(resolve => {
-      this._resolve = resolve
-    })
+    this.clicked = this.clicked.bind(this)
+  }
+
+  connectedCallback () {
+    this.connected = true
+    this.fire('zero-md-connected', {}, { bubbles: false, composed: false })
     this.waitForReady().then(() => {
       this.fire('zero-md-ready')
     })
+    if (this.shadowRoot) {
+      this.shadowRoot.addEventListener('click', this.clicked)
+    }
     if (!this.manualRender) {
       // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this on refresh.
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
-    this.clicked = this.clicked.bind(this)
-    if (this.shadowRoot) {
-      this.shadowRoot.addEventListener('click', this.clicked)
-    }
-  }
-
-  connectedCallback () {
-    this.connected = true
-    this._resolve()
-    delete this._resolve
   }
 
   disconnectedCallback () {
+    this.connected = false
     if (this.shadowRoot) {
       this.shadowRoot.removeEventListener('click', this.clicked)
     }
   }
 
   waitForReady () {
-    return Promise.all([this.constructor.ready, this.ready])
+    const ready = this.connected || new Promise(resolve => {
+      this.addEventListener('zero-md-connected', function handler () {
+        this.removeEventListener('zero-md-connected', handler)
+        resolve()
+      })
+    })
+    return Promise.all([this.constructor.ready, ready])
   }
 
-  fire (name, detail = {}, composed = true) {
+  fire (name, detail = {}, opts = { bubbles: true, composed: true }) {
     if (detail.msg) {
       console.warn(detail.msg)
     }
     this.dispatchEvent(new CustomEvent(name, {
       detail: { node: this, ...detail },
-      bubbles: true,
-      composed
+      ...opts
     }))
   }
 

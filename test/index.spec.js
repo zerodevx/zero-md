@@ -277,7 +277,7 @@ describe('unit tests', () => {
     it('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
       f = add(`<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`)
-      await sleep(400)
+      await sleep(500)
       assert(f.scrollTop > 0)
     })
 

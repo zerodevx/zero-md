@@ -47,6 +47,11 @@ export class ZeroMd extends HTMLElement {
       ])
     }
     this.clicked = this.clicked.bind(this)
+    if (!this.manualRender) {
+      // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this on refresh.
+      // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
+      this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
+    }
   }
 
   connectedCallback () {
@@ -57,11 +62,6 @@ export class ZeroMd extends HTMLElement {
     })
     if (this.shadowRoot) {
       this.shadowRoot.addEventListener('click', this.clicked)
-    }
-    if (!this.manualRender) {
-      // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this on refresh.
-      // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
-      this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
   }
 

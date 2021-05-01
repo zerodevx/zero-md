@@ -1,4 +1,4 @@
-/* global matchMedia, navaid, ga */
+/* global matchMedia, navaid, gtag */
 
 const dev = location.protocol === 'http:'
 const urls = ['https://zerodevx.github.io/zero-md/', 'http://127.0.0.1:5000/docs/']
@@ -34,12 +34,6 @@ const listenMedia = () => {
   mql.addEventListener('change', resize)
 }
 
-const loadGa = () => {
-  const el = document.createElement('script')
-  el.src = 'https://www.google-analytics.com/analytics.js'
-  document.head.appendChild(el)
-}
-
 const setActive = () => {
   const nodes = nav.querySelectorAll('a')
   nodes.forEach(a => {
@@ -61,7 +55,9 @@ const setRoutes = () => {
     }
     setActive()
     firstRun = false
-    ga('send', 'pageview', location.pathname)
+    gtag('event', 'page_view', {
+      page_location: location.pathname
+    })
   }
   router = navaid(`${getTail(base)}`)
   router.on('/', () => run(base))
@@ -74,9 +70,6 @@ const setRoutes = () => {
 }
 
 const init = async () => {
-  if (!dev) {
-    loadGa()
-  }
   await createMenu()
   listenMedia()
   setRoutes()

@@ -6,20 +6,31 @@
 
   <title>Configuration</title>
 
-  <base href="https://zerodevx.github.io/zero-md/">
   <script>
-    if (location.protocol === 'http:') {
-      document.querySelector('base').href = 'http://127.0.0.1:5000/docs/'
-    }
+    /* global dataLayer */
+    document.write(`<base href="${location.protocol === 'http:' ? 'http://127.0.0.1:5000/docs/' : 'https://zerodevx.github.io/zero-md/'}">`)
+    window.dataLayer = window.dataLayer || []
+    function gtag () { dataLayer.push(arguments) }
+    gtag('js', new Date())
+    gtag('config', 'G-LJS2EY950X', { send_page_view: false })
+    location.protocol === 'https:' && (function () {
+      const el = document.createElement('script')
+      el.src = 'https://www.googletagmanager.com/gtag/js?id=G-LJS2EY950X'
+      el.async = true
+      document.head.appendChild(el)
+    }())
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min.css">
+  <style>
+    .pace .pace-progress {
+      background: #1C75BC;
+    }
+  </style>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Seaweed+Script&display=swap">
   <link rel="stylesheet" href="styles.css">
 
-  <script>
-    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-    ga('create', 'UA-66946548-3', 'auto');
-  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/navaid@1/dist/navaid.min.js"></script>
   <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
   <script type="module" src="app.js"></script>

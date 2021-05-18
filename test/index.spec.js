@@ -244,6 +244,21 @@ describe('unit tests', () => {
       })
     })
 
+    it('auto re-renders when inline markdown script changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        if (isInitialRender) {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
+          isInitialRender = false
+          f.querySelector('script').innerHTML = '# updated markdown-fixture'
+        } else {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          done()
+        }
+      })
+    })
+
     it('prevents FOUC by ensuring styles are stamped and resolved first, before stamping md', async () => {
       f = add(`<zero-md manual-render>
         <template>

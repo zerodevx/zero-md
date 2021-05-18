@@ -244,7 +244,7 @@ describe('unit tests', () => {
       })
     })
 
-    it('auto re-renders when inline markdown script changes', done => {
+    it('auto re-renders content when inline markdown script changes', done => {
       let isInitialRender = true
       f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
@@ -254,6 +254,27 @@ describe('unit tests', () => {
           f.querySelector('script').innerHTML = '# updated markdown-fixture'
         } else {
           assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          done()
+        }
+      })
+    })
+
+    it('auto re-renders styles when template changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md>
+        <template>
+          <style>h1 { color: rgb(255, 0, 0); }</style>
+        </template>
+        <script type="text/markdown"># fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        const h1 = f.shadowRoot.querySelector('h1')
+        const computedStyle = window.getComputedStyle(h1)
+        if (isInitialRender) {
+          assert(computedStyle.color === 'rgb(255, 0, 0)')
+          isInitialRender = false
+          f.querySelector('template').innerHTML = '<style>h1 { color: rgb(0, 255, 0); }</style>'
+        } else {
+          assert(computedStyle.color === 'rgb(0, 255, 0)')
           done()
         }
       })

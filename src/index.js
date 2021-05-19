@@ -227,7 +227,7 @@ export class ZeroMd extends HTMLElement {
         } else if (node.tagName === 'TEMPLATE') {
           stylesChanged = true
         }
-      });
+      })
       observeChildren(addedNodes)
       if (contentChanged && !this.manualRender) { this.refreshContent() }
       if (stylesChanged && !this.manualRender) { this.refreshStyles() }

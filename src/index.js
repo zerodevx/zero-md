@@ -184,6 +184,20 @@ export class ZeroMd extends HTMLElement {
 
   // Starts observing for changes in styles or inline content to auto re-render
   observeChanges () {
+    const stylesObserver = new window.MutationObserver(() => {
+      if (!this.manualRender) { this.refreshStyles() }
+    })
+    const inlineContentObserver = new window.MutationObserver(() => {
+      if (!this.manualRender) { this.refreshContent() }
+    })
+    const observeChildren = nodes => [...nodes].forEach(node => {
+      const observeConfig = { childList: true, attributes: true, characterData: true, subtree: true }
+      if (node.matches('script[type="text/markdown"]')) {
+        inlineContentObserver.observe(node, observeConfig)
+      } else if (node.tagName === 'TEMPLATE') {
+        stylesObserver.observe(node.content, observeConfig)
+      }
+    })
     const rootObserver = new window.MutationObserver((mutations) => {
       const addedNodes = []
       const removedNodes = []
@@ -213,15 +227,13 @@ export class ZeroMd extends HTMLElement {
         } else if (node.tagName === 'TEMPLATE') {
           stylesChanged = true
         }
-      })
-      if (contentChanged) { this.refreshContent() }
-      if (stylesChanged) { this.refreshStyles() }
+      });
+      observeChildren(addedNodes)
+      if (contentChanged && !this.manualRender) { this.refreshContent() }
+      if (stylesChanged && !this.manualRender) { this.refreshStyles() }
     })
     rootObserver.observe(this, { childList: true })
-
-    // @TODO: Add observer on direct children matching <template> or <script type="text/markdown"> (with characterData, childlist and subTree)
-    // @TODO: Ignore changes in this.manualRender is true
-    // @TODO: Ignore DOM changes in light dom if the element doesn't use the shadow root
+    observeChildren(this.children)
   }
 
   // Construct styles dom and return document fragment

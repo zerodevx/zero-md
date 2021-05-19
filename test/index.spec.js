@@ -259,7 +259,7 @@ describe('unit tests', () => {
       })
     })
 
-    it('auto re-renders styles when template changes', done => {
+    it('auto re-renders styles when styles template changes', done => {
       let isInitialRender = true
       f = add(`<zero-md>
         <template>

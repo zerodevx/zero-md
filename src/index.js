@@ -51,12 +51,12 @@ export class ZeroMd extends HTMLElement {
       // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this on refresh.
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => {
-        this.observeChanges()
         setTimeout(() => this.goto(location.hash), 250)
       })
     }
     this._stampedBody = null
     this._stampedStyles = null
+    this.observeChanges()
   }
 
   connectedCallback () {

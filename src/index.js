@@ -50,7 +50,10 @@ export class ZeroMd extends HTMLElement {
     if (!this.manualRender) {
       // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this on refresh.
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
-      this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
+      this.render().then(() => {
+        this.observeChanges()
+        setTimeout(() => this.goto(location.hash), 250)
+      })
     }
     this._stampedBody = null
     this._stampedStyles = null
@@ -177,6 +180,48 @@ export class ZeroMd extends HTMLElement {
       n.classList.add(`language-${lang}`)
     })
     window.Prism.highlightAllUnder(container)
+  }
+
+  // Starts observing for changes in styles or inline content to auto re-render
+  observeChanges () {
+    const rootObserver = new window.MutationObserver((mutations) => {
+      const addedNodes = []
+      const removedNodes = []
+      mutations.forEach(mutation => {
+        mutation.removedNodes.forEach(node => {
+          if (addedNodes.includes(node)) {
+            addedNodes.splice(addedNodes.indexOf(node), 1)
+          } else {
+            removedNodes.push(node)
+          }
+        })
+        mutation.addedNodes.forEach(node => {
+          if (removedNodes.includes(node)) {
+            removedNodes.splice(removedNodes.indexOf(node), 1)
+          } else {
+            addedNodes.push(node)
+          }
+        })
+      })
+      if (!addedNodes.length && !removedNodes.length) { return }
+      let contentChanged = false
+      let stylesChanged = false;
+      [...addedNodes, ...removedNodes].forEach(node => {
+        if (contentChanged && stylesChanged) { return }
+        if (node.matches('script[type="text/markdown"]') && !this.src) {
+          contentChanged = true
+        } else if (node.tagName === 'TEMPLATE') {
+          stylesChanged = true
+        }
+      })
+      if (contentChanged) { this.refreshContent() }
+      if (stylesChanged) { this.refreshStyles() }
+    })
+    rootObserver.observe(this, { childList: true })
+
+    // @TODO: Add observer on direct children matching <template> or <script type="text/markdown"> (with characterData, childlist and subTree)
+    // @TODO: Ignore changes in this.manualRender is true
+    // @TODO: Ignore DOM changes in light dom if the element doesn't use the shadow root
   }
 
   // Construct styles dom and return document fragment

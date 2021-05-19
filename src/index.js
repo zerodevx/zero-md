@@ -52,6 +52,8 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
+    this._stampedBody = null
+    this._stampedStyles = null
   }
 
   connectedCallback () {
@@ -222,11 +224,12 @@ export class ZeroMd extends HTMLElement {
   // Stamps a fragment into DOM
   async stampDom (frag) {
     const links = [...frag.querySelectorAll('link[rel="stylesheet"]')]
-    this.root.appendChild(frag.firstElementChild)
+    const element = this.root.appendChild(frag.firstElementChild)
     // Wrap all link elements with onload listener
     await Promise.all(links.map(l => this.onload(l))).catch(err => {
       this.fire('zero-md-error', { msg: '[zero-md] An external stylesheet failed to load', status: undefined, src: err.href })
     })
+    return element
   }
 
   async render (opts = {}) {
@@ -234,10 +237,35 @@ export class ZeroMd extends HTMLElement {
     this.clearDom()
     const css = this.buildStyles()
     const md = this.buildMd(opts)
-    await this.stampDom(css)
+    this._stampedStyles = await this.stampDom(css)
     await this.tick()
-    await this.stampDom(await md)
+    this._stampedBody = await this.stampDom(await md)
     this.fire('zero-md-rendered')
+  }
+
+  async refreshContent (opts = {}) {
+    const md = await this.buildMd(opts)
+    if (this._stampedBody) {
+      const mdElement = md.firstElementChild
+      this._stampedBody.replaceWith(mdElement)
+      this._stampedBody = mdElement
+    } else {
+      this._stampedBody = await this.stampDom(md)
+    }
+    this.fire('zero-md-rendered', { partial: true, part: 'body' })
+  }
+
+  async refreshStyles () {
+    const css = this.buildStyles()
+    if (this._stampedStyles) {
+      const cssElement = css.firstElementChild
+      this._stampedStyles.replaceWith(cssElement)
+      this._stampedStyles = cssElement
+    } else {
+      this._stampedStyles = await this.stampDom(css)
+    }
+    await this.tick()
+    this.fire('zero-md-rendered', { partial: true, part: 'styles' })
   }
 }
 

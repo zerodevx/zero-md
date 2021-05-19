@@ -272,7 +272,7 @@ describe('unit tests', () => {
         if (isInitialRender) {
           assert(computedStyle.color === 'rgb(255, 0, 0)')
           isInitialRender = false
-          f.querySelector('template').innerHTML = '<style>h1 { color: rgb(0, 255, 0); }</style>'
+          f.querySelector('template').content.firstElementChild.innerHTML = 'h1 { color: rgb(0, 255, 0); }'
         } else {
           assert(computedStyle.color === 'rgb(0, 255, 0)')
           done()

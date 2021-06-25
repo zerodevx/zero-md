@@ -244,6 +244,42 @@ describe('unit tests', () => {
       })
     })
 
+    it('auto re-renders content when inline markdown script changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        if (isInitialRender) {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
+          isInitialRender = false
+          f.querySelector('script').innerHTML = '# updated markdown-fixture'
+        } else {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          done()
+        }
+      })
+    })
+
+    it('auto re-renders styles when styles template changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md>
+        <template>
+          <style>h1 { color: rgb(255, 0, 0); }</style>
+        </template>
+        <script type="text/markdown"># fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        const h1 = f.shadowRoot.querySelector('h1')
+        const computedStyle = window.getComputedStyle(h1)
+        if (isInitialRender) {
+          assert(computedStyle.color === 'rgb(255, 0, 0)')
+          isInitialRender = false
+          f.querySelector('template').content.firstElementChild.innerHTML = 'h1 { color: rgb(0, 255, 0); }'
+        } else {
+          assert(computedStyle.color === 'rgb(0, 255, 0)')
+          done()
+        }
+      })
+    })
+
     it('prevents FOUC by ensuring styles are stamped and resolved first, before stamping md', async () => {
       f = add(`<zero-md manual-render>
         <template>

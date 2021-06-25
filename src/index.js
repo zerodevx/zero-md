@@ -52,6 +52,9 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
+    this._stampedBody = null
+    this._stampedStyles = null
+    this.observeChanges()
   }
 
   connectedCallback () {
@@ -177,6 +180,60 @@ export class ZeroMd extends HTMLElement {
     window.Prism.highlightAllUnder(container)
   }
 
+  // Starts observing for changes in styles or inline content to auto re-render
+  observeChanges () {
+    const stylesObserver = new window.MutationObserver(() => {
+      if (!this.manualRender) { this.refreshStyles() }
+    })
+    const inlineContentObserver = new window.MutationObserver(() => {
+      if (!this.manualRender) { this.refreshContent() }
+    })
+    const observeChildren = nodes => [...nodes].forEach(node => {
+      const observeConfig = { childList: true, attributes: true, characterData: true, subtree: true }
+      if (node.matches('script[type="text/markdown"]')) {
+        inlineContentObserver.observe(node, observeConfig)
+      } else if (node.tagName === 'TEMPLATE') {
+        stylesObserver.observe(node.content, observeConfig)
+      }
+    })
+    const rootObserver = new window.MutationObserver((mutations) => {
+      const addedNodes = []
+      const removedNodes = []
+      mutations.forEach(mutation => {
+        mutation.removedNodes.forEach(node => {
+          if (addedNodes.includes(node)) {
+            addedNodes.splice(addedNodes.indexOf(node), 1)
+          } else {
+            removedNodes.push(node)
+          }
+        })
+        mutation.addedNodes.forEach(node => {
+          if (removedNodes.includes(node)) {
+            removedNodes.splice(removedNodes.indexOf(node), 1)
+          } else {
+            addedNodes.push(node)
+          }
+        })
+      })
+      if (!addedNodes.length && !removedNodes.length) { return }
+      let contentChanged = false
+      let stylesChanged = false;
+      [...addedNodes, ...removedNodes].forEach(node => {
+        if (contentChanged && stylesChanged) { return }
+        if (node.matches('script[type="text/markdown"]') && !this.src) {
+          contentChanged = true
+        } else if (node.tagName === 'TEMPLATE') {
+          stylesChanged = true
+        }
+      })
+      observeChildren(addedNodes)
+      if (contentChanged && !this.manualRender) { this.refreshContent() }
+      if (stylesChanged && !this.manualRender) { this.refreshStyles() }
+    })
+    rootObserver.observe(this, { childList: true })
+    observeChildren(this.children)
+  }
+
   // Construct styles dom and return document fragment
   buildStyles () {
     const get = query => {
@@ -222,11 +279,12 @@ export class ZeroMd extends HTMLElement {
   // Stamps a fragment into DOM
   async stampDom (frag) {
     const links = [...frag.querySelectorAll('link[rel="stylesheet"]')]
-    this.root.appendChild(frag.firstElementChild)
+    const element = this.root.appendChild(frag.firstElementChild)
     // Wrap all link elements with onload listener
     await Promise.all(links.map(l => this.onload(l))).catch(err => {
       this.fire('zero-md-error', { msg: '[zero-md] An external stylesheet failed to load', status: undefined, src: err.href })
     })
+    return element
   }
 
   async render (opts = {}) {
@@ -234,10 +292,35 @@ export class ZeroMd extends HTMLElement {
     this.clearDom()
     const css = this.buildStyles()
     const md = this.buildMd(opts)
-    await this.stampDom(css)
+    this._stampedStyles = await this.stampDom(css)
     await this.tick()
-    await this.stampDom(await md)
+    this._stampedBody = await this.stampDom(await md)
     this.fire('zero-md-rendered')
+  }
+
+  async refreshContent (opts = {}) {
+    const md = await this.buildMd(opts)
+    if (this._stampedBody) {
+      const mdElement = md.firstElementChild
+      this._stampedBody.replaceWith(mdElement)
+      this._stampedBody = mdElement
+    } else {
+      this._stampedBody = await this.stampDom(md)
+    }
+    this.fire('zero-md-rendered', { partial: true, part: 'body' })
+  }
+
+  async refreshStyles () {
+    const css = this.buildStyles()
+    if (this._stampedStyles) {
+      const cssElement = css.firstElementChild
+      this._stampedStyles.replaceWith(cssElement)
+      this._stampedStyles = cssElement
+    } else {
+      this._stampedStyles = await this.stampDom(css)
+    }
+    await this.tick()
+    this.fire('zero-md-rendered', { partial: true, part: 'styles' })
   }
 }
 

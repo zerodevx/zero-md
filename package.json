@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "main": "src/index.js",
@@ -43,7 +43,8 @@
       "fetch",
       "location",
       "requestAnimationFrame",
-      "chai"
+      "chai",
+      "MutationObserver"
     ]
   },
   "files": [

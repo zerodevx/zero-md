@@ -19,6 +19,7 @@ Featuring:
 - [x] Built-in FOUC prevention
 - [x] Automatically rewrite URLs relative to `src`
 - [x] Automatically re-render when `src` changes
+- [x] Automatically re-render when inline markdown or style template changes
 - [x] Support for >200 code languages with detection for unhinted code blocks
 - [x] Easy styling mechanism
 - [x] Highly extensible
@@ -413,6 +414,15 @@ In general, just raising a PR on `readme.md` files should suffice.
 ## License
 
 ISC
+
+## Acknowledgements
+
+Big thank you to contributors
+[@EmilePerron](https://github.com/EmilePerron),
+[@bennypowers](https://github.com/bennypowers),
+[@TheUnlocked](https://github.com/TheUnlocked),
+[@ernsheong](https://github.com/ernsheong)
+for your code commits. :thumbsup:
 
 ## Version History
 

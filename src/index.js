@@ -182,10 +182,10 @@ export class ZeroMd extends HTMLElement {
 
   // Starts observing for changes in styles or inline content to auto re-render
   observeChanges () {
-    const stylesObserver = new window.MutationObserver(() => {
+    const stylesObserver = new MutationObserver(() => {
       if (!this.manualRender) { this.refreshStyles() }
     })
-    const inlineContentObserver = new window.MutationObserver(() => {
+    const inlineContentObserver = new MutationObserver(() => {
       if (!this.manualRender) { this.refreshContent() }
     })
     const observeChildren = nodes => [...nodes].forEach(node => {
@@ -196,7 +196,7 @@ export class ZeroMd extends HTMLElement {
         stylesObserver.observe(node.content, observeConfig)
       }
     })
-    const rootObserver = new window.MutationObserver((mutations) => {
+    const rootObserver = new MutationObserver((mutations) => {
       const addedNodes = []
       const removedNodes = []
       mutations.forEach(mutation => {

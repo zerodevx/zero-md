@@ -26,6 +26,10 @@ Featuring:
 
 Documentation: https://zerodevx.github.io/zero-md/
 
+**NOTE: Your markdown file(s) needs to be hosted! Browsers don't generally allow javascript to access files on
+the local hard drive because of security concerns. Standard
+[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.**
+
 ## Installation
 
 ### Load via CDN (recommended)

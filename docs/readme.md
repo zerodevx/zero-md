@@ -22,6 +22,6 @@ Featuring:
 * Easy styling mechanism
 * Highly extensible
 
-**NOTE: Your markdown files needs to be hosted! Browsers don't generally allow javascript to access files on
+**NOTE: Your markdown file(s) needs to be hosted! Browsers don't generally allow javascript to access files on
 the local hard drive because of security concerns. Standard
 [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.**

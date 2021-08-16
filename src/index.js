@@ -114,8 +114,7 @@ export class ZeroMd extends HTMLElement {
 
   // Load a url or load (in order) an array of urls via <script> tags
   loadScript (urls) {
-    urls = this.arrify(urls)
-    return Promise.all(urls.map(item => {
+    return Promise.all(this.arrify(urls).map(item => {
       const [url, ...attrs] = this.arrify(item)
       const el = document.createElement('script')
       el.src = url

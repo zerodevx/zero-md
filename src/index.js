@@ -26,7 +26,7 @@ export class ZeroMd extends HTMLElement {
     super()
     this.version = '$VERSION'
     this.config = {
-      markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@2/marked.min.js',
+      markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@3/marked.min.js',
       prismUrl: [
         ['https://cdn.jsdelivr.net/gh/PrismJS/prism@1/prism.min.js', 'data-manual'],
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js'

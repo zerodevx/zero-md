@@ -77,57 +77,38 @@ describe('unit tests', () => {
     })
   })
 
-  describe('clearDom()', () => {
-    let f
-    afterEach(() => f.remove())
-
-    it('clears light dom', () => {
-      f = add(`<zero-md manual-render no-shadow><template><link rel="stylesheet" href="test.css"></template><div class="markdown-style"><style>p{color:red;}</style></div><div class="markdown-body"><p>Test</p></div></zero-md>`)
-      f.clearDom()
-      assert(f.querySelectorAll('[class^=markdown]').length === 0)
-      assert(f.querySelector('template').content.querySelectorAll('link').length > 0)
-    })
-
-    it('clears shadow dom', () => {
-      f = add(`<zero-md manual-render></zero-md>`)
-      f.shadowRoot.innerHTML = `<style class="markdown-style">p{color:red;}</style><div class="markdown-body"><p>Test</p></div>`
-      f.clearDom()
-      assert(f.shadowRoot.innerHTML === '')
-    })
-  })
-
   describe('buildStyles()', () => {
     let f
     afterEach(() => f.remove())
 
     it('uses default styles if no template declared', () => {
       f = add(`<zero-md manual-render></zero-md>`)
-      const s = f.buildStyles()
-      assert(s.firstElementChild.innerHTML.includes('/github-markdown.min.css'))
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(s.includes('/github-markdown.min.css'))
     })
 
     it('uses template styles', () => {
       f = add(`<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`)
-      const s = f.buildStyles()
-      assert(!s.firstElementChild.innerHTML.includes('/github-markdown.min.css'))
-      assert(s.firstElementChild.innerHTML.includes('example.css'))
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(!s.includes('/github-markdown.min.css'))
+      assert(s.includes('example.css'))
     })
 
     it('prepends correctly', () => {
       f = add(`<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`)
-      const s = f.buildStyles().firstElementChild.innerHTML
+      const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
     })
 
     it('appends correctly', () => {
       f = add(`<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`)
-      const s = f.buildStyles().firstElementChild.innerHTML
+      const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
 
     it('allows passing an empty template to override default template', () => {
       f = add(`<zero-md manual-render><template></template></zero-md>`)
-      const s = f.buildStyles()
+      const s = f.makeNode(f.buildStyles())
       assert(s.querySelectorAll('link').length === 0)
     })
   })
@@ -187,42 +168,45 @@ describe('unit tests', () => {
     })
   })
 
-  describe('stampDom()', () => {
+  describe('stampBody()', () => {
     let f
     beforeEach(() => { f = add(`<zero-md manual-render></zero-md>`) })
     afterEach(() => f.remove())
 
-    it('stamps fragment into shadow dom', () => {
-      const el = document.createElement('template')
-      el.innerHTML = '<div class="test">hello</div>'
-      f.stampDom(el.content)
+    it('stamps html body into shadow dom', () => {
+      f.stampBody('<div class="test">hello</div>')
       assert(f.shadowRoot.querySelector('.test').innerHTML === 'hello')
     })
 
-    it('stamps fragment into light dom if no-shadow set', () => {
+    it('stamps html body into light dom if no-shadow set', () => {
       f.remove()
       f = add(`<zero-md manual-render no-shadow></zero-md>`)
-      const el = document.createElement('template')
-      el.innerHTML = '<div class="test">hello</div>'
-      f.stampDom(el.content)
+      f.stampBody('<div class="test">hello</div>')
       assert(f.querySelector('.test').innerHTML === 'hello')
     })
+  })
 
-    it('resolves stylesheet links', async () => {
-      const el = document.createElement('template')
-      el.innerHTML = '<div><link rel="stylesheet" href="fixture.css"></div>'
+  describe('stampStyles()', () => {
+    let f
+    beforeEach(() => { f = add(`<zero-md manual-render></zero-md>`) })
+    afterEach(() => f.remove())
+
+    it('stamps html styles and wait for stylesheet links to resolve', async () => {
+      const html = '<div><link rel="stylesheet" href="fixture.css"></div>'
       let loaded = false
-      el.content.querySelector('link').addEventListener('load', () => {
+      f.shadowRoot.addEventListener('load', () => {
         loaded = true
+      }, {
+        once: true,
+        capture: true
       })
-      await f.stampDom(el.content)
+      await f.stampStyles(html)
       assert(loaded)
     })
 
-    it('still stamps the dom if a link errors', async () => {
-      const el = document.createElement('template')
-      el.innerHTML = '<div><link rel="stylesheet" href="error.css"><link rel="stylesheet" href="fixture.css"></div>'
-      await f.stampDom(el.content)
+    it('still stamps html styles if a link errors', async () => {
+      const html = '<div><link rel="stylesheet" href="error.css"><link rel="stylesheet" href="fixture.css"></div>'
+      await f.stampStyles(html)
       assert(f.shadowRoot.querySelector('link[href="fixture.css"]'))
     })
   })
@@ -239,42 +223,6 @@ describe('unit tests', () => {
           f.src = 'test1/fixture.md'
         } else if (f.src === 'test1/fixture.md') {
           assert(f.shadowRoot.querySelector('h1').innerHTML === 'relative-link-test')
-          done()
-        }
-      })
-    })
-
-    it('auto re-renders content when inline markdown script changes', done => {
-      let isInitialRender = true
-      f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
-      f.addEventListener('zero-md-rendered', () => {
-        if (isInitialRender) {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
-          isInitialRender = false
-          f.querySelector('script').innerHTML = '# updated markdown-fixture'
-        } else {
-          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
-          done()
-        }
-      })
-    })
-
-    it('auto re-renders styles when styles template changes', done => {
-      let isInitialRender = true
-      f = add(`<zero-md>
-        <template>
-          <style>h1 { color: rgb(255, 0, 0); }</style>
-        </template>
-        <script type="text/markdown"># fixture</script></zero-md>`)
-      f.addEventListener('zero-md-rendered', () => {
-        const h1 = f.shadowRoot.querySelector('h1')
-        const computedStyle = window.getComputedStyle(h1)
-        if (isInitialRender) {
-          assert(computedStyle.color === 'rgb(255, 0, 0)')
-          isInitialRender = false
-          f.querySelector('template').content.firstElementChild.innerHTML = 'h1 { color: rgb(0, 255, 0); }'
-        } else {
-          assert(computedStyle.color === 'rgb(0, 255, 0)')
           done()
         }
       })
@@ -328,6 +276,49 @@ describe('unit tests', () => {
       assert(location.hash === '#tamen-et-veri')
     })
   })
+
+  /*
+  describe('Mutation Observer', () => {
+    let f
+    afterEach(() => f.remove())
+
+    it('auto re-renders content when inline markdown script changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        if (isInitialRender) {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'markdown-fixture')
+          isInitialRender = false
+          f.querySelector('script').innerHTML = '# updated markdown-fixture'
+        } else {
+          assert(f.shadowRoot.querySelector('h1').innerHTML === 'updated markdown-fixture')
+          done()
+        }
+      })
+    })
+
+    it('auto re-renders styles when styles template changes', done => {
+      let isInitialRender = true
+      f = add(`<zero-md>
+        <template>
+          <style>h1 { color: rgb(255, 0, 0); }</style>
+        </template>
+        <script type="text/markdown"># fixture</script></zero-md>`)
+      f.addEventListener('zero-md-rendered', () => {
+        const h1 = f.shadowRoot.querySelector('h1')
+        const computedStyle = window.getComputedStyle(h1)
+        if (isInitialRender) {
+          assert(computedStyle.color === 'rgb(255, 0, 0)')
+          isInitialRender = false
+          f.querySelector('template').content.firstElementChild.innerHTML = 'h1 { color: rgb(0, 255, 0); }'
+        } else {
+          assert(computedStyle.color === 'rgb(0, 255, 0)')
+          done()
+        }
+      })
+    })
+  })
+  */
 
   describe('running console tests - please ensure no error messages generated in console', () => {
     it('element should reconnect properly', async () => {

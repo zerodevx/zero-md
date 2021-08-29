@@ -39,6 +39,7 @@ export class ZeroMd extends HTMLElement {
       ...defaults,
       ...window.ZeroMdConfig
     }
+    this.cache = {}
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
@@ -52,9 +53,6 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
-    this._stampedBody = null
-    this._stampedStyles = null
-    this.observeChanges()
   }
 
   connectedCallback () {
@@ -145,18 +143,6 @@ export class ZeroMd extends HTMLElement {
     }
   }
 
-  clearDom () {
-    const nodes = this.root.querySelectorAll('[class^=markdown]')
-    nodes.forEach(n => n.remove())
-  }
-
-  // Converts HTML string into document fragment
-  makeFrag (html) {
-    const tpl = document.createElement('template')
-    tpl.innerHTML = html
-    return tpl.content
-  }
-
   dedent (str) {
     str = str.replace(/^\n/, '')
     const match = str.match(/^\s+/)
@@ -170,16 +156,100 @@ export class ZeroMd extends HTMLElement {
   }
 
   highlight (container) {
-    const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
-    unhinted.forEach(n => {
-      // Dead simple language detection :)
-      const lang = n.innerText.match(/^\s*</) ? 'markup' : n.innerText.match(/^\s*(\$|#)/) ? 'bash' : 'js'
-      n.classList.add(`language-${lang}`)
+    return new Promise(resolve => {
+      const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
+      unhinted.forEach(n => {
+        // Dead simple language detection :)
+        const lang = n.innerText.match(/^\s*</) ? 'markup' : n.innerText.match(/^\s*(\$|#)/) ? 'bash' : 'js'
+        n.classList.add(`language-${lang}`)
+      })
+      try {
+        window.Prism.highlightAllUnder(container, true, resolve())
+      } catch {
+        window.Prism.highlightAllUnder(container)
+        resolve()
+      }
     })
-    window.Prism.highlightAllUnder(container)
+  }
+
+  // Converts HTML string into node
+  makeNode (html) {
+    const tpl = document.createElement('template')
+    tpl.innerHTML = html
+    return tpl.content.firstElementChild
+  }
+
+  // Construct styles dom and return HTML string
+  buildStyles () {
+    const get = query => {
+      const node = this.querySelector(query)
+      return node ? node.innerHTML || ' ' : ''
+    }
+    const urls = this.arrify(this.config.cssUrls)
+    const html = `<div class="markdown-styles"><style>${
+      this.config.hostCss}</style>${
+      get('template[data-merge="prepend"]')}${
+      get('template:not([data-merge])') || urls.reduce((a, c) => `${a}<link rel="stylesheet" href="${c}">`, '')}${
+      get('template[data-merge="append"]')}</div>`
+    return html
+  }
+
+  // Construct md nodes and return HTML string
+  async buildMd (opts = {}) {
+    const src = async () => {
+      if (!this.src) {
+        return ''
+      }
+      const resp = await fetch(this.src)
+      if (resp.ok) {
+        const md = await resp.text()
+        return window.marked(md, { baseUrl: this.getBaseUrl(this.src), ...opts })
+      } else {
+        this.fire('zero-md-error', { msg: `[zero-md] HTTP error ${resp.status} while fetching src`, status: resp.status, src: this.src })
+        return ''
+      }
+    }
+    const script = () => {
+      const el = this.querySelector('script[type="text/markdown"]')
+      if (!el) { return '' }
+      const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
+      return window.marked(md, opts)
+    }
+    const html = `<div class="markdown-body${
+      opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''}">${
+      await src() || script()}</div>`
+    return html
+  }
+
+  // Insert or replace HTML styles string into DOM and wait for links to load
+  async stampStyles (html) {
+    const node = this.makeNode(html)
+    const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
+    const target = [...this.root.children].find(n => n.classList.contains('markdown-styles'))
+    if (target) {
+      target.replaceWith(node)
+    } else {
+      this.root.prepend(node)
+    }
+    await Promise.all(links.map(l => this.onload(l))).catch(err => {
+      this.fire('zero-md-error', { msg: '[zero-md] An external stylesheet failed to load', status: undefined, src: err.href })
+    })
+  }
+
+  // Insert or replace HTML body string into DOM and returns the node
+  stampBody (html) {
+    const node = this.makeNode(html)
+    const target = [...this.root.children].find(n => n.classList.contains('markdown-body'))
+    if (target) {
+      target.replaceWith(node)
+    } else {
+      this.root.append(node)
+    }
+    return node
   }
 
   // Starts observing for changes in styles or inline content to auto re-render
+  /*
   observeChanges () {
     const stylesObserver = new MutationObserver(() => {
       if (!this.manualRender) { this.refreshStyles() }
@@ -232,94 +302,27 @@ export class ZeroMd extends HTMLElement {
     rootObserver.observe(this, { childList: true })
     observeChildren(this.children)
   }
-
-  // Construct styles dom and return document fragment
-  buildStyles () {
-    const get = query => {
-      const node = this.querySelector(query)
-      return node ? node.innerHTML || ' ' : ''
-    }
-    const urls = this.arrify(this.config.cssUrls)
-    const html = `<div class="markdown-styles"><style>${
-      this.config.hostCss}</style>${
-      get('template[data-merge="prepend"]')}${
-      get('template:not([data-merge])') || urls.reduce((a, c) => `${a}<link rel="stylesheet" href="${c}">`, '')}${
-      get('template[data-merge="append"]')}</div>`
-    return this.makeFrag(html)
-  }
-
-  // Construct md nodes and return promise that resolves to doc frag
-  async buildMd (opts = {}) {
-    const src = async () => {
-      if (!this.src) { return '' }
-      const resp = await fetch(this.src)
-      if (resp.ok) {
-        const md = await resp.text()
-        return window.marked(md, { baseUrl: this.getBaseUrl(this.src), ...opts })
-      } else {
-        this.fire('zero-md-error', { msg: `[zero-md] HTTP error ${resp.status} while fetching src`, status: resp.status, src: this.src })
-        return ''
-      }
-    }
-    const script = () => {
-      const el = this.querySelector('script[type="text/markdown"]')
-      if (!el) { return '' }
-      const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
-      return window.marked(md, opts)
-    }
-    const html = `<div class="markdown-body${
-      opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''}">${
-      await src() || script()}</div>`
-    const frag = this.makeFrag(html)
-    this.highlight(frag.firstElementChild)
-    return frag
-  }
-
-  // Stamps a fragment into DOM
-  async stampDom (frag) {
-    const links = [...frag.querySelectorAll('link[rel="stylesheet"]')]
-    const element = this.root.appendChild(frag.firstElementChild)
-    // Wrap all link elements with onload listener
-    await Promise.all(links.map(l => this.onload(l))).catch(err => {
-      this.fire('zero-md-error', { msg: '[zero-md] An external stylesheet failed to load', status: undefined, src: err.href })
-    })
-    return element
-  }
+  */
 
   async render (opts = {}) {
     await this.waitForReady()
-    this.clearDom()
+    const detail = {}
+    const pending = this.buildMd(opts)
     const css = this.buildStyles()
-    const md = this.buildMd(opts)
-    this._stampedStyles = await this.stampDom(css)
-    await this.tick()
-    this._stampedBody = await this.stampDom(await md)
-    this.fire('zero-md-rendered')
-  }
-
-  async refreshContent (opts = {}) {
-    const md = await this.buildMd(opts)
-    if (this._stampedBody) {
-      const mdElement = md.firstElementChild
-      this._stampedBody.replaceWith(mdElement)
-      this._stampedBody = mdElement
-    } else {
-      this._stampedBody = await this.stampDom(md)
+    if (css !== this.cache.styles) {
+      this.cache.styles = css
+      await this.stampStyles(css)
+      detail.rendered = { styles: true }
+      await this.tick()
     }
-    this.fire('zero-md-rendered', { partial: true, part: 'body' })
-  }
-
-  async refreshStyles () {
-    const css = this.buildStyles()
-    if (this._stampedStyles) {
-      const cssElement = css.firstElementChild
-      this._stampedStyles.replaceWith(cssElement)
-      this._stampedStyles = cssElement
-    } else {
-      this._stampedStyles = await this.stampDom(css)
+    const md = await pending
+    if (md !== this.cache.body) {
+      this.cache.body = md
+      const node = this.stampBody(md)
+      detail.rendered = { ...detail.rendered, body: true }
+      await this.highlight(node)
     }
-    await this.tick()
-    this.fire('zero-md-rendered', { partial: true, part: 'styles' })
+    this.fire('zero-md-rendered', detail)
   }
 }
 

@@ -249,6 +249,39 @@ describe('unit tests', () => {
       await f.render({ classes: ['test2', 'test3'] })
       assert(f.shadowRoot.querySelector('.markdown-body').classList.contains('test3'))
     })
+
+    it('renders partially if body changes but styles do not', async () => {
+      f = add(`<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`)
+      await f.render()
+      let detail = {}
+      f.addEventListener('zero-md-rendered', e => {
+        detail = e.detail
+      })
+      f.querySelector('script').innerText = '# test2'
+      await f.render()
+      await tick()
+      assert(detail.rendered && detail.rendered.body === true)
+      assert(detail.rendered && !detail.rendered.styles)
+      const h1 = f.shadowRoot.querySelector('h1')
+      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(255, 0, 0)')
+    })
+
+    it('renders partially if styles change but body does not', async () => {
+      f = add(`<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`)
+      await f.render()
+      let detail = {}
+      f.addEventListener('zero-md-rendered', e => {
+        detail = e.detail
+      })
+      const tpl = f.querySelector('template')
+      tpl.content.firstElementChild.innerText = 'h1{color:blue}'
+      await f.render()
+      await tick()
+      assert(detail.rendered && detail.rendered.styles === true)
+      assert(detail.rendered && !detail.rendered.body)
+      const h1 = f.shadowRoot.querySelector('h1')
+      assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(0, 0, 255)')
+    })
   })
 
   describe('hash-link scrolls', () => {

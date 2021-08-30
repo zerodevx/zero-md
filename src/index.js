@@ -53,6 +53,13 @@ export class ZeroMd extends HTMLElement {
       // It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
+    this.observer = new MutationObserver(async () => {
+      this.observeChanges()
+      if (!this.manualRender) {
+        await this.render()
+      }
+    })
+    this.observeChanges()
   }
 
   connectedCallback () {
@@ -155,6 +162,7 @@ export class ZeroMd extends HTMLElement {
     return a.href.substring(0, a.href.lastIndexOf('/') + 1)
   }
 
+  // Runs Prism highlight async; falls back to sync if Web Workers throw
   highlight (container) {
     return new Promise(resolve => {
       const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
@@ -248,81 +256,33 @@ export class ZeroMd extends HTMLElement {
     return node
   }
 
-  // Starts observing for changes in styles or inline content to auto re-render
-  /*
+  // Start observing for changes in root, templates and scripts
   observeChanges () {
-    const stylesObserver = new MutationObserver(() => {
-      if (!this.manualRender) { this.refreshStyles() }
+    this.observer.observe(this, { childList: true })
+    this.querySelectorAll('template,script[type="text/markdown"]').forEach(n => {
+      this.observer.observe(n.content || n, { childList: true, subtree: true, attributes: true, characterData: true })
     })
-    const inlineContentObserver = new MutationObserver(() => {
-      if (!this.manualRender) { this.refreshContent() }
-    })
-    const observeChildren = nodes => [...nodes].forEach(node => {
-      const observeConfig = { childList: true, attributes: true, characterData: true, subtree: true }
-      if (node.matches('script[type="text/markdown"]')) {
-        inlineContentObserver.observe(node, observeConfig)
-      } else if (node.tagName === 'TEMPLATE') {
-        stylesObserver.observe(node.content, observeConfig)
-      }
-    })
-    const rootObserver = new MutationObserver((mutations) => {
-      const addedNodes = []
-      const removedNodes = []
-      mutations.forEach(mutation => {
-        mutation.removedNodes.forEach(node => {
-          if (addedNodes.includes(node)) {
-            addedNodes.splice(addedNodes.indexOf(node), 1)
-          } else {
-            removedNodes.push(node)
-          }
-        })
-        mutation.addedNodes.forEach(node => {
-          if (removedNodes.includes(node)) {
-            removedNodes.splice(removedNodes.indexOf(node), 1)
-          } else {
-            addedNodes.push(node)
-          }
-        })
-      })
-      if (!addedNodes.length && !removedNodes.length) { return }
-      let contentChanged = false
-      let stylesChanged = false;
-      [...addedNodes, ...removedNodes].forEach(node => {
-        if (contentChanged && stylesChanged) { return }
-        if (node.matches('script[type="text/markdown"]') && !this.src) {
-          contentChanged = true
-        } else if (node.tagName === 'TEMPLATE') {
-          stylesChanged = true
-        }
-      })
-      observeChildren(addedNodes)
-      if (contentChanged && !this.manualRender) { this.refreshContent() }
-      if (stylesChanged && !this.manualRender) { this.refreshStyles() }
-    })
-    rootObserver.observe(this, { childList: true })
-    observeChildren(this.children)
   }
-  */
 
   async render (opts = {}) {
     await this.waitForReady()
-    const detail = {}
+    const stamped = {}
     const pending = this.buildMd(opts)
     const css = this.buildStyles()
     if (css !== this.cache.styles) {
       this.cache.styles = css
       await this.stampStyles(css)
-      detail.rendered = { styles: true }
+      stamped.styles = true
       await this.tick()
     }
     const md = await pending
     if (md !== this.cache.body) {
       this.cache.body = md
       const node = this.stampBody(md)
-      detail.rendered = { ...detail.rendered, body: true }
+      stamped.body = true
       await this.highlight(node)
     }
-    this.fire('zero-md-rendered', detail)
+    this.fire('zero-md-rendered', { stamped })
   }
 }
 

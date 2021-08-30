@@ -260,8 +260,8 @@ describe('unit tests', () => {
       f.querySelector('script').innerText = '# test2'
       await f.render()
       await tick()
-      assert(detail.rendered && detail.rendered.body === true)
-      assert(detail.rendered && !detail.rendered.styles)
+      assert(detail.stamped && detail.stamped.body === true)
+      assert(detail.stamped && !detail.stamped.styles)
       const h1 = f.shadowRoot.querySelector('h1')
       assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(255, 0, 0)')
     })
@@ -277,8 +277,8 @@ describe('unit tests', () => {
       tpl.content.firstElementChild.innerText = 'h1{color:blue}'
       await f.render()
       await tick()
-      assert(detail.rendered && detail.rendered.styles === true)
-      assert(detail.rendered && !detail.rendered.body)
+      assert(detail.stamped && detail.stamped.styles === true)
+      assert(detail.stamped && !detail.stamped.body)
       const h1 = f.shadowRoot.querySelector('h1')
       assert(window.getComputedStyle(h1).getPropertyValue('color') === 'rgb(0, 0, 255)')
     })
@@ -310,8 +310,7 @@ describe('unit tests', () => {
     })
   })
 
-  /*
-  describe('Mutation Observer', () => {
+  describe('Mutation Observer tests', () => {
     let f
     afterEach(() => f.remove())
 
@@ -351,7 +350,6 @@ describe('unit tests', () => {
       })
     })
   })
-  */
 
   describe('running console tests - please ensure no error messages generated in console', () => {
     it('element should reconnect properly', async () => {

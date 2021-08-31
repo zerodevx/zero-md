@@ -105,35 +105,47 @@ Internally, the `render()` function may look something like this:
 ```js
 async function render (opts = {}) {
   // Ensure everything is initialised
-  await waitForReady()
-  // Ensure DOM is cleared
-  clearDom()
-  // Start generating the CSS and Markdown nodes
-  const css = buildStyles()
-  const md = buildMd(opts)
-  // First, stamp CSS into DOM, wait for external stylesheets to download, then queue next repaint
-  // This prevents flash-of-unstyled-content (FOUC)
-  await stampDom(css)
-  await tick()
-  // Next, stamp Markdown nodes into DOM
-  await stampDom(await md)
+  await this.waitForReady()
+  const stamped = {}
+  // Start generating the CSS and Markdown HTML strings
+  const pending = this.buildMd(opts)
+  const css = this.buildStyles()
+  // Stamp styles if none exists; replace if there're changes
+  if (css !== this.cache.styles) {
+    this.cache.styles = css
+    // Ensure that external stylesheets are loaded, then queue next repaint to prevent FOUC
+    await this.stampStyles(css)
+    stamped.styles = true
+    await this.tick()
+  }
+  // Then stamp body if none exists; replace if there're changes
+  const md = await pending
+  if (md !== this.cache.body) {
+    this.cache.body = md
+    const node = this.stampBody(md)
+    stamped.body = true
+    // Begin asynchronous Prism highlight
+    await this.highlight(node)
+  }
   // Finally, fire the rendered event
-  fire('zero-md-rendered')
+  this.fire('zero-md-rendered', { stamped })
 }
 ```
 
 The helper functions shown above are public; you can re-create your own `render()` function using a mix
 of these helpers to fit your specific use-case. Some helpers include:
 
-| Method             | Description              |
-|--------------------|--------------------------|
-| waitForReady()     | Returns a `Promise` that resolves when element is connected, and both Marked and Prism are loaded. |
-| clearDom()         | Clears the rendered DOM, if any. |
-| buildStyles()      | Constructs the style nodes and returns a document fragment. |
-| buildMd({opts})  | Download the `src` file, if specified, transforms and highlights the markdown (with optional opts), and returns a `Promise` that resolves into a document fragment. |
-| stampDom(frag)     | Stamps a document fragment into DOM and returns a `Promise` that resolves when done. If fragment contains external stylesheet links, `Promise` resolves eagerly when all stylesheets are downloaded. |
-| tick()             | Wait for next repaint. |
-| fire(name, {opts}) | Dispatches a new custom event. |
+| Method               | Description              |
+|----------------------|--------------------------|
+| waitForReady()       | Returns a `Promise` that resolves when element is connected, and both Marked and Prism are loaded. |
+| makeNode(html)       | Converts a HTML string into a DOM node and returns it. |
+| buildStyles()        | Constructs the style HTML string and returns it. |
+| buildMd({opts})      | Download the `src` file, if specified, transforms the markdown (with optional opts), and returns a `Promise` that resolves into a HTML string. |
+| stampStyles(html)    | Insert or replace a styles HTML string into DOM and returns a `Promise` that resolves eagerly when all `<link>` stylesheets are downloaded. |
+| stampBody(html)      | Insert or replace a markdown HTML string into DOM and returns the new node. |
+| highlight(container) | Runs `Prism` highlight on a container node asynchronously (using Web Workers, or falls back to synchronous if it throws) and returns a `Promise` when done. |
+| tick()               | Wait for next repaint. |
+| fire(name, {opts})   | Dispatches a new custom event. |
 
 ### Events
 
@@ -144,6 +156,18 @@ The following convenience events are dispatched:
 | zero-md-ready      | Fires after element is connected, and both Marked and Prism are loaded. |
 | zero-md-rendered   | Fires after markdown is transformed, syntax highlighted, and contents stamped to DOM. |
 | zero-md-error      | Fires when a download error is encountered in `src` or any `<link rel="stylesheet">` tags. |
+
+#### Rendered event
+
+The `zero-md-rendered` event fires with the following details:
+
+| Detail             | Description              |
+|--------------------|--------------------------|
+| node               | The `zero-md` element that dispatched the event. |
+| stamped.styles     | `true` when styles are stamped into DOM. |
+| stamped.body       | `true` when markdown body is stamped into DOM. |
+
+#### Error-handling
 
 To catch `src` errors:
 

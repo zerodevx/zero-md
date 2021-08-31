@@ -41,6 +41,10 @@ You can *merge* any additional style templates into an instance of `<zero-md>` l
 
 ```html
 <zero-md src="example.md">
+  <!-- Style template prepended before default styles -->
+  <template data-merge="prepend">
+    <link rel="stylesheet" href="/normalize.css">
+  </template>
   <!-- Style template appended after default styles -->
   <template data-merge="append">
     <style>
@@ -48,10 +52,6 @@ You can *merge* any additional style templates into an instance of `<zero-md>` l
         color: red;
       }
     </style>
-  </template>
-  <!-- Style template prepended before default styles -->
-  <template data-merge="prepend">
-    <link rel="stylesheet" href="/normalize.css">
   </template>
 </zero-md>
 ```

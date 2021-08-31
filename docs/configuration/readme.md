@@ -7,7 +7,7 @@ Internally, `<zero-md>` uses the following defaults in its constructor:
 ```js
 {
   // URLs of Marked and Prism libraries
-  markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@1/marked.min.js',
+  markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@3/marked.min.js',
   // URLs in an array are loaded in the prescribed order
   prismUrl: [
     // Add `data-manual` attribute to its `<script>` tag

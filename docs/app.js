@@ -1,7 +1,7 @@
 /* global matchMedia, navaid, gtag */
 
 const dev = location.protocol === 'http:'
-const urls = ['https://zerodevx.github.io/zero-md/', 'http://127.0.0.1:5000/docs/']
+const urls = ['https://zerodevx.github.io/zero-md/', 'http://localhost:8000/docs/']
 const base = dev ? urls[1] : urls[0]
 const app = document.querySelector('.app')
 const nav = document.querySelector('.nav')

@@ -50,7 +50,8 @@ const dev = {
   plugins: [
     resolve(),
     !production && serve({
-      port: 5000,
+      host: 'localhost',
+      port: 8000,
       contentBase: ['test', '']
     }),
     !production && livereload({

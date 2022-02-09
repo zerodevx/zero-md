@@ -67,7 +67,7 @@ Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 ```none
 ISC License
 
-Copyright (c) 2021, Jason Lee <jason@zerodevx.com>
+Copyright (c) 2022, Jason Lee <jason@zerodevx.com>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above

@@ -43,8 +43,8 @@ By default, each instance of `<zero-md>` has the following host styles applied o
 }
 ```
 
-These are *sensible defaults* that help normalise behaviour across browsers and should be apt for most use-cases.
-If need be, you can easily override these styles from outside the element.
+These are _sensible defaults_ that help normalise behaviour across browsers and should be apt for
+most use-cases. If need be, you can easily override these styles from outside the element.
 
 ```html
 <style>
@@ -60,11 +60,11 @@ If need be, you can easily override these styles from outside the element.
 #### Marked and Prism libraries
 
 Upon initialisation, `<zero-md>` first checks if the Marked and Prism libraries are already loaded.
-If not, `<zero-md>` then load the libraries from their respective CDN locations specified
-in `markedUrl` and `prismUrl`. This only happens *once*; multiple instances of `<zero-md>` that are
+If not, `<zero-md>` then load the libraries from their respective CDN locations specified in
+`markedUrl` and `prismUrl`. This only happens _once_; multiple instances of `<zero-md>` that are
 declared in the same document should not cause "double-loading".
 
-The recommended way to override the default CDN locations is to load the libraries yourself *before*
+The recommended way to override the default CDN locations is to load the libraries yourself _before_
 loading `<zero-md>`. For example:
 
 ```html
@@ -73,13 +73,17 @@ loading `<zero-md>`. For example:
   <script defer src="/lib/marked.js"></script>
   <script defer src="/lib/prism.js"></script>
   <!-- Then load `<zero-md>` -->
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
 </head>
 ```
 
 #### Default style template
 
-By default, each instance of `<zero-md>` applies the external stylesheets defined in `cssUrls`. Internally,
+By default, each instance of `<zero-md>` applies the external stylesheets defined in `cssUrls`.
+Internally,
 
 ```html
 <zero-md src="example.md"></zero-md>
@@ -100,8 +104,14 @@ is semantically equivalent to this:
         display: none;
       }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
+    />
   </template>
 </zero-md>
 ```
@@ -112,15 +122,15 @@ You can override the default style template by passing in a new one.
 <zero-md src="example.md">
   <!-- This overrides the default template -->
   <template>
-    <link rel="stylesheet" href="/custom-styles.css">
+    <link rel="stylesheet" href="/custom-styles.css" />
   </template>
 </zero-md>
 ```
 
 ### Global config object
 
-To override the default configs **globally** to **all** instances of `<zero-md>`, a `ZeroMdConfig` object
-hoisted to the global `window` scope can be defined. For example:
+To override the default configs **globally** to **all** instances of `<zero-md>`, a `ZeroMdConfig`
+object hoisted to the global `window` scope can be defined. For example:
 
 ```html
 <head>
@@ -129,10 +139,7 @@ hoisted to the global `window` scope can be defined. For example:
     window.ZeroMdConfig = {
       markedUrl: '/lib/marked.js',
       prismUrl: '/lib/prism.js',
-      cssUrls: [
-        '/styles/markdown.css',
-        '/styles/highlight.css'
-      ],
+      cssUrls: ['/styles/markdown.css', '/styles/highlight.css'],
       hostCss: ':host{display:inline-block;}'
     }
   </script>
@@ -148,18 +155,15 @@ hoisted to the global `window` scope can be defined. For example:
 
 #### Change default style template globally
 
-By default, `<zero-md>` uses a Github-themed stylesheet paired with a light-themed one for code blocks.
-To update the default external stylesheets globally, define a global config object.
+By default, `<zero-md>` uses a Github-themed stylesheet paired with a light-themed one for code
+blocks. To update the default external stylesheets globally, define a global config object.
 
 ```html
 <head>
   <script>
     window.ZeroMdConfig = {
       // Use these stylesheets in default template
-      cssUrls: [
-        '/styles/markdown.css',
-        '/styles/highlight.css'
-      ]
+      cssUrls: ['/styles/markdown.css', '/styles/highlight.css']
     }
   </script>
   <script type="module" src="/lib/zero-md.min.js"></script>
@@ -172,8 +176,8 @@ To update the default external stylesheets globally, define a global config obje
   <!-- Is semantically equivalent to this -->
   <zero-md src="example.md">
     <template>
-      <link rel="stylesheet" href="/styles/markdown.css">
-      <link rel="stylesheet" href="/styles/highlight.css">
+      <link rel="stylesheet" href="/styles/markdown.css" />
+      <link rel="stylesheet" href="/styles/highlight.css" />
     </template>
   </zero-md>
 </body>
@@ -188,15 +192,12 @@ import ZeroMd from 'zero-md'
 
 // Define a new custom class
 class ZeroMdCustom extends ZeroMd {
-  constructor () {
+  constructor() {
     // Call `super()` with new configs
     super({
       markedUrl: '/lib/marked.js',
       prismUrl: '/lib/prism.js',
-      cssUrls: [
-        '/styles/markdown.css',
-        '/styles/highlight.css'
-      ],
+      cssUrls: ['/styles/markdown.css', '/styles/highlight.css'],
       hostCss: ':host{display:inline-block;}'
     })
   }
@@ -205,4 +206,3 @@ class ZeroMdCustom extends ZeroMd {
 // Register the element with custom class
 customElements.define('zero-md', ZeroMdCustom)
 ```
-

@@ -26,9 +26,9 @@ Open your browser to `http://localhost:5000`. You should see the test suite runn
 
 #### Testing
 
-Tests are browser-based and run on [Mocha](https://mochajs.org/) with [Chai](https://www.chaijs.com/)
-asserts. If you're adding a new feature or bugfixing, please add the corresponding regression test
-into `test/index.spec.js` accordingly.
+Tests are browser-based and run on [Mocha](https://mochajs.org/) with
+[Chai](https://www.chaijs.com/) asserts. If you're adding a new feature or bugfixing, please add the
+corresponding regression test into `test/index.spec.js` accordingly.
 
 Tests can be run by pointing your browser to `http://localhost:5000`.
 
@@ -52,9 +52,10 @@ to `http://localhost:5000/docs/` (note the trailing slash).
 
 #### Making changes to docs
 
-Documentation is stored in the `/docs` folder, published with [Github Pages](https://pages.github.com/)
-and based on [`zero-md-docs`](https://github.com/zerodevx/zero-md-docs). The markdown for each
-section is located in `readme.md` in its corresponding pretty URL.
+Documentation is stored in the `/docs` folder, published with
+[Github Pages](https://pages.github.com/) and based on
+[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs). The markdown for each section is located
+in `readme.md` in its corresponding pretty URL.
 
 In general, just raising a PR on `readme.md` files should suffice.
 

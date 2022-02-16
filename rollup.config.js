@@ -16,11 +16,7 @@ const build = {
     format: 'es',
     file: 'dist/zero-md.min.js'
   },
-  plugins: [
-    replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
-    resolve(),
-    terser()
-  ]
+  plugins: [replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()]
 }
 
 const buildLegacy = {
@@ -49,15 +45,17 @@ const dev = {
   },
   plugins: [
     resolve(),
-    !production && serve({
-      host: 'localhost',
-      port: 8000,
-      contentBase: ['test', '']
-    }),
-    !production && livereload({
-      watch: ['test', 'docs', 'dist'],
-      extraExts: ['.md']
-    })
+    !production &&
+      serve({
+        host: 'localhost',
+        port: 8000,
+        contentBase: ['test', '']
+      }),
+    !production &&
+      livereload({
+        watch: ['test', 'docs', 'dist'],
+        extraExts: ['.md']
+      })
   ],
   watch: {
     clearScreen: false

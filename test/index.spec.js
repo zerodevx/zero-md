@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* eslint-disable quotes */
+/* global chai */
 
 mocha.setup({
   ui: 'bdd'
@@ -8,15 +8,15 @@ mocha.setup({
 describe('unit tests', () => {
   const assert = chai.assert
 
-  const add = html => {
+  const add = (html) => {
     const tpl = document.createElement('template')
     tpl.innerHTML = html
     return document.body.appendChild(tpl.content.firstElementChild)
   }
 
-  const sleep = t => new Promise(resolve => setTimeout(resolve, t))
+  const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
 
-  const tick = () => new Promise(resolve => requestAnimationFrame(resolve))
+  const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
 
   describe('constructor()', () => {
     it('should not load marked if marked already loaded', async () => {
@@ -58,7 +58,9 @@ describe('unit tests', () => {
 
   describe('getters and setters', () => {
     let f
-    before(() => { f = add(`<zero-md src="dummy.md" manual-render></zero-md>`) })
+    before(() => {
+      f = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
+    })
     after(() => f.remove())
 
     it('src reflects', () => {
@@ -88,20 +90,26 @@ describe('unit tests', () => {
     })
 
     it('uses template styles', () => {
-      f = add(`<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`)
+      f = add(
+        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
+      )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(!s.includes('/github-markdown.min.css'))
       assert(s.includes('example.css'))
     })
 
     it('prepends correctly', () => {
-      f = add(`<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`)
+      f = add(
+        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
+      )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
     })
 
     it('appends correctly', () => {
-      f = add(`<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`)
+      f = add(
+        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
+      )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
@@ -115,7 +123,9 @@ describe('unit tests', () => {
 
   describe('buildMd()', () => {
     let f
-    beforeEach(() => { f = add(`<zero-md manual-render></zero-md>`) })
+    beforeEach(() => {
+      f = add(`<zero-md manual-render></zero-md>`)
+    })
     afterEach(() => f.remove())
 
     it('converts src to md', async () => {
@@ -144,7 +154,9 @@ describe('unit tests', () => {
     it('language-detects unhinted code blocks', async () => {
       f.src = 'fixture.md'
       await f.render()
-      const nodes = [...f.shadowRoot.querySelectorAll('p')].filter(i => i.textContent === 'Unhinted:')
+      const nodes = [...f.shadowRoot.querySelectorAll('p')].filter(
+        (i) => i.textContent === 'Unhinted:'
+      )
       assert(nodes[0].nextElementSibling.className.includes('language-'))
     })
 
@@ -170,7 +182,9 @@ describe('unit tests', () => {
 
   describe('stampBody()', () => {
     let f
-    beforeEach(() => { f = add(`<zero-md manual-render></zero-md>`) })
+    beforeEach(() => {
+      f = add(`<zero-md manual-render></zero-md>`)
+    })
     afterEach(() => f.remove())
 
     it('stamps html body into shadow dom', () => {
@@ -188,24 +202,31 @@ describe('unit tests', () => {
 
   describe('stampStyles()', () => {
     let f
-    beforeEach(() => { f = add(`<zero-md manual-render></zero-md>`) })
+    beforeEach(() => {
+      f = add(`<zero-md manual-render></zero-md>`)
+    })
     afterEach(() => f.remove())
 
     it('stamps html styles and wait for stylesheet links to resolve', async () => {
       const html = '<div><link rel="stylesheet" href="fixture.css"></div>'
       let loaded = false
-      f.shadowRoot.addEventListener('load', () => {
-        loaded = true
-      }, {
-        once: true,
-        capture: true
-      })
+      f.shadowRoot.addEventListener(
+        'load',
+        () => {
+          loaded = true
+        },
+        {
+          once: true,
+          capture: true
+        }
+      )
       await f.stampStyles(html)
       assert(loaded)
     })
 
     it('still stamps html styles if a link errors', async () => {
-      const html = '<div><link rel="stylesheet" href="error.css"><link rel="stylesheet" href="fixture.css"></div>'
+      const html =
+        '<div><link rel="stylesheet" href="error.css"><link rel="stylesheet" href="fixture.css"></div>'
       await f.stampStyles(html)
       assert(f.shadowRoot.querySelector('link[href="fixture.css"]'))
     })
@@ -215,7 +236,7 @@ describe('unit tests', () => {
     let f
     afterEach(() => f.remove())
 
-    it('auto re-renders when src change', done => {
+    it('auto re-renders when src change', (done) => {
       f = add(`<zero-md src="fixture.md"></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
         if (f.src === 'fixture.md') {
@@ -251,10 +272,12 @@ describe('unit tests', () => {
     })
 
     it('renders partially if body changes but styles do not', async () => {
-      f = add(`<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`)
+      f = add(
+        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
+      )
       await f.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', e => {
+      f.addEventListener('zero-md-rendered', (e) => {
         detail = e.detail
       })
       f.querySelector('script').innerText = '# test2'
@@ -267,10 +290,12 @@ describe('unit tests', () => {
     })
 
     it('renders partially if styles change but body does not', async () => {
-      f = add(`<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`)
+      f = add(
+        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
+      )
       await f.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', e => {
+      f.addEventListener('zero-md-rendered', (e) => {
         detail = e.detail
       })
       const tpl = f.querySelector('template')
@@ -293,13 +318,17 @@ describe('unit tests', () => {
 
     it('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
-      f = add(`<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`)
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`
+      )
       await sleep(500)
       assert(f.scrollTop > 0)
     })
 
     it('hijacks same-doc hash links and scrolls id into view', async () => {
-      f = add(`<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`)
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`
+      )
       const el = f.querySelector('zero-md')
       await el.render()
       const a = el.shadowRoot.querySelector('a[href="#tamen-et-veri"]')
@@ -314,7 +343,7 @@ describe('unit tests', () => {
     let f
     afterEach(() => f.remove())
 
-    it('auto re-renders content when inline markdown script changes', done => {
+    it('auto re-renders content when inline markdown script changes', (done) => {
       let isInitialRender = true
       f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
@@ -329,7 +358,7 @@ describe('unit tests', () => {
       })
     })
 
-    it('auto re-renders styles when styles template changes', done => {
+    it('auto re-renders styles when styles template changes', (done) => {
       let isInitialRender = true
       f = add(`<zero-md>
         <template>
@@ -342,7 +371,8 @@ describe('unit tests', () => {
         if (isInitialRender) {
           assert(computedStyle.color === 'rgb(255, 0, 0)')
           isInitialRender = false
-          f.querySelector('template').content.firstElementChild.innerHTML = 'h1 { color: rgb(0, 255, 0); }'
+          f.querySelector('template').content.firstElementChild.innerHTML =
+            'h1 { color: rgb(0, 255, 0); }'
         } else {
           assert(computedStyle.color === 'rgb(0, 255, 0)')
           done()
@@ -372,9 +402,7 @@ describe('unit tests', () => {
     })
   })
 
-  describe('other cool features', () => {
-
-  })
+  describe('other cool features', () => {})
 })
 
 mocha.run()

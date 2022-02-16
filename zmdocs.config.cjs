@@ -22,14 +22,42 @@ module.exports = {
 </footer>`,
   links: [
     { title: 'Overview', href: '/zero-md/', dir: 'docs' },
-    { title: 'Installation', href: '/zero-md/installation/', dir: 'docs/installation' },
-    { title: 'Basic Usage', href: '/zero-md/basic-usage/', dir: 'docs/basic-usage' },
-    { title: 'Advanced Usage', href: '/zero-md/advanced-usage/', dir: 'docs/advanced-usage' },
-    { title: 'Attributes & Helpers', href: '/zero-md/attributes-and-helpers/', dir: 'docs/attributes-and-helpers' },
-    { title: 'Configuration', href: '/zero-md/configuration/', dir: 'docs/configuration' },
-    { title: 'Migration Guide', href: '/zero-md/migration-guide/', dir: 'docs/migration-guide' },
+    {
+      title: 'Installation',
+      href: '/zero-md/installation/',
+      dir: 'docs/installation'
+    },
+    {
+      title: 'Basic Usage',
+      href: '/zero-md/basic-usage/',
+      dir: 'docs/basic-usage'
+    },
+    {
+      title: 'Advanced Usage',
+      href: '/zero-md/advanced-usage/',
+      dir: 'docs/advanced-usage'
+    },
+    {
+      title: 'Attributes & Helpers',
+      href: '/zero-md/attributes-and-helpers/',
+      dir: 'docs/attributes-and-helpers'
+    },
+    {
+      title: 'Configuration',
+      href: '/zero-md/configuration/',
+      dir: 'docs/configuration'
+    },
+    {
+      title: 'Migration Guide',
+      href: '/zero-md/migration-guide/',
+      dir: 'docs/migration-guide'
+    },
     { title: 'Recipes', href: '/zero-md/recipes/', dir: 'docs/recipes' },
-    { title: 'Contributing', href: '/zero-md/contributing/', dir: 'docs/contributing' }
+    {
+      title: 'Contributing',
+      href: '/zero-md/contributing/',
+      dir: 'docs/contributing'
+    }
   ],
   _template: 'default',
   _title: ''

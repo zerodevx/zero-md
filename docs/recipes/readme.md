@@ -2,16 +2,19 @@
 
 ### Support Mermaid diagrams
 
-Until [first-class support](https://github.com/zerodevx/zero-md/issues/65) for 
-[mermaid](https://github.com/mermaid-js/mermaid) is added into `<zero-md>`, the below 
-technique can be used in the meantime.
+Until [first-class support](https://github.com/zerodevx/zero-md/issues/65) for
+[mermaid](https://github.com/mermaid-js/mermaid) is added into `<zero-md>`, the below technique can
+be used in the meantime.
 
 ```html
 <head>
   ...
   <!-- Load mermaid -->
-  <script defer src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>    
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
 </head>
 
 <body>
@@ -43,18 +46,34 @@ code block features. Here is a gist that implements the `line-numbers` plugin.
 ```html
 <head>
   <!-- Load Prism core and language autoloader -->
-  <script defer data-manual src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/components/prism-core.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script
+    defer
+    data-manual
+    src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/components/prism-core.min.js"
+  ></script>
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js"
+  ></script>
   <!-- Load `line-numbers` plugin -->
-  <script defer src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/line-numbers/prism-line-numbers.min.js"
+  ></script>
   <!-- Finally, load `<zero-md>` -->
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
 </head>
 <body>
   <zero-md id="app" src="example.md" manual-render>
     <!-- Append CSS required for line-numbers -->
     <template data-merge="append">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/line-numbers/prism-line-numbers.css">
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/line-numbers/prism-line-numbers.css"
+      />
     </template>
   </zero-md>
   <script>
@@ -72,7 +91,7 @@ Demo: https://plnkr.co/edit/Rxvp5ShGacyTAIh5
 
 ### Add Copy-to-Clipboard button
 
-In this recipe, a `Copy` button is automatically added to all code blocks using Prism's 
+In this recipe, a `Copy` button is automatically added to all code blocks using Prism's
 [`toolbar`](https://prismjs.com/plugins/toolbar/) and
 [`copy-to-clipboard`](https://prismjs.com/plugins/copy-to-clipboard/) plugins.
 
@@ -98,7 +117,10 @@ In this recipe, a `Copy` button is automatically added to all code blocks using 
       ]
     }
   </script>
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
 </head>
 <body>
   <zero-md src="fixture.md"></zero-md>
@@ -127,9 +149,12 @@ $a_2 + b^2 = d^e $
   <script>
     window.MathJax = {
       tex: {
-        inlineMath: [ ['$', '$'], ['\\(', '\\)'], ],
-      },
-    };
+        inlineMath: [
+          ['$', '$'],
+          ['\\(', '\\)']
+        ]
+      }
+    }
   </script>
   <script async src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
 </head>

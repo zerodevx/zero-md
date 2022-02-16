@@ -2,14 +2,17 @@
 
 ### Load via CDN (recommended)
 
-`zero-md` is designed to be zero-config with good defaults. For most use-cases, just importing the script from CDN
-and consuming the component directly should suffice.
+`zero-md` is designed to be zero-config with good defaults. For most use-cases, just importing the
+script from CDN and consuming the component directly should suffice.
 
 ```html
 <head>
   ...
   <!-- Import element definition -->
-  <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
   ...
 </head>
 <body>
@@ -26,7 +29,8 @@ Latest beta: `https://cdn.jsdelivr.net/npm/zero-md@next/dist/zero-md.min.js`
 
 ### Install in web projects
 
-Install package with `npm` or `yarn`. Note that you'll need [Node.js](https://nodejs.org/) installed.
+Install package with `npm` or `yarn`. Note that you'll need [Node.js](https://nodejs.org/)
+installed.
 
 ```
 $ npm install --save zero-md

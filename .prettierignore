@@ -1,0 +1,4 @@
+dist/
+test/**
+!test/index.*
+docs/**/*.html

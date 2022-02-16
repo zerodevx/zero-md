@@ -7,6 +7,7 @@ module.exports = {
   gtag('js', new Date());
   gtag('config', 'G-LJS2EY950X');
 </script>
+<link rel="icon" type="image/x-icon" href="/zero-md/favicon.ico">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Seaweed+Script&text=<zero-md>&display=swap">`,
   header: `<header style="display:flex;flex-direction:column;align-items:center;font-size:3.75rem;margin-top:0.75rem;">
   <h1 style="font-family:'Seaweed Script',sans-serif">&lt;zero-md&gt;</h1>

@@ -5,24 +5,23 @@
 Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
 [PR](https://github.com/zerodevx/zero-md/pulls)! I'd be stoked to accept any contributions!
 
-### Develop locally
+### Noticed a bug? Have a feature request?
 
-#### Install
+Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
+[PR](https://github.com/zerodevx/zero-md/pulls)! I'd be stoked to accept any contributions!
 
-Fork and clone the project, then install dependencies.
+### Development
 
-```bash
-$ cd zero-md
-$ npm install
-```
+Standard Github [contribution workflow](https://github.com/firstcontributions/first-contributions)
+applies.
 
 #### Run the dev server
 
-```bash
+```
 $ npm run dev
 ```
 
-Open your browser to `http://localhost:5000`. You should see the test suite running.
+Point your browser to `http://localhost:8000` and you should see the test suite running.
 
 #### Testing
 
@@ -30,34 +29,23 @@ Tests are browser-based and run on [Mocha](https://mochajs.org/) with
 [Chai](https://www.chaijs.com/) asserts. If you're adding a new feature or bugfixing, please add the
 corresponding regression test into `test/index.spec.js` accordingly.
 
-Tests can be run by pointing your browser to `http://localhost:5000`.
+#### Format and lint
 
-#### Linting
-
-Code should be in [Standardjs](https://standardjs.com/) format. Run the linter with:
-
-```bash
+```
+$ npm run format
 $ npm run lint
 ```
 
-#### Making changes to source
-
-If you're adding a new feature or bugfixing, please commit your changes into a new branch and raise
-a pull-request into the `main` branch upstream, and reference the related issues.
-
-#### Running the docs
-
-The docs (as seen in `https://zerodevx.github.io/zero-md/`) can be accessed by pointing your browser
-to `http://localhost:5000/docs/` (note the trailing slash).
+Formatting and linting by [prettier](https://github.com/prettier/prettier) and
+[eslint](https://github.com/eslint/eslint) respectively.
 
 #### Making changes to docs
 
-Documentation is stored in the `/docs` folder, published with
-[Github Pages](https://pages.github.com/) and based on
-[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs). The markdown for each section is located
-in `readme.md` in its corresponding pretty URL.
+Documentation is in the `/docs` folder in the form of `readme.md` files, and published on
+[Github Pages](https://pages.github.com/). This setup is based on
+[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs).
 
-In general, just raising a PR on `readme.md` files should suffice.
+To make changes to docs, simply raise a PR on any `readme.md` files should suffice.
 
 ### Version history
 

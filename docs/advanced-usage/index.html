@@ -54,7 +54,7 @@
         setTitle(i.textContent)
         app.src = i.pathname + 'readme.md'
       }
-      const router = navaid()
+      const router = navaid('/', (uri) => location.assign(uri))
       links.forEach(i => router.on(i.pathname, () => changePage(i)))
       router.listen()
     </script>

@@ -2,38 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://zerodevx.github.io/zero-md/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
-    </url>
-    <url>
-        <loc>https://zerodevx.github.io/zero-md/advanced-usage/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
-    </url>
-    <url>
-        <loc>https://zerodevx.github.io/zero-md/attributes-and-helpers/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
     </url>
     <url>
         <loc>https://zerodevx.github.io/zero-md/basic-usage/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
     </url>
     <url>
-        <loc>https://zerodevx.github.io/zero-md/configuration/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
+        <loc>https://zerodevx.github.io/zero-md/advanced-usage/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
     </url>
     <url>
-        <loc>https://zerodevx.github.io/zero-md/installation/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
-    </url>
-    <url>
-        <loc>https://zerodevx.github.io/zero-md/migration-guide/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
-    </url>
-    <url>
-        <loc>https://zerodevx.github.io/zero-md/recipes/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
+        <loc>https://zerodevx.github.io/zero-md/attributes-and-helpers/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
     </url>
     <url>
         <loc>https://zerodevx.github.io/zero-md/contributing/</loc>
-        <lastmod>2022-02-16T09:13:20.730Z</lastmod>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
+    </url>
+    <url>
+        <loc>https://zerodevx.github.io/zero-md/installation/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
+    </url>
+    <url>
+        <loc>https://zerodevx.github.io/zero-md/migration-guide/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
+    </url>
+    <url>
+        <loc>https://zerodevx.github.io/zero-md/configuration/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
+    </url>
+    <url>
+        <loc>https://zerodevx.github.io/zero-md/recipes/</loc>
+        <lastmod>2022-02-16T17:25:28.171Z</lastmod>
     </url>
 </urlset>

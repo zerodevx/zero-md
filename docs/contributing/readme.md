@@ -5,11 +5,6 @@
 Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
 [PR](https://github.com/zerodevx/zero-md/pulls)! I'd be stoked to accept any contributions!
 
-### Noticed a bug? Have a feature request?
-
-Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
-[PR](https://github.com/zerodevx/zero-md/pulls)! I'd be stoked to accept any contributions!
-
 ### Development
 
 Standard Github [contribution workflow](https://github.com/firstcontributions/first-contributions)

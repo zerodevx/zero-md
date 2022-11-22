@@ -5,9 +5,23 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 ![cat!](test1/cat.jpg)
 
-## Anchor link test
+## TOC test
 
-Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.
+[TOC]<!--TOC>1-->
+
+## Poetry test
+
+```poetry
+var this_name_has_**bold**_inside = "bold leftwards should be **bold**;)";
+```
+
+## Custom anchor link test
+
+Clicking [Novae aderisque quoniam](#novae-aderisque-quoniam) should scroll to the correct section.
+
+## anchor link test
+
+Clicking [Taman et veri](#veri-et-taman) should scroll to the correct section.
 
 ## Let's test some code!
 
@@ -160,7 +174,7 @@ vimque aera*, unius augent odium solane; quo Phoebus possent? Lege inmeritam
 amans sacrorum pallada. Corpore sacra nihil: corpora taceam, aberat
 **repulsus**.
 
-## Tamen et veri
+## Tamen et veri {#veri-et-tamen}
 
 Lorem markdownum iugulum levati; tuum feri ignes rogantem fugio natorum.
 Eueninae ducere et erat ad caruit adclinavit quod. Quae diebus domo, posset

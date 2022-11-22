@@ -1,12 +1,12 @@
 {
-    "javascript.validate.enable": false,
+  "javascript.validate.enable": false,
 
-    "editor.formatOnSave": true,
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 
-    "eslint.lintTask.enable": true,
+  "eslint.lintTask.enable": true,
 
-    "eslint.alwaysShowStatus": true,
+  "eslint.alwaysShowStatus": true
 }

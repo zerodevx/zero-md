@@ -1,4 +1,3 @@
-
 {
   // See http://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
   // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
@@ -7,6 +6,6 @@
     // Catch linting errors as you write:
     "dbaeumer.vscode-eslint",
     // Format
-    "esbenp.prettier-vscode",
+    "esbenp.prettier-vscode"
   ]
 }

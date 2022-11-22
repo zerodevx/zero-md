@@ -267,7 +267,7 @@ export class ZeroMd extends HTMLElement {
           ? await (async () => {
               const id = this.config.gitlab.projectId
               const branch = this.config.gitlab.branch
-              const absolutePath = encodeURIComponent(this.path)
+              const absolutePath = encodeURIComponent(this.path.trim())
               absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
 
               return fetch(absoluteUrl, {
@@ -277,8 +277,8 @@ export class ZeroMd extends HTMLElement {
               })
             })()
           : await (async () => {
-              const url = this.src
-              absoluteUrl = url.trim().startsWith('http') ? url : this.config.baseUrl + url
+              const url = this.src.trim()
+              absoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
 
               return fetch(absoluteUrl)
             })()
@@ -408,7 +408,8 @@ export class ZeroMd extends HTMLElement {
         this.fire('zero-md-error', {
           msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
           status: resp.status,
-          src: this.src
+          src: this.src,
+          path: this.path
         })
         return ''
       }

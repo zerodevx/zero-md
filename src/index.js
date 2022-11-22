@@ -3,8 +3,16 @@ export class ZeroMd extends HTMLElement {
     return this.getAttribute('src')
   }
 
+  get path() {
+    return this.getAttribute('path')
+  }
+
   set src(val) {
     this.reflect('src', val)
+  }
+
+  set path(val) {
+    this.reflect('path', val)
   }
 
   get manualRender() {
@@ -24,11 +32,16 @@ export class ZeroMd extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['src']
+    return ['src', 'path']
   }
 
   attributeChangedCallback(name, old, val) {
-    if (name === 'src' && this.connected && !this.manualRender && val !== old) {
+    if (
+      (name === 'src' || name === 'path') &&
+      this.connected &&
+      !this.manualRender &&
+      val !== old
+    ) {
       this.render()
     }
   }
@@ -243,13 +256,33 @@ export class ZeroMd extends HTMLElement {
   // Construct md nodes and return HTML string
   async buildMd(opts = {}) {
     const src = async () => {
-      if (!this.src) {
+      if (!this.src && !this.path) {
+        console.log('no src or path')
         return ''
       }
 
-      const url = this.src
-      const absoluteUrl = url.trim().startsWith('http') ? url : this.config.baseUrl + url
-      const resp = await fetch(absoluteUrl)
+      let absoluteUrl = ''
+      let isReadingFromGitlabConfigured = this.config.gitlab !== {}
+      const resp =
+        isReadingFromGitlabConfigured && this.path
+          ? await (async () => {
+              const id = this.config.gitlab.projectId
+              const branch = this.config.gitlab.branch
+              const absolutePath = encodeURIComponent(this.path)
+              absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+              return fetch(absoluteUrl, {
+                headers: {
+                  'PRIVATE-TOKEN': this.config.gitlab.token
+                }
+              })
+            })()
+          : await (async () => {
+              const url = this.src
+              absoluteUrl = url.trim().startsWith('http') ? url : this.config.baseUrl + url
+
+              return fetch(absoluteUrl)
+            })()
+
       if (resp.ok) {
         let md = await resp.text()
 
@@ -355,7 +388,7 @@ export class ZeroMd extends HTMLElement {
         /* GET HTML */
 
         let html = window.marked(md, {
-          baseUrl: this.getBaseUrl(this.src),
+          baseUrl: this.getBaseUrl(absoluteUrl),
           renderer,
           ...opts
         })

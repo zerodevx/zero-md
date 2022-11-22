@@ -67,7 +67,7 @@ export class ZeroMd extends HTMLElement {
         projectId: null,
         path: null,
         branch: 'master',
-        ...(window.ZeroMdConfig.gitlab || {})
+        ...window.ZeroMdConfig.gitlab
       },
       shortBreaksNumber: 2,
       longBreaksNumber: 20,
@@ -270,6 +270,12 @@ export class ZeroMd extends HTMLElement {
               const branch = this.config.gitlab.branch
               const absolutePath = encodeURIComponent(this.path)
               absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+              console.log('absoluteUrl', absoluteUrl)
+              console.log('this.config.gitlab.token', this.config.gitlab.token)
+              console.dir('this.config.gitlab', this.config.gitlab)
+              console.dir(window.ZeroMdConfig)
+              console.dir(window.ZeroMdConfig.config)
+              // console.dir(window.ZeroMdConfig.gitlab)
               return fetch(absoluteUrl, {
                 headers: {
                   'PRIVATE-TOKEN': this.config.gitlab.token

@@ -3,11 +3,15 @@
   "extends": ["eslint:recommended", "prettier"],
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": "2019"
+    "ecmaVersion": 2019
   },
   "env": {
     "es2021": true,
     "node": true,
     "browser": true
+  },
+
+  "globals": {
+    "__VUEPRESS_DEV__": "readonly"
   }
 }

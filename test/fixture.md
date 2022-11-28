@@ -9,6 +9,36 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 [TOC]<!--TOC>1-->
 
+## CodeGroup test 1
+
+:::
+
+```js
+/** @type {string} */
+const foo = 'foo'
+```
+
+```ts
+const bar: String = 'bar'
+```
+
+:::
+
+## CodeGroup test 2
+
+:::
+
+```ts
+const bar: String = 'bar'
+```
+
+```javascript
+/** @type {string} */
+const foo = 'foo'
+```
+
+:::
+
 ## Poetry test
 
 ```poetry
@@ -25,25 +55,22 @@ Clicking [Taman et veri](#veri-et-taman) should scroll to the correct section.
 
 ## Let's test some code!
 
+Here's python:
+
+```python
+#  Hello world in Python
+
+def hello(to):
+    print("Hello, " + to + "!")
+```
+
 Here's javascript:
 
 ```js
 // Hello world in JavaScript
 
-console.log("Hello World");
-```
-
-Let's try C++:
-
-```cpp
-// Hello World in C++ (pre-ISO)
-
-#include <iostream.h>
-
-main()
-{
-    cout << "Hello World!" << endl;
-    return 0;
+function hello(to) {
+    console.log("Hello, " + to + "!");
 }
 ```
 
@@ -71,6 +98,20 @@ public class HelloWorld extends MIDlet {
     javax.microedition.midlet.MIDletStateChangeException {  }
   protected void destroyApp(boolean parm1) throws
     javax.microedition.midlet.MIDletStateChangeException {  }
+}
+```
+
+Let's try C++:
+
+```cpp
+// Hello World in C++ (pre-ISO)
+
+#include <iostream.h>
+
+main()
+{
+    cout << "Hello World!" << endl;
+    return 0;
 }
 ```
 

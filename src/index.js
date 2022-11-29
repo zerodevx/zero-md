@@ -10,7 +10,11 @@ export class ZeroMd extends HTMLElement {
   }
 
   get lang() {
-    return this.getAttribute('lang') || this.config.lang
+    return (
+      new URLSearchParams(window.location.search).get('lang') ||
+      this.getAttribute('lang') ||
+      this.config.lang
+    )
   }
 
   set src(val) {

@@ -69,7 +69,7 @@ const bar: String = 'bar'
 const bar: String = 'bar'
 ```
 
-```javascript
+```js
 /** @type {string} */
 const foo = 'foo'
 ```

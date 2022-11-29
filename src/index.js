@@ -17,6 +17,14 @@ export class ZeroMd extends HTMLElement {
     )
   }
 
+  get code() {
+    return (
+      new URLSearchParams(window.location.search).get('code') ||
+      this.getAttribute('code') ||
+      this.config.code
+    )
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
@@ -27,6 +35,10 @@ export class ZeroMd extends HTMLElement {
 
   set lang(val) {
     this.reflect('lang', val)
+  }
+
+  set code(val) {
+    this.reflect('code', val)
   }
 
   get manualRender() {
@@ -46,12 +58,12 @@ export class ZeroMd extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['src', 'path', 'lang']
+    return ['src', 'path', 'lang', 'code']
   }
 
   attributeChangedCallback(name, old, val) {
     if (
-      (name === 'src' || name === 'path' || name === 'lang') &&
+      (name === 'src' || name === 'path' || name === 'lang' || name === 'code') &&
       this.connected &&
       !this.manualRender &&
       val !== old
@@ -134,6 +146,7 @@ export class ZeroMd extends HTMLElement {
       imgBaseOld: './resources',
       imgBaseNew: 'https://github.com/yashaka/taotaspy-resources/raw/master',
       lang: null,
+      code: null,
       pTagLang: undefined, // expect string with something like "en-us", "ru", etc...
       ...defaults,
       ...window.ZeroMdConfig
@@ -478,15 +491,16 @@ export class ZeroMd extends HTMLElement {
             [[], []]
           )
 
+          const code = this.code
           return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
                 .map(
                   (title, index) =>
-                    `<button class="tab-button${index === 0 ? ' active' : ''}" data-id="${IDfy(
-                      title
-                    )}">${title}</button>`
+                    `<button class="tab-button${
+                      (code ? code === IDfy(title) : index === 0) ? ' active' : ''
+                    }" data-id="${IDfy(title)}">${title}</button>`
                 )
                 .join('\n')}
             </div>
@@ -494,9 +508,9 @@ export class ZeroMd extends HTMLElement {
               ${itemsContent
                 .map(
                   (item, index) =>
-                    `<div class="content${index === 0 ? ' active' : ''}" id="${IDfy(
-                      itemsTitles[index]
-                    )}">${item}</div>`
+                    `<div class="content${
+                      (code ? code === IDfy(itemsTitles[index]) : index === 0) ? ' active' : ''
+                    }" id="${IDfy(itemsTitles[index])}">${item}</div>`
                 )
                 .join('\n')}
             </div>
@@ -513,7 +527,8 @@ export class ZeroMd extends HTMLElement {
           status: resp.status,
           src: this.src,
           path: this.path,
-          lang: this.lang
+          lang: this.lang,
+          code: this.code
         })
         return ''
       }

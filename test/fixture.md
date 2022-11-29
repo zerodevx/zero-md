@@ -1,3 +1,5 @@
+<localized main="en"/>
+
 # markdown-fixture
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
@@ -8,6 +10,41 @@ A Lorem Ipsum generator that doesn't suck. :P
 ## TOC test
 
 [TOC]<!--TOC>1-->
+
+## Langs test
+
+<en>First paragraph</en>
+
+<uk>Перший параграф</uk>
+
+<ru>Первый параграф</ru>
+
+<en>
+First paragraph
+</en>
+
+<uk>
+Перший параграф
+</uk>
+
+<ru>
+Первый параграф
+</ru>
+
+<en>
+* First item
+* Second item
+</en>
+
+<uk>
+* перший айтем
+* другий айтем
+</uk>
+
+<ru>
+* Первый айтем
+* Второй айтем
+</ru>
 
 ## CodeGroup test 1
 

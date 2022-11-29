@@ -13,5 +13,9 @@
 
   "globals": {
     "__VUEPRESS_DEV__": "readonly"
+  },
+
+  "rules": {
+    "no-unused-vars": ["error", { "varsIgnorePattern": "_" }]
   }
 }

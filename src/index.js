@@ -9,12 +9,20 @@ export class ZeroMd extends HTMLElement {
     return this.getAttribute('path')
   }
 
+  get lang() {
+    return this.getAttribute('lang') || this.config.lang
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
 
   set path(val) {
     this.reflect('path', val)
+  }
+
+  set lang(val) {
+    this.reflect('lang', val)
   }
 
   get manualRender() {
@@ -34,12 +42,12 @@ export class ZeroMd extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['src', 'path']
+    return ['src', 'path', 'lang']
   }
 
   attributeChangedCallback(name, old, val) {
     if (
-      (name === 'src' || name === 'path') &&
+      (name === 'src' || name === 'path' || name === 'lang') &&
       this.connected &&
       !this.manualRender &&
       val !== old
@@ -121,6 +129,7 @@ export class ZeroMd extends HTMLElement {
       indentInsideTocByPixels: 40,
       imgBaseOld: './resources',
       imgBaseNew: 'https://github.com/yashaka/taotaspy-resources/raw/master',
+      lang: null,
       pTagLang: undefined, // expect string with something like "en-us", "ru", etc...
       ...defaults,
       ...window.ZeroMdConfig
@@ -335,8 +344,16 @@ export class ZeroMd extends HTMLElement {
         /* PROCESS MD */
         const renderer = new window.marked.Renderer()
 
-        const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
+        const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
+        const [[shouldBeLocalized, _, defaultLang]] = localizedMatch.length ? localizedMatch : [[]]
+        if (shouldBeLocalized) {
+          const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim
+          md = md.replace(localized, (match, $1, $2) => {
+            return $1 === (this.lang || defaultLang) ? $2 : ''
+          })
+        }
 
+        const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
         const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']
         const boldRegExpRule = [
           new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
@@ -491,7 +508,8 @@ export class ZeroMd extends HTMLElement {
           msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
           status: resp.status,
           src: this.src,
-          path: this.path
+          path: this.path,
+          lang: this.lang
         })
         return ''
       }

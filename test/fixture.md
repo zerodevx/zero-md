@@ -11,6 +11,11 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 [TOC]<!--TOC>1-->
 
+## md Links forwarding
+
+[link to itself](./fixture.md)
+[link to itself (this section)](./fixture.md#md-links-forwarding)
+
 ## Langs test
 
 <en>First paragraph</en>

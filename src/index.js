@@ -420,10 +420,10 @@ export class ZeroMd extends HTMLElement {
 
         // todo: fix to skip links that start with http
         const mdExtensions = /\.md\)/gim
-        md = md.replace(mdExtensions, '-md)')
+        md = md.replace(mdExtensions, `-md${window.location.search})`)
 
         const mdExtensionsWithId = /\.md#/gim
-        md = md.replace(mdExtensionsWithId, '-md#')
+        md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
         // todo: change to ```poetry ... ``` style
         const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim

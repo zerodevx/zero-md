@@ -97,13 +97,15 @@ export class ZeroMd extends HTMLElement {
         }
         
         button {
-          letter-spacing: 3px;
+          letter-spacing: 0.75px;
           border: none;
           padding: 10px;
           # background-color: #bccbe9;
           background-color: rgba(27,31,35,.05);
-          color: #232c3d;
-          font-size: 18px;
+          # color: #8e9ead;
+          color: #778796;
+          font-size: 12px;
+          font-weight: 200;
           cursor: pointer;
           transition: 0.5s;
         }
@@ -522,6 +524,9 @@ export class ZeroMd extends HTMLElement {
         }
 
         html = html.replace(codeGroups, processCodeGroup)
+
+        const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
+        html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
 
         return html
       } else {

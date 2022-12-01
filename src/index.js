@@ -418,6 +418,9 @@ export class ZeroMd extends HTMLElement {
           md = md.replace(new RegExp(`\`\`\`${lang}`, 'gim'), '```')
         })
 
+        const articleTypeExtension = /\.(\w+)\.md(\)|#)/gim
+        md = md.replace(articleTypeExtension, `-$1.md$2`)
+
         // todo: fix to skip links that start with http
         const mdExtensions = /\.md\)/gim
         md = md.replace(mdExtensions, `-md${window.location.search})`)

@@ -11,6 +11,13 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 [TOC]<!--TOC>1-->
 
+## md Links with types
+
+[test-without-type.md](./test-without-type.md)
+[test-with.type.md](./test-with.type.md)
+[test-without-type.md#with-anchor](./test-without-type.md#with-anchor)
+[test-with.type.md#with-anchor](./test-with.type.md#with-anchor)
+
 ## md Links forwarding
 
 [link to itself](./fixture.md)

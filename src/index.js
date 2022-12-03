@@ -477,7 +477,7 @@ export class ZeroMd extends HTMLElement {
         /* GET HTML */
 
         let html = window.marked(md, {
-          baseUrl: this.getBaseUrl(absoluteUrl),
+          baseUrl: this.getBaseUrl(window.location.href),
           renderer,
           ...opts
         })

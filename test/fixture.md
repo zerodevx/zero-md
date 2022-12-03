@@ -61,6 +61,10 @@ First paragraph
 
 ## Text per Code test
 
+<js-ts>
+This will be shown for both code=js and code=ts
+</js-ts>
+
 <js>
 <uk>А от з модулями ти можеш зробити так:</uk>
 <ru>А вот с модулями ты можешь сделать так:</ru>
@@ -74,7 +78,6 @@ First paragraph
 ```js
 // js code with classes ...
 ```
-
 </js>
 
 <ts>
@@ -84,7 +87,6 @@ First paragraph
 ```ts
 // ts code with classes...
 ```
-
 </ts>
 
 ## CodeGroup test 1

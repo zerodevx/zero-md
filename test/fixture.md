@@ -1,4 +1,5 @@
 <localized main="en"/>
+<codalized main="ts"/>
 
 # markdown-fixture
 
@@ -57,6 +58,34 @@ First paragraph
 * Первый айтем
 * Второй айтем
 </ru>
+
+## Text per Code test
+
+<js>
+<uk>А от з модулями ти можеш зробити так:</uk>
+<ru>А вот с модулями ты можешь сделать так:</ru>
+
+```js
+// js code with modules...
+```
+
+А з класами ти можеш зробити так:
+
+```js
+// js code with classes ...
+```
+
+</js>
+
+<ts>
+<ru>C класcами ты можешь сделать так:</ru>
+<uk>З класами ти можеш зробити так:</uk>
+
+```ts
+// ts code with classes...
+```
+
+</ts>
 
 ## CodeGroup test 1
 

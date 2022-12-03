@@ -363,6 +363,15 @@ export class ZeroMd extends HTMLElement {
         /* PROCESS MD */
         const renderer = new window.marked.Renderer()
 
+        const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
+        const [[shouldBeCodalized, __, defaultCode]] = codalizedMatch.length ? codalizedMatch : [[]]
+        if (shouldBeCodalized) {
+          const codalized = /<(js|ts|py|java|cs)>([\s\S]*?)<\/\1>/gim
+          md = md.replace(codalized, (match, $1, $2) => {
+            return $1 === (this.code || defaultCode) ? $2 : ''
+          })
+        }
+
         const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
         const [[shouldBeLocalized, _, defaultLang]] = localizedMatch.length ? localizedMatch : [[]]
         if (shouldBeLocalized) {

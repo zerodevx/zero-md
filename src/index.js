@@ -124,12 +124,16 @@ export class ZeroMd extends HTMLElement {
           background-color: white;
         }
         
-        .content {
+        .content,.inline-content {
           display: none;
         }
         
         .content.active {
           display: block;
+        }
+        
+        .inline-content.active {
+          display: inline;
         }
         `,
       baseUrl: '',
@@ -368,7 +372,7 @@ export class ZeroMd extends HTMLElement {
         const [[shouldBeCodalized, __, defaultCode]] = codalizedMatch.length ? codalizedMatch : [[]]
         if (shouldBeCodalized) {
           const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)?)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(codalized, (match, _, $2, $3, $4) => {
+          md = md.replace(codalized, (match, $1, $2, $3, $4) => {
             const candidates = $3 ? [$2, $3.slice(1)] : [$2]
             console.log('candidates', candidates)
             console.log('this.code || defaultCode', this.code || defaultCode)
@@ -376,7 +380,9 @@ export class ZeroMd extends HTMLElement {
               'candidates.includes(this.code || defaultCode)',
               candidates.includes(this.code || defaultCode)
             )
-            return candidates.includes(this.code || defaultCode) ? $4 : ''
+            return `<span class="inline-content${
+              candidates.includes(this.code || defaultCode) ? ' active' : ''
+            }" id="${$1}">${$4}</span>`
           })
         }
 
@@ -652,8 +658,8 @@ export class ZeroMd extends HTMLElement {
                   }
                 })
 
-                node.querySelectorAll(`.content`).forEach((content) => {
-                  if (content.id === newActiveContentId) {
+                node.querySelectorAll(`.content,.inline-content`).forEach((content) => {
+                  if (content.id.split('-').includes(newActiveContentId)) {
                     content.classList.add('active')
                   } else {
                     content.classList.remove('active')

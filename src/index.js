@@ -371,9 +371,9 @@ export class ZeroMd extends HTMLElement {
         const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
         const [[shouldBeCodalized, __, defaultCode]] = codalizedMatch.length ? codalizedMatch : [[]]
         if (shouldBeCodalized) {
-          const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)?)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(codalized, (match, $1, $2, $3, $4) => {
-            const candidates = $3 ? [$2, $3.slice(1)] : [$2]
+          const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
+          md = md.replace(codalized, (match, $1, __, ___, $4) => {
+            const candidates = $1.split('-')
             console.log('candidates', candidates)
             console.log('this.code || defaultCode', this.code || defaultCode)
             console.log(

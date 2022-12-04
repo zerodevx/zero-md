@@ -61,7 +61,7 @@ First paragraph
 
 ## Text per Code test
 
-This is inline codalized command: <js-ts>`browser.all`</js-ts><java>`elements`</java>!
+This is inline codalized command: <js-ts-py>`browser.all`</js-ts-py><java>`elements`</java>!
 
 <js-ts>
 This will be shown for both code=js and code=ts

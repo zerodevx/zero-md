@@ -149,6 +149,7 @@ export class ZeroMd extends HTMLElement {
       imgBaseNew: 'https://github.com/yashaka/taotaspy-resources/raw/master',
       lang: null,
       code: null,
+      groupCodeGroups: true,
       pTagLang: undefined, // expect string with something like "en-us", "ru", etc...
       ...defaults,
       ...window.ZeroMdConfig
@@ -638,20 +639,38 @@ export class ZeroMd extends HTMLElement {
           (tabsWrapper.onclick = (e) => {
             const element = e.target
             const newActiveContentId = element.dataset.id
-            const isElementATabButton =
+            const isElementANonActiveTabButton =
               !!newActiveContentId && !element.classList.contains('active')
 
-            if (isElementATabButton) {
-              const buttonsWrapper = element.parentElement
-              buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
-              element.classList.add('active')
+            if (isElementANonActiveTabButton) {
+              if (this.config.groupCodeGroups) {
+                node.querySelectorAll('.wrapper .tab-button').forEach((tabButton) => {
+                  if (tabButton.dataset.id === newActiveContentId) {
+                    tabButton.classList.add('active')
+                  } else {
+                    tabButton.classList.remove('active')
+                  }
+                })
 
-              const wrapper = buttonsWrapper.parentElement
-              const contents = wrapper.querySelectorAll('.content')
-              contents.forEach((content) => {
-                content.classList.remove('active')
-              })
-              wrapper.querySelector(`#${newActiveContentId}`).classList.add('active')
+                node.querySelectorAll(`.content`).forEach((content) => {
+                  if (content.id === newActiveContentId) {
+                    content.classList.add('active')
+                  } else {
+                    content.classList.remove('active')
+                  }
+                })
+              } else {
+                const buttonsWrapper = element.parentElement
+                buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
+                element.classList.add('active')
+
+                const wrapper = buttonsWrapper.parentElement
+                const contents = wrapper.querySelectorAll('.content')
+                contents.forEach((content) => {
+                  content.classList.remove('active')
+                })
+                wrapper.querySelector(`#${newActiveContentId}`).classList.add('active')
+              }
             }
           })
       )

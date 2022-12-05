@@ -61,17 +61,14 @@ First paragraph
 
 ## Multi code block test
 
-:::
-
+::::::::::::::::::
 ```js ts
 const foo = 'foo'
 ```
-
 ```java
 string bar = 'bar'
 ```
-
-:::
+::::::::::::::::::
 
 ## Text per Code test
 

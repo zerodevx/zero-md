@@ -507,7 +507,7 @@ export class ZeroMd extends HTMLElement {
         const toc = `<div class="toc">${tocLinks.join('')}</div>`
         html = html.replace(tocMarker, toc)
 
-        const codeGroups = /(<p>:::<\/p>)([\s\S]*?)\1/gim
+        const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim
         const processCodeGroup = (match, $1, $2) => {
           const items = $2
 

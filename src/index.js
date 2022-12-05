@@ -374,12 +374,6 @@ export class ZeroMd extends HTMLElement {
           const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
           md = md.replace(codalized, (match, $1, __, ___, $4) => {
             const candidates = $1.split('-')
-            console.log('candidates', candidates)
-            console.log('this.code || defaultCode', this.code || defaultCode)
-            console.log(
-              'candidates.includes(this.code || defaultCode)',
-              candidates.includes(this.code || defaultCode)
-            )
             return `<span class="inline-content${
               candidates.includes(this.code || defaultCode) ? ' active' : ''
             }" id="${$1}">${$4}</span>`
@@ -487,6 +481,13 @@ export class ZeroMd extends HTMLElement {
 
         md = md.replace(poetries, processPoetry(poetryRules))
         md = md.replace(backTickPoetries, processPoetry(poetryRules))
+
+        const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim
+        md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
+          const langs = $1.split(' ')
+          const code = $4
+          return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
+        })
 
         /* GET HTML */
 

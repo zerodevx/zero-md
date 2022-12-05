@@ -59,6 +59,20 @@ First paragraph
 * Второй айтем
 </ru>
 
+## Multi code block test
+
+:::
+
+```js ts
+const foo = 'foo'
+```
+
+```java
+string bar = 'bar'
+```
+
+:::
+
 ## Text per Code test
 
 This is inline codalized command: <js-ts-py>`browser.all`</js-ts-py><java>`elements`</java>!

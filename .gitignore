@@ -4,7 +4,8 @@
 test/build/
 test/scratch.html
 tmp/
-test/*.local.html
+test/*.local.*
+test/*-local.*
 
 ### macOS ###
 # General

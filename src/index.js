@@ -449,7 +449,8 @@ export class ZeroMd extends HTMLElement {
 
         // todo: change to ```poetry ... ``` style
         const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim
-        const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
+        // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
+        const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim
         const poetryRules = [
           [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
 
@@ -464,7 +465,10 @@ export class ZeroMd extends HTMLElement {
           [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
         ]
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
-        const processPoetry = (rules) => (match, code) => {
+        const processPoetry = (rules) => (match, $1, __, code) => {
+          console.log('\npoetry match\n', match, '\n-----------')
+          const [_, langsString] = ($1 && $1.split(':')) || []
+          const langs = langsString && langsString.trim().split(' ')
           let res = code
 
           for (const rule of rules) {
@@ -476,7 +480,11 @@ export class ZeroMd extends HTMLElement {
           }
 
           // return `<pre><code>${res}</code></pre>`;
-          return `<pre>${res}</pre>`
+          return langs
+            ? langs
+                .map((lang) => `<pre><code class="language-${lang}" poetry>${res}</code></pre>`)
+                .join('\n')
+            : `<pre>${res}</pre>`
         }
 
         md = md.replace(poetries, processPoetry(poetryRules))
@@ -499,6 +507,8 @@ export class ZeroMd extends HTMLElement {
 
         /* PROCESS HTML */
 
+        console.log('html', html)
+
         if (isOriginalUnderscoredBoldDisabled) {
           html = html.replace(/‡‡‡/gim, '__')
         }
@@ -511,14 +521,16 @@ export class ZeroMd extends HTMLElement {
         const processCodeGroup = (match, $1, $2) => {
           const items = $2
 
-          const itemMarker = /<pre><code class="language-(\w+)".*>[\s\S]*?<\/code><\/pre>/gim
+          const itemMarker =
+            /<pre><code class="language-(\w+)"( poetry)?.*?>([\s\S]*?)<\/code><\/pre>/gim
           const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
-            ([content, titles], [c, t]) => [
-              [...content, c],
-              [...titles, t]
+            ([content, titles], [match, title, poetry, inner]) => [
+              [...content, poetry ? `<pre>${inner}</pre>` : match],
+              [...titles, title]
             ],
             [[], []]
           )
+          console.dir(itemsContent)
 
           const code = this.code
           return `

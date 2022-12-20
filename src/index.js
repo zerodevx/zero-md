@@ -380,6 +380,13 @@ export class ZeroMd extends HTMLElement {
           })
         }
 
+        const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
+          if (this.code === perCode) {
+            md = md.replace(new RegExp(from, 'gmi'), to)
+          }
+        })
+
         const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
         const [[shouldBeLocalized, _, defaultLang]] = localizedMatch.length ? localizedMatch : [[]]
         if (shouldBeLocalized) {
@@ -466,7 +473,6 @@ export class ZeroMd extends HTMLElement {
         ]
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
         const processPoetry = (rules) => (match, $1, __, code) => {
-          console.log('\npoetry match\n', match, '\n-----------')
           const [_, langsString] = ($1 && $1.split(':')) || []
           const langs = langsString && langsString.trim().split(' ')
           let res = code
@@ -507,8 +513,6 @@ export class ZeroMd extends HTMLElement {
 
         /* PROCESS HTML */
 
-        console.log('html', html)
-
         if (isOriginalUnderscoredBoldDisabled) {
           html = html.replace(/‡‡‡/gim, '__')
         }
@@ -530,7 +534,6 @@ export class ZeroMd extends HTMLElement {
             ],
             [[], []]
           )
-          console.dir(itemsContent)
 
           const code = this.code
           return `

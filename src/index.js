@@ -369,39 +369,43 @@ export class ZeroMd extends HTMLElement {
         const renderer = new window.marked.Renderer()
 
         const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
-        const [[shouldBeCodalized, __, defaultCode]] = codalizedMatch.length ? codalizedMatch : [[]]
+        const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
+          ? codalizedMatch
+          : [[]]
         if (shouldBeCodalized) {
           const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
           md = md.replace(codalized, (match, $1, __, ___, $4) => {
             const candidates = $1.split('-')
             return `<span class="inline-content${
-              candidates.includes(this.code || defaultCode) ? ' active' : ''
+              candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
             }" id="${$1}">${$4}</span>`
           })
         }
 
         const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
-          if (this.code === perCode) {
-            md = md.replace(new RegExp(from, 'gmi'), to)
-          }
-        })
-
-        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perLang, __, from, to]) => {
-          if (this.lang === perLang) {
+          if ((this.code || defaultCodeFromMd) === perCode) {
             md = md.replace(new RegExp(from, 'gmi'), to)
           }
         })
 
         const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
-        const [[shouldBeLocalized, _, defaultLang]] = localizedMatch.length ? localizedMatch : [[]]
+        const [[shouldBeLocalized, _, defaultLangFromMd]] = localizedMatch.length
+          ? localizedMatch
+          : [[]]
         if (shouldBeLocalized) {
           const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim
           md = md.replace(localized, (match, $1, $2) => {
-            return $1 === (this.lang || defaultLang) ? $2 : ''
+            return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
           })
         }
+
+        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perLang, __, from, to]) => {
+          if ((this.lang || defaultLangFromMd) === perLang) {
+            md = md.replace(new RegExp(from, 'gmi'), to)
+          }
+        })
 
         const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
         const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']

@@ -387,6 +387,13 @@ export class ZeroMd extends HTMLElement {
           }
         })
 
+        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perLang, __, from, to]) => {
+          if (this.lang === perLang) {
+            md = md.replace(new RegExp(from, 'gmi'), to)
+          }
+        })
+
         const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
         const [[shouldBeLocalized, _, defaultLang]] = localizedMatch.length ? localizedMatch : [[]]
         if (shouldBeLocalized) {

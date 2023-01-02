@@ -401,7 +401,7 @@ export class ZeroMd extends HTMLElement {
         }
 
         const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perLang, __, from, to]) => {
+        ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
           if ((this.lang || defaultLangFromMd) === perLang) {
             md = md.replace(new RegExp(from, 'gmi'), to)
           }

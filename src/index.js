@@ -37,7 +37,7 @@ export class ZeroMd extends HTMLElement {
     super()
     this.version = '$VERSION'
     this.config = {
-      markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@2/marked.min.js',
+      markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@4/marked.min.js',
       prismUrl: [
         ['https://cdn.jsdelivr.net/gh/PrismJS/prism@1/prism.min.js', 'data-manual'],
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js'
@@ -234,7 +234,7 @@ export class ZeroMd extends HTMLElement {
       const resp = await fetch(this.src)
       if (resp.ok) {
         const md = await resp.text()
-        return window.marked(md, {
+        return window.marked.parse(md, {
           baseUrl: this.getBaseUrl(this.src),
           ...opts
         })
@@ -253,7 +253,7 @@ export class ZeroMd extends HTMLElement {
         return ''
       }
       const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
-      return window.marked(md, opts)
+      return window.marked.parse(md, opts)
     }
     const html = `<div class="markdown-body${
       opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''

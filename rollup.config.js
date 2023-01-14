@@ -1,12 +1,13 @@
 import replace from '@rollup/plugin-replace'
-import pkg from './package.json'
 import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import livereload from 'rollup-plugin-livereload'
 import serve from 'rollup-plugin-serve'
+import fs from 'node:fs/promises'
 
+const pkg = JSON.parse(await fs.readFile('package.json'))
 const production = !process.env.ROLLUP_WATCH
 
 const build = {

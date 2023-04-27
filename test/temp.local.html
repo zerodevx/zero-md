@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <script>
+      window.ZeroMdConfig = {
+        foo: 'bar',
+        groupCodeGroups: false,
+      }
+    </script>
+    <script type="module" src="build/bundle.js"></script>
+  </head>
+
+  <body>
+    <buttons-on-hover change-attribute="lang" change-selector="#foo"  values-per-button="en:en,ua:ua,ru:ru" default="ua"/>
+    <zero-md id="foo" src="./temp-local.md"></zero-md>
+  </body>
+</html>

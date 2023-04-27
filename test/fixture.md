@@ -109,7 +109,7 @@ This will be shown only for code=java
 
 :::
 
-```js
+```js 
 /** @type {string} */
 const foo = 'foo'
 ```

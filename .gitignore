@@ -1,11 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node
 
-test/build/
+# test/build/
 test/scratch.html
 tmp/
-test/*.local.*
-test/*-local.*
+# test/*.local.*
+# test/*-local.*
 
 ### macOS ###
 # General

@@ -29,7 +29,6 @@ browser.element('#new-todo').type('a').press_enter()
 <ru>Еще более лаконично можно записать ту же строку используя команду `$`:</ru>
 <uk>Ще більш лаконічно можна записати ту ж саму строку використовуючи команду `$`:</uk>
 <en>Even more concisely, you can write the same line using the `$` command:</en>
-
 ```poetry
 **$(**"#new-todo"**)**.append("a").pressEnter();
 ```

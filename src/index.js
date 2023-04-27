@@ -718,5 +718,5 @@ export class ZeroMd extends HTMLElement {
     this.fire('zero-md-rendered', { stamped })
   }
 }
-
+console.log('zero-md')
 customElements.define('zero-md', ZeroMd)

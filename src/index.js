@@ -763,5 +763,4 @@ export class ZeroMd extends HTMLElement {
 }
 customElements.define('zero-md', ZeroMd);
 
-export { ZeroMd };
 //# sourceMappingURL=bundle.js.map

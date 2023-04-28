@@ -475,6 +475,10 @@ class ZeroMd extends HTMLElement {
 
         const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i;
         const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__'];
+
+        const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i;
+        const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"'];
+
         const boldRegExpRule = [
           new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
           '<b>$1</b>'
@@ -482,8 +486,8 @@ class ZeroMd extends HTMLElement {
         // todo: change to ```poetry ... ``` style
         const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim;
         // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
-        const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
-        // const backTickPoetries = /```poetry: ((.+))?\n([\s\S]*?)\n```/gim;
+        // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
+        const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim;
         const poetryRules = [
           [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
 
@@ -498,12 +502,42 @@ class ZeroMd extends HTMLElement {
           [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
         ];
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__';
-        const processPoetry = (rules) => (match, $1, __, code) => {
-          // console.log('match', match);
-          // console.log('__', __);
+        const processPoetry = (rules) => (match, $1, code) => {
+          // console.log('$1', $1);
           // console.log('code', code);
-          const [_, langsString] = ($1 && $1.split(':')) || [];
-          const langs = langsString && langsString.trim().split(' ');
+
+          // const [_, langsString] = ($1 && $1.split(':')) || [];
+          // const langs = langsString && langsString.trim().split(' ');
+          // const langs = $1.trim().split(' ')
+
+          // const [...tabNamesArray] = $1.matchAll(/\w+«[\w\d\s\S]*?»|(\S+)/gim)
+          
+          const [...tabNamesArray] = 
+            $1.matchAll(new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim'))
+
+          const [langs, customNames] = tabNamesArray.reduce(([langs, customNames], [lang]) => {
+            let customName = null
+
+            if (lang.includes(tabNameStart)) {
+              customName = (() => {
+                // const [[__, customName]] = lang.matchAll(/«([\w\d\s\S]*?)»/gim)
+                const [[__, customName]] = 
+                  lang.matchAll(new RegExp(tabNameStart +'([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim'))
+
+                return customName
+              })()
+              
+              lang = lang.split(tabNameStart)[0]
+            }
+
+
+            return[[...langs, lang], [...customNames, customName]]
+          }, [[], []])
+
+          console.log('langs', langs)
+          console.log('customNames', customNames)
+         
+          // console.log('langs', langs)
           let res = code;
 
           for (const rule of rules) {
@@ -517,7 +551,7 @@ class ZeroMd extends HTMLElement {
           // return `<pre><code>${res}</code></pre>`;
           return langs
             ? langs
-                .map((lang) => `<pre><code class="language-${lang}" poetry>${res}</code></pre>`)
+                .map((lang, index) => `<pre><code class="language-${lang}" poetry ${customNames[index] ? `data-customname="${customNames[index]}"` : ''}>${res}</code></pre>`)
                 .join('\n')
             : `<pre>${res}</pre>`
         };
@@ -527,11 +561,11 @@ class ZeroMd extends HTMLElement {
 
         const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim;
         md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
-          console.log('match', match);
-          console.log('$1', $1);
-          console.log('__', __);
-          console.log('___',___);
-          console.log('$4', $4);
+          // console.log('match', match);
+          // console.log('$1', $1);
+          // console.log('__', __);
+          // console.log('___',___);
+          // console.log('$4', $4);
           const langs = $1.split(' ');
           const code = $4;
           return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
@@ -539,22 +573,21 @@ class ZeroMd extends HTMLElement {
 
 
         // Custom tabnames
-        const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i;
-        const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"'];
-        console.log('tabNameStart', tabNameStart);
-        console.log('tabNameEnd', tabNameEnd);
+    
+        // console.log('tabNameStart', tabNameStart);
+        // console.log('tabNameEnd', tabNameEnd);
         
         const  customNameTabBlocks = 
           new RegExp('```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```', "gim");
 
-        console.log('customNameTabBlocks', customNameTabBlocks);
+        // console.log('customNameTabBlocks', customNameTabBlocks);
         const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
-        console.log('customTabNames', customNameTabs);
+        // console.log('customTabNames', customNameTabs);
 
         customNameTabs.forEach(([match, lang, customName, code]) => {
           // console.log('match', match);
           // console.log('lang', lang);
-          console.log('customName', customName);
+          // console.log('customName', customName);
           // console.log('code', code);
 
           // customName = customName.slice(1, -1)
@@ -583,59 +616,59 @@ class ZeroMd extends HTMLElement {
         const toc = `<div class="toc">${tocLinks.join('')}</div>`;
         html = html.replace(tocMarker, toc);
 
-        // const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim;
-        // const processCodeGroup = (match, $1, $2) => {
-        //   // console.log('match', match);
-        //   // console.log('$1', $1);
-        //   // console.log('$2', $2);
-        //   const items = $2;
+        const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim;
+        const processCodeGroup = (match, $1, $2) => {
+          // console.log('match', match);
+          // console.log('$1', $1);
+          // console.log('$2', $2);
+          const items = $2;
 
-        //   const itemMarker =
-        //     /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
-        //   console.log('asdffasdfs', [...items.matchAll(itemMarker)])
-        //   const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
-        //     ([content, titles], [match, title, poetry, __, customName, inner]) => {
+          const itemMarker =
+            /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
+          // console.log([...items.matchAll(itemMarker)])
+          const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
+            ([content, titles], [match, title, poetry, __, customName, inner]) => {
 
-        //     if (customName) {
-        //       title = customName
-        //     }
+            if (customName) {
+              title = customName
+            }
 
-        //     return [
-        //         [...content, poetry ? `<pre>${inner}</pre>` : match],
-        //         [...titles, title]
-        //       ]},
-        //     [[], []]
-        //   );
+            return [
+                [...content, poetry ? `<pre>${inner}</pre>` : match],
+                [...titles, title]
+              ]},
+            [[], []]
+          );
 
-        //   console.log('itemsContent, itemsTitles', [itemsContent, itemsTitles])
-        //   const code = this.code;
-        //   return `
-        //   <div class="wrapper">
-        //     <div class="buttonWrapper">
-        //       ${itemsTitles
-        //         .map(
-        //           (title, index) =>
-        //             `<button class="tab-button${
-        //               (code ? code === IDfy(title) : index === 0) ? ' active' : ''
-        //             }" data-id="${IDfy(title)}">${title}</button>`
-        //         )
-        //         .join('\n')}
-        //     </div>
-        //     <div class="contentWrapper">
-        //       ${itemsContent
-        //         .map(
-        //           (item, index) =>
-        //             `<div class="content${
-        //               (code ? code === IDfy(itemsTitles[index]) : index === 0) ? ' active' : ''
-        //             }" id="${IDfy(itemsTitles[index])}">${item}</div>`
-        //         )
-        //         .join('\n')}
-        //     </div>
-        //   </div>
-        //   `.trim()
-        // };
+          // console.log('itemsContent, itemsTitles', [itemsContent, itemsTitles])
+          const code = this.code;
+          return `
+          <div class="wrapper">
+            <div class="buttonWrapper">
+              ${itemsTitles
+                .map(
+                  (title, index) =>
+                    `<button class="tab-button${
+                      (code ? code === IDfy(title) : index === 0) ? ' active' : ''
+                    }" data-id="${IDfy(title)}">${title}</button>`
+                )
+                .join('\n')}
+            </div>
+            <div class="contentWrapper">
+              ${itemsContent
+                .map(
+                  (item, index) =>
+                    `<div class="content${
+                      (code ? code === IDfy(itemsTitles[index]) : index === 0) ? ' active' : ''
+                    }" id="${IDfy(itemsTitles[index])}">${item}</div>`
+                )
+                .join('\n')}
+            </div>
+          </div>
+          `.trim()
+        };
 
-        // html = html.replace(codeGroups, processCodeGroup);
+        html = html.replace(codeGroups, processCodeGroup);
 
         const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim;
         html = html.replace(languageJsMarker, '<pre><code class="language-typescript"');

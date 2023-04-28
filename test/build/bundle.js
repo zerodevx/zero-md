@@ -503,14 +503,6 @@ class ZeroMd extends HTMLElement {
         ];
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__';
         const processPoetry = (rules) => (match, $1, code) => {
-          // console.log('$1', $1);
-          // console.log('code', code);
-
-          // const [_, langsString] = ($1 && $1.split(':')) || [];
-          // const langs = langsString && langsString.trim().split(' ');
-          // const langs = $1.trim().split(' ')
-
-          // const [...tabNamesArray] = $1.matchAll(/\w+«[\w\d\s\S]*?»|(\S+)/gim)
           
           const [...tabNamesArray] = 
             $1.matchAll(new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim'))
@@ -520,7 +512,6 @@ class ZeroMd extends HTMLElement {
 
             if (lang.includes(tabNameStart)) {
               customName = (() => {
-                // const [[__, customName]] = lang.matchAll(/«([\w\d\s\S]*?)»/gim)
                 const [[__, customName]] = 
                   lang.matchAll(new RegExp(tabNameStart +'([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim'))
 
@@ -530,14 +521,9 @@ class ZeroMd extends HTMLElement {
               lang = lang.split(tabNameStart)[0]
             }
 
-
             return[[...langs, lang], [...customNames, customName]]
           }, [[], []])
 
-          console.log('langs', langs)
-          console.log('customNames', customNames)
-         
-          // console.log('langs', langs)
           let res = code;
 
           for (const rule of rules) {
@@ -561,11 +547,6 @@ class ZeroMd extends HTMLElement {
 
         const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim;
         md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
-          // console.log('match', match);
-          // console.log('$1', $1);
-          // console.log('__', __);
-          // console.log('___',___);
-          // console.log('$4', $4);
           const langs = $1.split(' ');
           const code = $4;
           return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
@@ -573,29 +554,14 @@ class ZeroMd extends HTMLElement {
 
 
         // Custom tabnames
-    
-        // console.log('tabNameStart', tabNameStart);
-        // console.log('tabNameEnd', tabNameEnd);
-        
         const  customNameTabBlocks = 
           new RegExp('```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```', "gim");
-
-        // console.log('customNameTabBlocks', customNameTabBlocks);
         const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
-        // console.log('customTabNames', customNameTabs);
 
         customNameTabs.forEach(([match, lang, customName, code]) => {
-          // console.log('match', match);
-          // console.log('lang', lang);
-          // console.log('customName', customName);
-          // console.log('code', code);
-
-          // customName = customName.slice(1, -1)
 
           md = md.replace(match, `<pre><code class="language-${lang}" data-customname="${customName}">${code}</code></pre>`)
         })
-
- 
  
  
         /* GET HTML */
@@ -618,14 +584,11 @@ class ZeroMd extends HTMLElement {
 
         const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim;
         const processCodeGroup = (match, $1, $2) => {
-          // console.log('match', match);
-          // console.log('$1', $1);
-          // console.log('$2', $2);
           const items = $2;
 
           const itemMarker =
             /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
-          // console.log([...items.matchAll(itemMarker)])
+        
           const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
             ([content, titles], [match, title, poetry, __, customName, inner]) => {
 
@@ -640,7 +603,6 @@ class ZeroMd extends HTMLElement {
             [[], []]
           );
 
-          // console.log('itemsContent, itemsTitles', [itemsContent, itemsTitles])
           const code = this.code;
           return `
           <div class="wrapper">

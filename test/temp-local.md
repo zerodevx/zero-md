@@ -1,7 +1,7 @@
 <!--\*\*poetryBold\*\*-->
 <!--«tabNameBrackets»-->
 
-
+__experiments__.test.md
 
 <localized main="en"/>
 <!--ru~{{and}}~и~-->
@@ -37,7 +37,7 @@
 <ru>Особенность селенидов в том, что при их использовании, обычно, не нужны сложные CSS или XPath-селекторы. Достаточно самых простых локаторов в стиле Selenium (`{{by}}`) или еще более простых чистых селекторов, которые найдут элементы по  значениям соответствующих атрибутов, например:</ru><uk>Особливість селенідів в тому, що при їх використанні, зазвичай, не потрібні складні CSS або XPath-селектори. Достатньо найпростіших локаторів у стилі Selenium (`{{by}}`) чи ще простіших чистих селекторів, які знайдуть елементи по значеннях відповідних атрибутів, наприклад:</uk><en>The peculiarity of selenides is that when using them, usually, no complex CSS or XPath selectors are needed. It is enough to use the simplest Selenium locators (`{{by}}`) or even simpler pure selectors that will find elements by the values of the corresponding attributes, for example:</en>
 
 ::::::::
-```poetry: js«custom  + sdfgsdgf» ts«custom name3»
+```poetry: js ts«custom name3»
 import { browser, by } from 'selenidejs'
 
 // ...

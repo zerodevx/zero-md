@@ -1,36 +1,6 @@
-<!--\*\*poetryBold\*\*-->
-<!--«tabNameBrackets»-->
+<!--import(https://gist.githubusercontent.com/ArtemPaskall/53ba40509d36ed057898a96ca7a6fcd9/raw/71b6f9a9e116ba6cc93b4612af8c4c23e9476e7a/gistfile1.txt)-->
 
-__experiments__.test.md
-
-<localized main="en"/>
-<!--ru~{{and}}~и~-->
-<!--uk~{{and}}~і~-->
-<!--en~{{and}}~and~-->
-
-<!--ru~{{or}}~или~-->
-<!--uk~{{or}}~або~-->
-<!--en~{{or}}~or~-->
-
-<codalized main="js"/>
-
-<!--js~{{Selenide}}~SelenideJs~-->
-<!--ts~{{Selenide}}~SelenideJs~-->
-<!--py~{{Selenide}}~Selene~-->
-<!--java~{{Selenide}}~Selenide~-->
-<!--cs~{{Selenide}}~NSelene~-->
-
-<!--js~{{TestRunner}}~Jest~-->
-<!--ts~{{TestRunner}}~Jest~-->
-<!--py~{{TestRunner}}~Pytest~-->
-<!--java~{{TestRunner}}~JUnit~-->
-<!--cs~{{TestRunner}}~NUnit~-->
-
-<!--js~{{by}}~by.*(value)~-->
-<!--ts~{{by}}~by.*(value)~-->
-<!--py~{{by}}~by.*(value)~-->
-<!--java~{{by}}~By.*(value)~-->
-<!--cs~{{by}}~By.*(value)~-->
+<!--import(https://gist.githubusercontent.com/ArtemPaskall/6027df913285b12a9d76a15102c3758d/raw/baef7a2b09ac047ead25de58135ded443e0f1bee/gistfile1.txt)-->
 
 ## <ru>CSS-селекторы против селенидов</ru><uk>CSS-селектори проти селенідів</uk><en>CSS-selectors vs selenides</en>
 

@@ -86,6 +86,44 @@ S("#new-todo")  // ...
 ```
 ::::::::
 
-<java><ru>ру</ru><uk>ук</uk><en>en</en></java>
+<!-- <java><ru>ру</ru><uk>ук</uk><en>en</en></java> -->
 
 <ru>При этом, можно вообще не использовать дополнительные импорты для {{by.*}}, сохраняя код менее вложенным и все еще вполне читабельным, учитывая что сами по себе чистые CSS-селекторы в этому случае – максимально просты:</ru><uk>При цьому, можна взагалі не використовуючи додаткові імпорти, зберігаючи код менш вкладеним і все ще досить читабельним, враховуючи, що самі по собі чисті CSS-селектори в такому випадку – максимально прості:</uk><en>At the same time, you can do it without using additional imports, keeping the code less nested and still quite readable, taking into account that pure CSS selectors in this case – are maximally simple:</en>
+
+::::::::::::manual
+```poetry: js ts«custom name3»
+import { browser, by } from 'selenidejs'
+
+// ...
+
+browser.element(**by.name('q')**))  // ...
+
+browser.element(**by.id('new-todo'**))  // ...
+// or yet simpler:
+browser.element(**'#new-todo'**)  // ...
+```
+
+```html: «html custom name123»
+import { browser, by } from 'selenidejs'
+
+// ...
+
+browser.element(**by.name('q')**))  // ...
+
+browser.element(**by.id('new-todo'**))  // ...
+// or yet simpler:
+browser.element(**'#new-todo'**)  // ...
+```
+
+```java: «html custom name»
+from selene import browser, by
+
+# ...
+
+browser.element(by.name('q'))  # ...
+
+browser.element(by.id('new-todo'))  # ...
+# or yet simpler:
+browser.element('#new-todo')  # ...
+```
+::::::::::::

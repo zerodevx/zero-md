@@ -570,10 +570,10 @@ export class ZeroMd extends HTMLElement {
         const toc = `<div class="toc">${tocLinks.join('')}</div>`;
         html = html.replace(tocMarker, toc);
 
-        const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim;
-        const processCodeGroup = (match, $1, $2) => {
-          const items = $2;
-
+        const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim;
+        const processCodeGroup = (match, $1, manual, $3) => {
+          const items = $3;
+          
           const itemMarker =
             /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
         
@@ -581,7 +581,7 @@ export class ZeroMd extends HTMLElement {
             ([content, titles], [match, title, poetry, __, customName, inner]) => {
 
             if (customName) {
-              title = customName
+              title = [title, customName]
             }
 
             return [
@@ -590,18 +590,21 @@ export class ZeroMd extends HTMLElement {
               ]},
             [[], []]
           );
-
+          
           const code = this.code;
           return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
                 .map(
-                  (title, index) =>
-                    `<button class="tab-button${
-                      (code ? code === IDfy(title) : index === 0) ? ' active' : ''
-                    }" data-id="${IDfy(title)}">${title}</button>`
-                )
+                  (title, index) => {
+                      return `<button class="tab-button${
+                        (manual 
+                          ? (index === 0) ? ' active' : '' 
+                          : (code ? code === IDfy((title instanceof Array) ? title[0] : title) : index === 0) ? ' active' : ''
+                        )
+                      }" data-id="${IDfy((title instanceof Array) ? title[0] : title)}">${(title instanceof Array) ? title[1] : title}</button>`
+                  })
                 .join('\n')}
             </div>
             <div class="contentWrapper">
@@ -609,8 +612,12 @@ export class ZeroMd extends HTMLElement {
                 .map(
                   (item, index) =>
                     `<div class="content${
-                      (code ? code === IDfy(itemsTitles[index]) : index === 0) ? ' active' : ''
-                    }" id="${IDfy(itemsTitles[index])}">${item}</div>`
+                      (manual 
+                        ? (index === 0) ? ' active' : '' 
+                        : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                      )
+                      // (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                    }" id="${IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index])}">${item}</div>`
                 )
                 .join('\n')}
             </div>

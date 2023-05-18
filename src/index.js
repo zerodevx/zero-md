@@ -366,6 +366,16 @@ export class ZeroMd extends HTMLElement {
       if (resp.ok) {
         let md = await resp.text();
 
+      /* IMPORT SETTINGS FROM OUTER FILE */
+      const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)];
+      if (importsMatch.length) {
+        await Promise.all(importsMatch.map( async ([match, importURL]) => {
+          const response = await fetch(importURL);
+          const importedContent = await response.text();
+          md = md.replace(match, importedContent);
+        }))
+      }
+
         /* PROCESS MD */
         const renderer = new window.marked.Renderer();
 

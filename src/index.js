@@ -587,12 +587,10 @@ export class ZeroMd extends HTMLElement {
           const itemMarker =
             /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
         
-          const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
+          let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
             ([content, titles], [match, title, poetry, __, customName, inner]) => {
-
-            if (customName) {
-              title = [title, customName]
-            }
+        
+            customName ? title = [title, customName] : title = [title]
 
             return [
                 [...content, poetry ? `<pre>${inner}</pre>` : match],
@@ -600,35 +598,43 @@ export class ZeroMd extends HTMLElement {
               ]},
             [[], []]
           );
-          
+        
           const code = this.code;
+          let uniqueTitlesArray = [] 
           return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
                 .map(
                   (title, index) => {
-                      return `<button class="tab-button${
-                        (manual 
-                          ? (index === 0) ? ' active' : '' 
-                          : (code ? code === IDfy((title instanceof Array) ? title[0] : title) : index === 0) ? ' active' : ''
-                        )
-                      }" data-id="${IDfy((title instanceof Array) ? title[0] : title)}">${(title instanceof Array) ? title[1] : title}</button>`
+                    let duplicatedTitle = false
+                    uniqueTitlesArray.includes(title[0]) ? duplicatedTitle = true : uniqueTitlesArray.push(title[0])
+
+                    return `<button class="tab-button${
+                      (manual 
+                        ? (index === 0) ? ' active' : '' 
+                        : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0) ? ' active' : ''
+                      )
+                    }" data-id="${IDfy(title[0])}">${title.length > 1 ? title[1] : title[0]}</button>`
                   })
                 .join('\n')}
             </div>
             <div class="contentWrapper">
               ${itemsContent
                 .map(
-                  (item, index) =>
-                    `<div class="content${
+                  (item, index) =>  {
+                    let duplicatedTitle = false
+                    index === 0 ? uniqueTitlesArray = [] : null
+                    uniqueTitlesArray.includes(itemsTitles[index][0]) ? duplicatedTitle = true : uniqueTitlesArray.push(itemsTitles[index][0])
+                    
+                    return `<div class="content${
                       (manual 
                         ? (index === 0) ? ' active' : '' 
-                        : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                        // : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                        : (code ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle : index === 0) ? ' active' : ''
                       )
-                      // (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
-                    }" id="${IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index])}">${item}</div>`
-                )
+                    }" id="${IDfy(itemsTitles[index][0])}">${item}</div>`
+                  })
                 .join('\n')}
             </div>
           </div>

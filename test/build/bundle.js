@@ -401,8 +401,10 @@ class ZeroMd extends HTMLElement {
           ? localizedMatch
           : [[]];
 
-        const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
+        // const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerCodeOption = /<!--(\w+(-\w+)?)(\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
+          
           if ((this.code || defaultCodeFromMd) === perCode) {
             md = md.replace(new RegExp(from, 'gmi'), to);
           }
@@ -485,7 +487,7 @@ class ZeroMd extends HTMLElement {
 
         const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i;
         const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__'];
-
+      
         const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i;
         const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"'];
 
@@ -513,10 +515,10 @@ class ZeroMd extends HTMLElement {
         ];
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__';
         const processPoetry = (rules) => (match, $1, code) => {
-          
           const [...tabNamesArray] = 
             $1.matchAll(new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim'))
           const [langs, customNames] = tabNamesArray.reduce(([langs, customNames], [lang]) => {
+
             let customName = null
 
             if (lang.includes(tabNameStart)) {
@@ -526,7 +528,7 @@ class ZeroMd extends HTMLElement {
 
                 return customName
               })()
-              
+
               lang = lang.split(tabNameStart)[0]
             }
 
@@ -594,16 +596,14 @@ class ZeroMd extends HTMLElement {
         const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim;
         const processCodeGroup = (match, $1, manual, $3) => {
           const items = $3;
-          
+           
           const itemMarker =
             /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim;
         
-          const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
+          let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
             ([content, titles], [match, title, poetry, __, customName, inner]) => {
-
-            if (customName) {
-              title = [title, customName]
-            }
+       
+            customName ? title = [title, customName] : title = [title]
 
             return [
                 [...content, poetry ? `<pre>${inner}</pre>` : match],
@@ -611,35 +611,43 @@ class ZeroMd extends HTMLElement {
               ]},
             [[], []]
           );
-          
+        
           const code = this.code;
+          let uniqueTitlesArray = [] 
           return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
                 .map(
                   (title, index) => {
-                      return `<button class="tab-button${
-                        (manual 
-                          ? (index === 0) ? ' active' : '' 
-                          : (code ? code === IDfy((title instanceof Array) ? title[0] : title) : index === 0) ? ' active' : ''
-                        )
-                      }" data-id="${IDfy((title instanceof Array) ? title[0] : title)}">${(title instanceof Array) ? title[1] : title}</button>`
+                    let duplicatedTitle = false
+                    uniqueTitlesArray.includes(title[0]) ? duplicatedTitle = true : uniqueTitlesArray.push(title[0])
+
+                    return `<button class="tab-button${
+                      (manual 
+                        ? (index === 0) ? ' active' : '' 
+                        : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0) ? ' active' : ''
+                      )
+                    }" data-id="${IDfy(title[0])}">${title.length > 1 ? title[1] : title[0]}</button>`
                   })
                 .join('\n')}
             </div>
             <div class="contentWrapper">
               ${itemsContent
                 .map(
-                  (item, index) =>
-                    `<div class="content${
+                  (item, index) =>  {
+                    let duplicatedTitle = false
+                    index === 0 ? uniqueTitlesArray = [] : null
+                    uniqueTitlesArray.includes(itemsTitles[index][0]) ? duplicatedTitle = true : uniqueTitlesArray.push(itemsTitles[index][0])
+                    
+                    return `<div class="content${
                       (manual 
                         ? (index === 0) ? ' active' : '' 
-                        : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                        // : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
+                        : (code ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle : index === 0) ? ' active' : ''
                       )
-                      // (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
-                    }" id="${IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index])}">${item}</div>`
-                )
+                    }" id="${IDfy(itemsTitles[index][0])}">${item}</div>`
+                  })
                 .join('\n')}
             </div>
           </div>

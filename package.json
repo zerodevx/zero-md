@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "type": "module",
@@ -15,23 +15,23 @@
     "docs:build": "zero-md-docs && sscli -b https://zerodevx.github.io/zero-md/ -r docs -i 'v1/**' --slash"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-replace": "^5.0.2",
-    "@rollup/plugin-terser": "^0.3.0",
+    "@rollup/plugin-terser": "^0.4.3",
     "chai": "^4.3.7",
-    "eslint": "^8.31.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
     "mocha": "^10.2.0",
-    "prettier": "^2.8.3",
-    "rollup": "^3.10.0",
+    "prettier": "^2.8.8",
+    "rollup": "^3.22.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.2",
-    "static-sitemap-cli": "^2.2.0",
-    "zero-md-docs": "^0.1.5"
+    "static-sitemap-cli": "^2.2.1",
+    "zero-md-docs": "^0.1.7"
   },
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"

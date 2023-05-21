@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <script>
-      window.ZeroMdConfig = {
-        foo: 'bar',
-        groupCodeGroups: false,
-      }
+      // window.ZeroMdConfig = {
+      //   foo: 'bar',
+      //   groupCodeGroups: false,
+      // }
+      window.ZeroMdConfig = { 
+        // baseUrl: "https://raw.githubusercontent.com/yashaka/taotaspy/master", 
+        gitlab: { 
+          projectId: "16859899", 
+          branch: "master", 
+          token: "rWDVsgsvVsAENEjezaPC"
+        },
+        groupCodeGroups: false
+      };
     </script>
     <script type="module" src="build/bundle.js"></script>
   </head>

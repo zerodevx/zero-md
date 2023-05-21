@@ -1,6 +1,10 @@
-<!--imQport(https://gist.githubusercontent.com/ArtemPaskall/53ba40509d36ed057898a96ca7a6fcd9/raw/71b6f9a9e116ba6cc93b4612af8c4c23e9476e7a/gistfile1.txt)-->
-
-<!--imQport(https://gist.githubusercontent.com/ArtemPaskall/6027df913285b12a9d76a15102c3758d/raw/baef7a2b09ac047ead25de58135ded443e0f1bee/gistfile1.txt)-->
+<!--import(https://gist.githubusercontent.com/ArtemPaskall/53ba40509d36ed057898a96ca7a6fcd9/raw/71b6f9a9e116ba6cc93b4612af8c4c23e9476e7a/gistfile1.txt)-->
+<!-- import(./xpath-refactoring.task.md)-->
+<!--import(../xpath-refactoring.task.md)-->
+<!--import(./../xpath-refactoring.task.md)-->
+<!--import(../../xpath-refactoring.task.md)-->
+<!--import(./../../xpath-refactoring.task.md)-->
+<!--import(qaest/selenides-quick-start.docs.md)-->
 
 
 <!--\*\*poetryBold\*\*-->
@@ -14,6 +18,9 @@
 <!--ru~{{or}}~или~-->
 <!--uk~{{or}}~або~-->
 <!--en~{{or}}~or~-->
+
+<!--ru-en~{{Testing}}~test all lang~-->
+
 
 <codalized main="js"/>
 
@@ -34,9 +41,10 @@
 <!--py~{{by}}~by.*(value)~-->
 <!--java~{{by}}~By.*(value)~-->
 <!--cs~{{by}}~By.*(value)~-->
-<!--gg-mm-ee~{{by}}~By.*(value)~-->
 
 ## <ru>CSS-селекторы против селенидов</ru><uk>CSS-селектори проти селенідів</uk><en>CSS-selectors vs selenides</en>
+{{Testing}}
+
 
 <ru>Особенность селенидов в том, что при их использовании, обычно, не нужны сложные CSS или XPath-селекторы. Достаточно самых простых локаторов в стиле Selenium (`{{by}}`) или еще более простых чистых селекторов, которые найдут элементы по  значениям соответствующих атрибутов, например:</ru><uk>Особливість селенідів в тому, що при їх використанні, зазвичай, не потрібні складні CSS або XPath-селектори. Достатньо найпростіших локаторів у стилі Selenium (`{{by}}`) чи ще простіших чистих селекторів, які знайдуть елементи по значеннях відповідних атрибутів, наприклад:</uk><en>The peculiarity of selenides is that when using them, usually, no complex CSS or XPath selectors are needed. It is enough to use the simplest Selenium locators (`{{by}}`) or even simpler pure selectors that will find elements by the values of the corresponding attributes, for example:</en>
 

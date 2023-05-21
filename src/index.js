@@ -389,16 +389,26 @@ export class ZeroMd extends HTMLElement {
           ? localizedMatch
           : [[]];
 
-        const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerCodeOption = /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
-          if ((this.code || defaultCodeFromMd) === perCode) {
+      
+          if (perCode.split('-').length > 1) {
+            perCode = perCode.split('-')
+          }
+
+          if (perCode instanceof Array ? perCode.includes(this.code || defaultCodeFromMd) : (this.code || defaultCodeFromMd) === perCode) {
             md = md.replace(new RegExp(from, 'gmi'), to);
           }
         });
 
-        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerLangOption = /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
-          if ((this.lang || defaultLangFromMd) === perLang) {
+
+          if (perLang.split('-').length > 1) {
+            perLang = perLang.split('-')
+          }
+
+          if (perLang instanceof Array ? perLang.includes(this.lang || defaultLangFromMd) : (this.lang || defaultLangFromMd) === perLang) {
             md = md.replace(new RegExp(from, 'gmi'), to);
           }
         });

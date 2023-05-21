@@ -380,11 +380,50 @@ class ZeroMd extends HTMLElement {
 
         /* IMPORT SETTINGS FROM OUTER FILE */
         const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)];
+        
         if (importsMatch.length) {
           await Promise.all(importsMatch.map( async ([match, importURL]) => {
-            const response = await fetch(importURL);
-            const importedContent = await response.text();
-            md = md.replace(match, importedContent);
+            // this.baseUrl = "https://raw.githubusercontent.com/yashaka/taotaspy/master" 
+            // console.log('src', this.src)
+            this.src = 'qaest/selenides-quick-start.docs.md'
+
+       
+            let response
+
+            if (!importURL.startsWith('http')) {
+              if (importURL.startsWith('.')) {
+                const fileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+
+                // <!--import(https://gist.githubusercontent.com/ArtemPaskall/53ba40509d36ed057898a96ca7a6fcd9/raw/71b6f9a9e116ba6cc93b4612af8c4c23e9476e7a/gistfile1.txt)-->
+                // <!-- import(./xpath-refactoring.task.md)-->
+                // <!--import(../xpath-refactoring.task.md)-->
+                // <!--import(./../xpath-refactoring.task.md)-->
+                // <!--import(../../xpath-refactoring.task.md)-->
+                // <!--import(./../../xpath-refactoring.task.md)-->
+                // <!--import(qaest/selenides-quick-start.docs.md)-->
+                // console.log(importURL)
+                // console.log(fileNestingMatch)
+              }
+              
+              const id = this.config.gitlab.projectId;
+              const branch = this.config.gitlab.branch;
+              const absolutePath = encodeURIComponent(importURL.trim());
+              absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`;
+              
+              response = await fetch(absoluteUrl, {
+                headers: {
+                  'PRIVATE-TOKEN': this.config.gitlab.token,
+                  // Authorization: `Bearer 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`
+                }
+              })
+            } else {
+              response = await fetch(importURL);
+            }
+
+            if (response.ok) {
+              const importedContent = await response.text();
+              md = md.replace(match, importedContent);
+            }
           }))
         }
 
@@ -401,18 +440,26 @@ class ZeroMd extends HTMLElement {
           ? localizedMatch
           : [[]];
 
-        // const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
-        const translationPerCodeOption = /<!--(\w+(-\w+)?)(\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerCodeOption = /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
-          
-          if ((this.code || defaultCodeFromMd) === perCode) {
+     
+          if (perCode.split('-').length > 1) {
+            perCode = perCode.split('-')
+          }
+
+          if (perCode instanceof Array ? perCode.includes(this.code || defaultCodeFromMd) : (this.code || defaultCodeFromMd) === perCode) {
             md = md.replace(new RegExp(from, 'gmi'), to);
           }
         });
 
-        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
+        const translationPerLangOption = /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
-          if ((this.lang || defaultLangFromMd) === perLang) {
+
+          if (perLang.split('-').length > 1) {
+            perLang = perLang.split('-')
+          }
+
+          if (perLang instanceof Array ? perLang.includes(this.lang || defaultLangFromMd) : (this.lang || defaultLangFromMd) === perLang) {
             md = md.replace(new RegExp(from, 'gmi'), to);
           }
         });

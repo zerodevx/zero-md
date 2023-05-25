@@ -368,11 +368,55 @@ export class ZeroMd extends HTMLElement {
 
       /* IMPORT SETTINGS FROM OUTER FILE */
       const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)];
+      
       if (importsMatch.length) {
         await Promise.all(importsMatch.map( async ([match, importURL]) => {
-          const response = await fetch(importURL);
-          const importedContent = await response.text();
-          md = md.replace(match, importedContent);
+          const currentZeroMdPath = (isReadingFromGitlabConfigured && this.path) ? this.path : this.src
+          const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+
+          let response
+          if (!importURL.startsWith('http')) {
+            const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+
+            if ((importedFileNestingMatch && importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.') 
+              || importedFileNestingMatch === null) {
+              const thisPathLastElement = this.path.split('/').pop()
+              const filePathtoReplace =  importedFileNestingMatch ? importURL.split('./')[1] : importURL.split('./')[0]
+              
+              importURL =  this.path.replace(thisPathLastElement, filePathtoReplace)
+            }
+
+            if (importedFileNestingMatch && !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')) {
+              const importedFileNestingDepth = importedFileNestingMatch.filter((item) => item === '..').length
+
+              if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                const importedFileFolderIndex = currentZeroMdFileNestingDepth - importedFileNestingDepth
+                importURL = currentZeroMdPath.split('/').slice(0, importedFileFolderIndex).concat(importURLPurePath).join('/')
+              }  else {
+                console.error('Wrong path to the file')
+                return
+              }
+            }
+            
+            const id = this.config.gitlab.projectId;
+            const branch = this.config.gitlab.branch;
+            const absolutePath = encodeURIComponent(importURL.trim());
+            absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`;
+            
+            response = await fetch(absoluteUrl, {
+              headers: {
+                'PRIVATE-TOKEN': this.config.gitlab.token,
+              }
+            })
+          } else {
+            response = await fetch(importURL);
+          }
+
+          if (response.ok) {
+            const importedContent = await response.text();
+            md = md.replace(match, importedContent)
+          }
         }))
       }
 

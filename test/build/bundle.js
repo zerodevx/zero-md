@@ -383,26 +383,32 @@ class ZeroMd extends HTMLElement {
         
         if (importsMatch.length) {
           await Promise.all(importsMatch.map( async ([match, importURL]) => {
-            // this.baseUrl = "https://raw.githubusercontent.com/yashaka/taotaspy/master" 
-            // console.log('src', this.src)
-            this.src = 'qaest/selenides-quick-start.docs.md'
+            const currentZeroMdPath = (isReadingFromGitlabConfigured && this.path) ? this.path : this.src
+            const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
-       
             let response
-
             if (!importURL.startsWith('http')) {
-              if (importURL.startsWith('.')) {
-                const fileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+              const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
-                // <!--import(https://gist.githubusercontent.com/ArtemPaskall/53ba40509d36ed057898a96ca7a6fcd9/raw/71b6f9a9e116ba6cc93b4612af8c4c23e9476e7a/gistfile1.txt)-->
-                // <!-- import(./xpath-refactoring.task.md)-->
-                // <!--import(../xpath-refactoring.task.md)-->
-                // <!--import(./../xpath-refactoring.task.md)-->
-                // <!--import(../../xpath-refactoring.task.md)-->
-                // <!--import(./../../xpath-refactoring.task.md)-->
-                // <!--import(qaest/selenides-quick-start.docs.md)-->
-                // console.log(importURL)
-                // console.log(fileNestingMatch)
+              if ((importedFileNestingMatch && importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.') 
+                || importedFileNestingMatch === null) {
+                const thisPathLastElement = this.path.split('/').pop()
+                const filePathtoReplace =  importedFileNestingMatch ? importURL.split('./')[1] : importURL.split('./')[0]
+                
+                importURL =  this.path.replace(thisPathLastElement, filePathtoReplace)
+              }
+
+              if (importedFileNestingMatch && !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')) {
+                const importedFileNestingDepth = importedFileNestingMatch.filter((item) => item === '..').length
+
+                if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                  const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                  const importedFileFolderIndex = currentZeroMdFileNestingDepth - importedFileNestingDepth
+                  importURL = currentZeroMdPath.split('/').slice(0, importedFileFolderIndex).concat(importURLPurePath).join('/')
+                }  else {
+                  console.error('Wrong path to the file')
+                  return
+                }
               }
               
               const id = this.config.gitlab.projectId;
@@ -413,7 +419,6 @@ class ZeroMd extends HTMLElement {
               response = await fetch(absoluteUrl, {
                 headers: {
                   'PRIVATE-TOKEN': this.config.gitlab.token,
-                  // Authorization: `Bearer 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`
                 }
               })
             } else {
@@ -422,7 +427,7 @@ class ZeroMd extends HTMLElement {
 
             if (response.ok) {
               const importedContent = await response.text();
-              md = md.replace(match, importedContent);
+              md = md.replace(match, importedContent)
             }
           }))
         }

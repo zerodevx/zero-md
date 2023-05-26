@@ -377,7 +377,7 @@ class ZeroMd extends HTMLElement {
 
       if (resp.ok) {
         let md = await resp.text();
-
+        
         /* IMPORT SETTINGS FROM OUTER FILE */
         const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)];
         
@@ -392,6 +392,7 @@ class ZeroMd extends HTMLElement {
 
               if ((importedFileNestingMatch && importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.') 
                 || importedFileNestingMatch === null) {
+                this.path = '/'
                 const thisPathLastElement = this.path.split('/').pop()
                 const filePathtoReplace =  importedFileNestingMatch ? importURL.split('./')[1] : importURL.split('./')[0]
                 
@@ -427,6 +428,7 @@ class ZeroMd extends HTMLElement {
 
             if (response.ok) {
               const importedContent = await response.text();
+              // console.log(importedContent)
               md = md.replace(match, importedContent)
             }
           }))
@@ -447,7 +449,7 @@ class ZeroMd extends HTMLElement {
 
         const translationPerCodeOption = /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
         ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
-     
+
           if (perCode.split('-').length > 1) {
             perCode = perCode.split('-')
           }
@@ -628,7 +630,6 @@ class ZeroMd extends HTMLElement {
  
  
         /* GET HTML */
-
         let html = window.marked(md, {
           baseUrl: this.getBaseUrl(window.location.href),
           renderer,
@@ -695,7 +696,6 @@ class ZeroMd extends HTMLElement {
                     return `<div class="content${
                       (manual 
                         ? (index === 0) ? ' active' : '' 
-                        // : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
                         : (code ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle : index === 0) ? ' active' : ''
                       )
                     }" id="${IDfy(itemsTitles[index][0])}">${item}</div>`

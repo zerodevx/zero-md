@@ -366,9 +366,9 @@ export class ZeroMd extends HTMLElement {
       if (resp.ok) {
         let md = await resp.text()
 
-        /* IMPORT SETTINGS FROM OUTER FILE */
-        const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
+        /* PROCESS MD */
 
+        const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
         if (importsMatch.length) {
           await Promise.all(
             importsMatch.map(async ([match, importURL]) => {
@@ -377,7 +377,8 @@ export class ZeroMd extends HTMLElement {
               const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
               let response
-              if (!importURL.startsWith('http')) {
+              const isUrlRelative = !importURL.startsWith('http')
+              if (isUrlRelative) {
                 const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
                 if (
@@ -412,11 +413,12 @@ export class ZeroMd extends HTMLElement {
                       .concat(importURLPurePath)
                       .join('/')
                   } else {
-                    console.error('Wrong path to the file')
+                    console.error('Provided relative path to the file does not exist')
                     return
                   }
                 }
 
+                // TODO: refactor for DRY (remove duplicated absolute url building logic)
                 const id = this.config.gitlab.projectId
                 const branch = this.config.gitlab.branch
                 const absolutePath = encodeURIComponent(importURL.trim())
@@ -438,9 +440,6 @@ export class ZeroMd extends HTMLElement {
             })
           )
         }
-
-        /* PROCESS MD */
-        const renderer = new window.marked.Renderer()
 
         const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
         const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
@@ -501,6 +500,7 @@ export class ZeroMd extends HTMLElement {
           })
         }
 
+        const renderer = new window.marked.Renderer()
         let tocLinks = []
         const tocStartLevelOption = /<!--TOC>(\d)-->/i
         const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]

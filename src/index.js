@@ -367,7 +367,79 @@ export class ZeroMd extends HTMLElement {
         let md = await resp.text()
 
         /* PROCESS MD */
-        const renderer = new window.marked.Renderer()
+
+        const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
+        if (importsMatch.length) {
+          await Promise.all(
+            importsMatch.map(async ([match, importURL]) => {
+              const currentZeroMdPath =
+                isReadingFromGitlabConfigured && this.path ? this.path : this.src
+              const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+
+              let response
+              const isUrlRelative = !importURL.startsWith('http')
+              if (isUrlRelative) {
+                const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+
+                if (
+                  (importedFileNestingMatch &&
+                    importedFileNestingMatch.length === 1 &&
+                    importedFileNestingMatch[0] === '.') ||
+                  importedFileNestingMatch === null
+                ) {
+                  const thisPathLastElement = this.path.split('/').pop()
+                  const filePathtoReplace = importedFileNestingMatch
+                    ? importURL.split('./')[1]
+                    : importURL.split('./')[0]
+
+                  importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
+                }
+
+                if (
+                  importedFileNestingMatch &&
+                  !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
+                ) {
+                  const importedFileNestingDepth = importedFileNestingMatch.filter(
+                    (item) => item === '..'
+                  ).length
+
+                  if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                    const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                    const importedFileFolderIndex =
+                      currentZeroMdFileNestingDepth - importedFileNestingDepth
+                    importURL = currentZeroMdPath
+                      .split('/')
+                      .slice(0, importedFileFolderIndex)
+                      .concat(importURLPurePath)
+                      .join('/')
+                  } else {
+                    console.error('Provided relative path to the file does not exist')
+                    return
+                  }
+                }
+
+                // TODO: refactor for DRY (remove duplicated absolute url building logic)
+                const id = this.config.gitlab.projectId
+                const branch = this.config.gitlab.branch
+                const absolutePath = encodeURIComponent(importURL.trim())
+                absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+                response = await fetch(absoluteUrl, {
+                  headers: {
+                    'PRIVATE-TOKEN': this.config.gitlab.token
+                  }
+                })
+              } else {
+                response = await fetch(importURL)
+              }
+
+              if (response.ok) {
+                const importedContent = await response.text()
+                md = md.replace(match, importedContent)
+              }
+            })
+          )
+        }
 
         const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
         const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
@@ -379,16 +451,34 @@ export class ZeroMd extends HTMLElement {
           ? localizedMatch
           : [[]]
 
-        const translationPerCodeOption = /<!--(js|ts|py|java|cs)(\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
-          if ((this.code || defaultCodeFromMd) === perCode) {
+        const translationPerCodeOption =
+          /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
+          if (perCode.split('-').length > 1) {
+            perCode = perCode.split('-')
+          }
+
+          if (
+            perCode instanceof Array
+              ? perCode.includes(this.code || defaultCodeFromMd)
+              : (this.code || defaultCodeFromMd) === perCode
+          ) {
             md = md.replace(new RegExp(from, 'gmi'), to)
           }
         })
 
-        const translationPerLangOption = /<!--(ru|uk|en)(\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
-          if ((this.lang || defaultLangFromMd) === perLang) {
+        const translationPerLangOption =
+          /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+        ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
+          if (perLang.split('-').length > 1) {
+            perLang = perLang.split('-')
+          }
+
+          if (
+            perLang instanceof Array
+              ? perLang.includes(this.lang || defaultLangFromMd)
+              : (this.lang || defaultLangFromMd) === perLang
+          ) {
             md = md.replace(new RegExp(from, 'gmi'), to)
           }
         })
@@ -410,6 +500,7 @@ export class ZeroMd extends HTMLElement {
           })
         }
 
+        const renderer = new window.marked.Renderer()
         let tocLinks = []
         const tocStartLevelOption = /<!--TOC>(\d)-->/i
         const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
@@ -463,6 +554,10 @@ export class ZeroMd extends HTMLElement {
 
         const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
         const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']
+
+        const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i
+        const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"']
+
         const boldRegExpRule = [
           new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
           '<b>$1</b>'
@@ -470,7 +565,8 @@ export class ZeroMd extends HTMLElement {
         // todo: change to ```poetry ... ``` style
         const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim
         // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
-        const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim
+        // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
+        const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim
         const poetryRules = [
           [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
 
@@ -485,9 +581,35 @@ export class ZeroMd extends HTMLElement {
           [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
         ]
         const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
-        const processPoetry = (rules) => (match, $1, __, code) => {
-          const [_, langsString] = ($1 && $1.split(':')) || []
-          const langs = langsString && langsString.trim().split(' ')
+        const processPoetry = (rules) => (match, $1, code) => {
+          const [...tabNamesArray] = $1.matchAll(
+            new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim')
+          )
+
+          const [langs, customNames] = tabNamesArray.reduce(
+            ([langs, customNames], [lang]) => {
+              let customName = null
+
+              if (lang.includes(tabNameStart)) {
+                customName = (() => {
+                  const [[__, customName]] = lang.matchAll(
+                    new RegExp(tabNameStart + '([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim')
+                  )
+
+                  return customName
+                })()
+
+                lang = lang.split(tabNameStart)[0]
+              }
+
+              return [
+                [...langs, lang],
+                [...customNames, customName]
+              ]
+            },
+            [[], []]
+          )
+
           let res = code
 
           for (const rule of rules) {
@@ -501,7 +623,12 @@ export class ZeroMd extends HTMLElement {
           // return `<pre><code>${res}</code></pre>`;
           return langs
             ? langs
-                .map((lang) => `<pre><code class="language-${lang}" poetry>${res}</code></pre>`)
+                .map(
+                  (lang, index) =>
+                    `<pre><code class="language-${lang}" poetry ${
+                      customNames[index] ? `data-customname="${customNames[index]}"` : ''
+                    }>${res}</code></pre>`
+                )
                 .join('\n')
             : `<pre>${res}</pre>`
         }
@@ -514,6 +641,18 @@ export class ZeroMd extends HTMLElement {
           const langs = $1.split(' ')
           const code = $4
           return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
+        })
+
+        const customNameTabBlocks = new RegExp(
+          '```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```',
+          'gim'
+        )
+        const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
+        customNameTabs.forEach(([match, lang, customName, code]) => {
+          md = md.replace(
+            match,
+            `<pre><code class="language-${lang}" data-customname="${customName}">${code}</code></pre>`
+          )
         })
 
         /* GET HTML */
@@ -534,41 +673,72 @@ export class ZeroMd extends HTMLElement {
         const toc = `<div class="toc">${tocLinks.join('')}</div>`
         html = html.replace(tocMarker, toc)
 
-        const codeGroups = /(<p>:::+<\/p>)([\s\S]*?)\1/gim
-        const processCodeGroup = (match, $1, $2) => {
-          const items = $2
+        const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim
+        const processCodeGroup = (match, $1, manual, $3) => {
+          const items = $3
 
           const itemMarker =
-            /<pre><code class="language-(\w+)"( poetry)?.*?>([\s\S]*?)<\/code><\/pre>/gim
-          const [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
-            ([content, titles], [match, title, poetry, inner]) => [
-              [...content, poetry ? `<pre>${inner}</pre>` : match],
-              [...titles, title]
-            ],
+            /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim
+
+          let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
+            ([content, titles], [match, title, poetry, __, customName, inner]) => {
+              customName ? (title = [title, customName]) : (title = [title])
+
+              return [
+                [...content, poetry ? `<pre>${inner}</pre>` : match],
+                [...titles, title]
+              ]
+            },
             [[], []]
           )
 
           const code = this.code
+          let uniqueTitlesArray = []
           return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
-                .map(
-                  (title, index) =>
-                    `<button class="tab-button${
-                      (code ? code === IDfy(title) : index === 0) ? ' active' : ''
-                    }" data-id="${IDfy(title)}">${title}</button>`
-                )
+                .map((title, index) => {
+                  let duplicatedTitle = false
+                  uniqueTitlesArray.includes(title[0])
+                    ? (duplicatedTitle = true)
+                    : uniqueTitlesArray.push(title[0])
+
+                  return `<button class="tab-button${
+                    manual
+                      ? index === 0
+                        ? ' active'
+                        : ''
+                      : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0)
+                      ? ' active'
+                      : ''
+                  }" data-id="${IDfy(title[0])}">${title.length > 1 ? title[1] : title[0]}</button>`
+                })
                 .join('\n')}
             </div>
             <div class="contentWrapper">
               ${itemsContent
-                .map(
-                  (item, index) =>
-                    `<div class="content${
-                      (code ? code === IDfy(itemsTitles[index]) : index === 0) ? ' active' : ''
-                    }" id="${IDfy(itemsTitles[index])}">${item}</div>`
-                )
+                .map((item, index) => {
+                  let duplicatedTitle = false
+                  index === 0 ? (uniqueTitlesArray = []) : null
+                  uniqueTitlesArray.includes(itemsTitles[index][0])
+                    ? (duplicatedTitle = true)
+                    : uniqueTitlesArray.push(itemsTitles[index][0])
+
+                  return `<div class="content${
+                    manual
+                      ? index === 0
+                        ? ' active'
+                        : ''
+                      : (
+                          code
+                            ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle
+                            : index === 0
+                        )
+                      ? ' active'
+                      : ''
+                  }" id="${IDfy(itemsTitles[index][0])}">${item}</div>`
+                })
                 .join('\n')}
             </div>
           </div>
@@ -718,5 +888,4 @@ export class ZeroMd extends HTMLElement {
     this.fire('zero-md-rendered', { stamped })
   }
 }
-
 customElements.define('zero-md', ZeroMd)

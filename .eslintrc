@@ -16,6 +16,6 @@
   },
 
   "rules": {
-    "no-unused-vars": ["warn", { "varsIgnorePattern": "_+" }]
+    "no-unused-vars": ["error", { "varsIgnorePattern": "_+", "argsIgnorePattern": "_+" }]
   }
 }

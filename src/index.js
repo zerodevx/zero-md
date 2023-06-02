@@ -453,7 +453,7 @@ export class ZeroMd extends HTMLElement {
 
         const translationPerCodeOption =
           /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerCodeOption)].forEach(([match, perCode, __, from, to]) => {
+        ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
           if (perCode.split('-').length > 1) {
             perCode = perCode.split('-')
           }
@@ -469,7 +469,7 @@ export class ZeroMd extends HTMLElement {
 
         const translationPerLangOption =
           /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerLangOption)].forEach(([match, perLang, __, from, to]) => {
+        ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
           if (perLang.split('-').length > 1) {
             perLang = perLang.split('-')
           }

@@ -407,13 +407,23 @@ corresponding regression test into `test/index.spec.js` accordingly.
 
 #### Format and lint
 
-```
-$ npm run format
-$ npm run lint
+```shell
+npm run format
+npm run lint
 ```
 
 Formatting and linting by [prettier](https://github.com/prettier/prettier) and
 [eslint](https://github.com/eslint/eslint) respectively.
+
+#### Build (to deploy)
+
+GIVEN: [Format and Lint](#format-and-lint)
+
+THEN:
+
+```shell
+npm run build
+```
 
 #### Making changes to docs
 

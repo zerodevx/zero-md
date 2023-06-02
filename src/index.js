@@ -643,13 +643,11 @@ export class ZeroMd extends HTMLElement {
           return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
         })
 
-        // Custom tabnames
         const customNameTabBlocks = new RegExp(
           '```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```',
           'gim'
         )
         const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
-
         customNameTabs.forEach(([match, lang, customName, code]) => {
           md = md.replace(
             match,
@@ -732,8 +730,7 @@ export class ZeroMd extends HTMLElement {
                       ? index === 0
                         ? ' active'
                         : ''
-                      : // : (code ? code === IDfy((itemsTitles[index] instanceof Array) ? itemsTitles[index][0] : itemsTitles[index]) : index === 0) ? ' active' : ''
-                      (
+                      : (
                           code
                             ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle
                             : index === 0
@@ -892,5 +889,3 @@ export class ZeroMd extends HTMLElement {
   }
 }
 customElements.define('zero-md', ZeroMd)
-
-//# sourceMappingURL=bundle.js.map

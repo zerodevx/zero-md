@@ -1,12 +1,16 @@
-<localized main="en"/>
-<codalized main="ts"/>
-
 # markdown-fixture
 
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
 ![cat!](test1/cat.jpg)
+
+## Anchor link test
+
+Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.
+
+<localized main="en"/>
+<codalized main="ts"/>
 
 ## TOC test
 

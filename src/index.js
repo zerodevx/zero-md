@@ -335,22 +335,27 @@ export class ZeroMd extends HTMLElement {
 
   // Construct md nodes and return HTML string
   async buildMd(opts = {}) {
+    const renderer = new window.marked.Renderer()
+    let isOriginalUnderscoredBoldDisabled = undefined
+    let tocLinks = []
+
+    /* DEFINE HOW TO GET MD */
+
+    let isReadingFromGitlabConfigured = this.config.gitlab !== {}
+    let gitlabAbsoluteUrl = ''
     const src = async () => {
       if (!this.src && !this.path) {
         return ''
       }
-
-      let absoluteUrl = ''
-      let isReadingFromGitlabConfigured = this.config.gitlab !== {}
       const resp =
         isReadingFromGitlabConfigured && this.path
           ? await (async () => {
               const id = this.config.gitlab.projectId
               const branch = this.config.gitlab.branch
               const absolutePath = encodeURIComponent(this.path.trim())
-              absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+              gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
 
-              return fetch(absoluteUrl, {
+              return fetch(gitlabAbsoluteUrl, {
                 headers: {
                   'PRIVATE-TOKEN': this.config.gitlab.token
                 }
@@ -358,343 +363,362 @@ export class ZeroMd extends HTMLElement {
             })()
           : await (async () => {
               const url = this.src.trim()
-              absoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
+              gitlabAbsoluteUrl = url.startsWith('http') ? url : this.config.baseUrl + url
 
-              return fetch(absoluteUrl)
+              return fetch(gitlabAbsoluteUrl)
             })()
 
       if (resp.ok) {
-        let md = await resp.text()
+        return await resp.text()
+      } else {
+        this.fire('zero-md-error', {
+          msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
+          status: resp.status,
+          src: this.src,
+          path: this.path,
+          lang: this.lang,
+          code: this.code
+        })
+        return ''
+      }
+    }
+    const script = () => {
+      const el = this.querySelector('script[type="text/markdown"]')
+      if (!el) {
+        return ''
+      }
+      const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
+      return md
+    }
 
-        /* PROCESS MD */
+    let md = (await src()) || script()
+    console.log('md', md)
 
-        const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
-        if (importsMatch.length) {
-          await Promise.all(
-            importsMatch.map(async ([match, importURL]) => {
-              const currentZeroMdPath =
-                isReadingFromGitlabConfigured && this.path ? this.path : this.src
-              const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
+    /* PROCESS MD */
 
-              let response
-              const isUrlRelative = !importURL.startsWith('http')
-              if (isUrlRelative) {
-                const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
+    const importsMatch = [...md.matchAll(/<!--import\(([\s\S]*?)\)-->/gim)]
+    if (importsMatch.length) {
+      await Promise.all(
+        importsMatch.map(async ([match, importURL]) => {
+          const currentZeroMdPath =
+            isReadingFromGitlabConfigured && this.path ? this.path : this.src
+          const currentZeroMdFileNestingDepth = currentZeroMdPath.split('/').length - 1
 
-                if (
-                  (importedFileNestingMatch &&
-                    importedFileNestingMatch.length === 1 &&
-                    importedFileNestingMatch[0] === '.') ||
-                  importedFileNestingMatch === null
-                ) {
-                  const thisPathLastElement = this.path.split('/').pop()
-                  const filePathtoReplace = importedFileNestingMatch
-                    ? importURL.split('./')[1]
-                    : importURL.split('./')[0]
+          let response
+          const isUrlRelative = !importURL.startsWith('http')
+          if (isUrlRelative) {
+            const importedFileNestingMatch = importURL.match(/\.{1,2}(?=[^/]*\/)/gim)
 
-                  importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
-                }
+            if (
+              (importedFileNestingMatch &&
+                importedFileNestingMatch.length === 1 &&
+                importedFileNestingMatch[0] === '.') ||
+              importedFileNestingMatch === null
+            ) {
+              const thisPathLastElement = this.path.split('/').pop()
+              const filePathtoReplace = importedFileNestingMatch
+                ? importURL.split('./')[1]
+                : importURL.split('./')[0]
 
-                if (
-                  importedFileNestingMatch &&
-                  !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
-                ) {
-                  const importedFileNestingDepth = importedFileNestingMatch.filter(
-                    (item) => item === '..'
-                  ).length
+              importURL = this.path.replace(thisPathLastElement, filePathtoReplace)
+            }
 
-                  if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
-                    const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
-                    const importedFileFolderIndex =
-                      currentZeroMdFileNestingDepth - importedFileNestingDepth
-                    importURL = currentZeroMdPath
-                      .split('/')
-                      .slice(0, importedFileFolderIndex)
-                      .concat(importURLPurePath)
-                      .join('/')
-                  } else {
-                    console.error('Provided relative path to the file does not exist')
-                    return
-                  }
-                }
+            if (
+              importedFileNestingMatch &&
+              !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
+            ) {
+              const importedFileNestingDepth = importedFileNestingMatch.filter(
+                (item) => item === '..'
+              ).length
 
-                // TODO: refactor for DRY (remove duplicated absolute url building logic)
-                const id = this.config.gitlab.projectId
-                const branch = this.config.gitlab.branch
-                const absolutePath = encodeURIComponent(importURL.trim())
-                absoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
-
-                response = await fetch(absoluteUrl, {
-                  headers: {
-                    'PRIVATE-TOKEN': this.config.gitlab.token
-                  }
-                })
+              if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
+                const importURLPurePath = importURL.replace(/^(\.\/|\.\.\/)*/, '')
+                const importedFileFolderIndex =
+                  currentZeroMdFileNestingDepth - importedFileNestingDepth
+                importURL = currentZeroMdPath
+                  .split('/')
+                  .slice(0, importedFileFolderIndex)
+                  .concat(importURLPurePath)
+                  .join('/')
               } else {
-                response = await fetch(importURL)
+                console.error('Provided relative path to the file does not exist')
+                return
               }
+            }
 
-              if (response.ok) {
-                const importedContent = await response.text()
-                md = md.replace(match, importedContent)
+            // TODO: refactor for DRY (remove duplicated absolute url building logic)
+            const id = this.config.gitlab.projectId
+            const branch = this.config.gitlab.branch
+            const absolutePath = encodeURIComponent(importURL.trim())
+            gitlabAbsoluteUrl = `https://gitlab.com/api/v4/projects/${id}/repository/files/${absolutePath}/raw?ref=${branch}`
+
+            response = await fetch(gitlabAbsoluteUrl, {
+              headers: {
+                'PRIVATE-TOKEN': this.config.gitlab.token
               }
             })
-          )
-        }
-
-        const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
-        const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
-          ? codalizedMatch
-          : [[]]
-
-        const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
-        const [[shouldBeLocalized, _, defaultLangFromMd]] = localizedMatch.length
-          ? localizedMatch
-          : [[]]
-
-        const translationPerCodeOption =
-          /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
-          if (perCode.split('-').length > 1) {
-            perCode = perCode.split('-')
+          } else {
+            response = await fetch(importURL)
           }
 
-          if (
-            perCode instanceof Array
-              ? perCode.includes(this.code || defaultCodeFromMd)
-              : (this.code || defaultCodeFromMd) === perCode
-          ) {
-            md = md.replace(new RegExp(from, 'gmi'), to)
+          if (response.ok) {
+            const importedContent = await response.text()
+            md = md.replace(match, importedContent)
           }
         })
+      )
+    }
 
-        const translationPerLangOption =
-          /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
-        ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
-          if (perLang.split('-').length > 1) {
-            perLang = perLang.split('-')
-          }
+    const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
+    const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
+      ? codalizedMatch
+      : [[]]
 
-          if (
-            perLang instanceof Array
-              ? perLang.includes(this.lang || defaultLangFromMd)
-              : (this.lang || defaultLangFromMd) === perLang
-          ) {
-            md = md.replace(new RegExp(from, 'gmi'), to)
-          }
-        })
+    const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
+    const [[shouldBeLocalized, _, defaultLangFromMd]] = localizedMatch.length
+      ? localizedMatch
+      : [[]]
 
-        if (shouldBeCodalized) {
-          const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(codalized, (match, $1, __, ___, $4) => {
-            const candidates = $1.split('-')
-            return `<span class="inline-content${
-              candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
-            }" id="${$1}">${$4}</span>`
-          })
-        }
+    const translationPerCodeOption =
+      /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+    ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
+      if (perCode.split('-').length > 1) {
+        perCode = perCode.split('-')
+      }
 
-        if (shouldBeLocalized) {
-          const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim
-          md = md.replace(localized, (match, $1, $2) => {
-            return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
-          })
-        }
+      if (
+        perCode instanceof Array
+          ? perCode.includes(this.code || defaultCodeFromMd)
+          : (this.code || defaultCodeFromMd) === perCode
+      ) {
+        md = md.replace(new RegExp(from, 'gmi'), to)
+      }
+    })
 
-        const renderer = new window.marked.Renderer()
-        let tocLinks = []
-        const tocStartLevelOption = /<!--TOC>(\d)-->/i
-        const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
-        renderer.heading = (text, level) => {
-          const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
-          const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
-          const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
-          const id =
-            userId ||
-            (anchorIdsToLowerCase
-              ? IDfy(pureWithoutTags)
-              : IDfy(pureWithoutTags, { lowerCase: false }))
-          const pixelsNumber = this.config.indentInsideTocByPixels
+    const translationPerLangOption =
+      /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+    ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
+      if (perLang.split('-').length > 1) {
+        perLang = perLang.split('-')
+      }
 
-          if (level > tocStartLevel) {
-            const indentInsideToc = `style="margin-left: ${
-              pixelsNumber * (level - 1 - tocStartLevel)
-            }px"`
-            tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
-          }
+      if (
+        perLang instanceof Array
+          ? perLang.includes(this.lang || defaultLangFromMd)
+          : (this.lang || defaultLangFromMd) === perLang
+      ) {
+        md = md.replace(new RegExp(from, 'gmi'), to)
+      }
+    })
 
-          return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
+    if (shouldBeCodalized) {
+      const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
+      md = md.replace(codalized, (match, $1, __, ___, $4) => {
+        const candidates = $1.split('-')
+        return `<span class="inline-content${
+          candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
+        }" id="${$1}">${$4}</span>`
+      })
+    }
+
+    if (shouldBeLocalized) {
+      const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim
+      md = md.replace(localized, (match, $1, $2) => {
+        return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
+      })
+    }
+
+    const tocStartLevelOption = /<!--TOC>(\d)-->/i
+    const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
+    renderer.heading = (text, level) => {
+      const [, pure, userId] = text.match(/^(.*)?\s*{#(.*)}$/im) || [null, text]
+      const pureWithoutTags = pure.replace(/<\/?\w+>/g, '')
+      const anchorIdsToLowerCase = this.config.anchorIdsToLowerCase
+      const id =
+        userId ||
+        (anchorIdsToLowerCase ? IDfy(pureWithoutTags) : IDfy(pureWithoutTags, { lowerCase: false }))
+      const pixelsNumber = this.config.indentInsideTocByPixels
+
+      if (level > tocStartLevel) {
+        const indentInsideToc = `style="margin-left: ${
+          pixelsNumber * (level - 1 - tocStartLevel)
+        }px"`
+        tocLinks.push(`<div ${indentInsideToc}><a href="#${id}">${pureWithoutTags}</a></div>`)
+      }
+
+      return `<h${level}>${encodeURI(id) === id ? '' : `<span id="${encodeURI(id)}"></span>`}
           <a id="${id}" class="anchor" aria-hidden="true" href="#${id}"></a>${pure}</h${level}>`
-        }
+    }
 
-        const imgBase = /]\(\.\.?\/resources/gim // todo: move ../resources to config
-        md = md.replace(imgBase, '](' + this.config.imgBaseNew)
+    const imgBase = /]\(\.\.?\/resources/gim // todo: move ../resources to config
+    md = md.replace(imgBase, '](' + this.config.imgBaseNew)
 
-        const shortBreaks = /^,,,,+/gim
-        md = md.replace(shortBreaks, '<br/>'.repeat(this.config.shortBreaksNumber))
+    const shortBreaks = /^,,,,+/gim
+    md = md.replace(shortBreaks, '<br/>'.repeat(this.config.shortBreaksNumber))
 
-        const longBreaks = /^====+/gim
-        md = md.replace(longBreaks, '<br/>'.repeat(this.config.longBreaksNumber))
+    const longBreaks = /^====+/gim
+    md = md.replace(longBreaks, '<br/>'.repeat(this.config.longBreaksNumber))
 
-        const pageBreaks = /^===/gim
-        md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>')
+    const pageBreaks = /^===/gim
+    md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>')
 
-        this.config.disableCodeHighlightingFor.forEach((lang) => {
-          md = md.replace(new RegExp(`\`\`\`${lang}`, 'gim'), '```')
-        })
+    this.config.disableCodeHighlightingFor.forEach((lang) => {
+      md = md.replace(new RegExp(`\`\`\`${lang}`, 'gim'), '```')
+    })
 
-        const articleTypeExtension = /\.(\w+)\.md(\)|#)/gim
-        md = md.replace(articleTypeExtension, `-$1.md$2`)
+    const articleTypeExtension = /\.(\w+)\.md(\)|#)/gim
+    md = md.replace(articleTypeExtension, `-$1.md$2`)
 
-        // todo: fix to skip links that start with http
-        const mdExtensions = /\.md\)/gim
-        md = md.replace(mdExtensions, `-md${window.location.search})`)
+    // todo: fix to skip links that start with http
+    const mdExtensions = /\.md\)/gim
+    md = md.replace(mdExtensions, `-md${window.location.search})`)
 
-        const mdExtensionsWithId = /\.md#/gim
-        md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
+    const mdExtensionsWithId = /\.md#/gim
+    md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
-        const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
-        const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']
+    const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
+    const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']
 
-        const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i
-        const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"']
+    const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i
+    const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"']
 
-        const boldRegExpRule = [
-          new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
-          '<b>$1</b>'
-        ]
-        // todo: change to ```poetry ... ``` style
-        const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim
-        // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
-        // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
-        const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim
-        const poetryRules = [
-          [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
+    const boldRegExpRule = [
+      new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
+      '<b>$1</b>'
+    ]
+    // todo: change to ```poetry ... ``` style
+    const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim
+    // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
+    // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
+    const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim
+    const poetryRules = [
+      [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
 
-          boldRegExpRule, //bold1
-          [/(\*\*)(.*?)\1/gim, '<b>$2</b>'], //bold2
+      boldRegExpRule, //bold1
+      [/(\*\*)(.*?)\1/gim, '<b>$2</b>'], //bold2
 
-          // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
-          // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
-          // read for more info:
-          //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
+      // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
+      // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
+      // read for more info:
+      //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
 
-          [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
-        ]
-        const isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
-        const processPoetry = (rules) => (match, $1, code) => {
-          const [...tabNamesArray] = $1.matchAll(
-            new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim')
-          )
+      [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
+    ]
+    isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
+    const processPoetry = (rules) => (match, $1, code) => {
+      const [...tabNamesArray] = $1.matchAll(
+        new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim')
+      )
 
-          const [langs, customNames] = tabNamesArray.reduce(
-            ([langs, customNames], [lang]) => {
-              let customName = null
+      const [langs, customNames] = tabNamesArray.reduce(
+        ([langs, customNames], [lang]) => {
+          let customName = null
 
-              if (lang.includes(tabNameStart)) {
-                customName = (() => {
-                  const [[__, customName]] = lang.matchAll(
-                    new RegExp(tabNameStart + '([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim')
-                  )
+          if (lang.includes(tabNameStart)) {
+            customName = (() => {
+              const [[__, customName]] = lang.matchAll(
+                new RegExp(tabNameStart + '([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim')
+              )
 
-                  return customName
-                })()
+              return customName
+            })()
 
-                lang = lang.split(tabNameStart)[0]
-              }
-
-              return [
-                [...langs, lang],
-                [...customNames, customName]
-              ]
-            },
-            [[], []]
-          )
-
-          let res = code
-
-          for (const rule of rules) {
-            res = res.replace(rule[0], rule[1])
+            lang = lang.split(tabNameStart)[0]
           }
 
-          if (isOriginalUnderscoredBoldDisabled) {
-            res.replace(/(__)(.*?)\1/gim, '‡‡‡$2‡‡‡') // to encode original __
-          }
+          return [
+            [...langs, lang],
+            [...customNames, customName]
+          ]
+        },
+        [[], []]
+      )
 
-          // return `<pre><code>${res}</code></pre>`;
-          return langs
-            ? langs
-                .map(
-                  (lang, index) =>
-                    `<pre><code class="language-${lang}" poetry ${
-                      customNames[index] ? `data-customname="${customNames[index]}"` : ''
-                    }>${res}</code></pre>`
-                )
-                .join('\n')
-            : `<pre>${res}</pre>`
-        }
+      let res = code
 
-        md = md.replace(poetries, processPoetry(poetryRules))
-        md = md.replace(backTickPoetries, processPoetry(poetryRules))
+      for (const rule of rules) {
+        res = res.replace(rule[0], rule[1])
+      }
 
-        const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim
-        md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
-          const langs = $1.split(' ')
-          const code = $4
-          return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
-        })
+      if (isOriginalUnderscoredBoldDisabled) {
+        res.replace(/(__)(.*?)\1/gim, '‡‡‡$2‡‡‡') // to encode original __
+      }
 
-        const customNameTabBlocks = new RegExp(
-          '```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```',
-          'gim'
-        )
-        const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
-        customNameTabs.forEach(([match, lang, customName, code]) => {
-          md = md.replace(
-            match,
-            `<pre><code class="language-${lang}" data-customname="${customName}">${code}</code></pre>`
-          )
-        })
+      // return `<pre><code>${res}</code></pre>`;
+      return langs
+        ? langs
+            .map(
+              (lang, index) =>
+                `<pre><code class="language-${lang}" poetry ${
+                  customNames[index] ? `data-customname="${customNames[index]}"` : ''
+                }>${res}</code></pre>`
+            )
+            .join('\n')
+        : `<pre>${res}</pre>`
+    }
 
-        /* GET HTML */
+    md = md.replace(poetries, processPoetry(poetryRules))
+    md = md.replace(backTickPoetries, processPoetry(poetryRules))
 
-        let html = window.marked(md, {
-          baseUrl: this.getBaseUrl(window.location.href),
-          renderer,
-          ...opts
-        })
+    const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim
+    md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
+      const langs = $1.split(' ')
+      const code = $4
+      return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
+    })
 
-        /* PROCESS HTML */
+    const customNameTabBlocks = new RegExp(
+      '```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```',
+      'gim'
+    )
+    const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
+    customNameTabs.forEach(([match, lang, customName, code]) => {
+      md = md.replace(
+        match,
+        `<pre><code class="language-${lang}" data-customname="${customName}">${code}</code></pre>`
+      )
+    })
 
-        if (isOriginalUnderscoredBoldDisabled) {
-          html = html.replace(/‡‡‡/gim, '__')
-        }
+    /* GET HTML */
 
-        const tocMarker = /\[toc\]/i
-        const toc = `<div class="toc">${tocLinks.join('')}</div>`
-        html = html.replace(tocMarker, toc)
+    let html = window.marked(md, {
+      baseUrl: this.getBaseUrl(window.location.href),
+      renderer,
+      ...opts
+    })
 
-        const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim
-        const processCodeGroup = (match, $1, manual, $3) => {
-          const items = $3
+    /* PROCESS HTML */
 
-          const itemMarker =
-            /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim
+    if (isOriginalUnderscoredBoldDisabled) {
+      html = html.replace(/‡‡‡/gim, '__')
+    }
 
-          let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
-            ([content, titles], [match, title, poetry, __, customName, inner]) => {
-              customName ? (title = [title, customName]) : (title = [title])
+    const tocMarker = /\[toc\]/i
+    const toc = `<div class="toc">${tocLinks.join('')}</div>`
+    html = html.replace(tocMarker, toc)
 
-              return [
-                [...content, poetry ? `<pre>${inner}</pre>` : match],
-                [...titles, title]
-              ]
-            },
-            [[], []]
-          )
+    const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim
+    const processCodeGroup = (match, $1, manual, $3) => {
+      const items = $3
 
-          const code = this.code
-          let uniqueTitlesArray = []
-          return `
+      const itemMarker =
+        /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim
+
+      let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
+        ([content, titles], [match, title, poetry, __, customName, inner]) => {
+          customName ? (title = [title, customName]) : (title = [title])
+
+          return [
+            [...content, poetry ? `<pre>${inner}</pre>` : match],
+            [...titles, title]
+          ]
+        },
+        [[], []]
+      )
+
+      const code = this.code
+      let uniqueTitlesArray = []
+      return `
           <div class="wrapper">
             <div class="buttonWrapper">
               ${itemsTitles
@@ -743,38 +767,16 @@ export class ZeroMd extends HTMLElement {
             </div>
           </div>
           `.trim()
-        }
-
-        html = html.replace(codeGroups, processCodeGroup)
-
-        const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
-        html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
-
-        return html
-      } else {
-        this.fire('zero-md-error', {
-          msg: `[zero-md] HTTP error ${resp.status} while fetching src`,
-          status: resp.status,
-          src: this.src,
-          path: this.path,
-          lang: this.lang,
-          code: this.code
-        })
-        return ''
-      }
     }
-    const script = () => {
-      const el = this.querySelector('script[type="text/markdown"]')
-      if (!el) {
-        return ''
-      }
-      const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
-      return window.marked(md, opts)
-    }
-    const html = `<div class="markdown-body${
+
+    html = html.replace(codeGroups, processCodeGroup)
+
+    const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
+    html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
+
+    return `<div class="markdown-body${
       opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''
-    }">${(await src()) || script()}</div>`
-    return html
+    }">${html}</div>`
   }
 
   // Insert or replace HTML styles string into DOM and wait for links to load

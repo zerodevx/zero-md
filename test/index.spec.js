@@ -5,122 +5,19 @@ mocha.setup({
   ui: 'bdd'
 })
 
-const assert = chai.assert
-const expect = chai.expect
-
-const add = (html) => {
-  const template = document.createElement('template')
-  template.innerHTML = html
-  return document.body.appendChild(template.content.firstElementChild)
-}
-
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
-
-const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
-
 describe('unit tests', () => {
-  describe('constructor()', () => {
-    it('should not load marked if marked already loaded', async () => {
-      window.marked = true
-      const fixture = add(`<zero-md manual-render></zero-md>`)
-      await fixture.waitForReady()
-      const nodes = document.head.querySelectorAll('script')
-      for (let a = 0; a < nodes.length; a++) {
-        assert(!nodes[a].src.endsWith('marked.min.js'))
-      }
-      fixture.remove()
-    })
+  const assert = chai.assert
+  const expect = chai.expect
 
-    it('should not load prism if prism already loaded', async () => {
-      window.marked = false
-      let nodes = document.head.querySelectorAll('script')
-      for (let a = 0; a < nodes.length; a++) {
-        if (nodes[a].src.includes('prism')) {
-          nodes[a].remove()
-        }
-      }
-      const f = add(`<zero-md manual-render></zero-md>`)
-      await f.loadScript(f.config.markedUrl)
-      await f.waitForReady()
-      nodes = document.head.querySelectorAll('script')
-      for (let a = 0; a < nodes.length; a++) {
-        assert(!nodes[a].src.includes('prism'))
-      }
-      f.remove()
-    })
+  const add = (html) => {
+    const template = document.createElement('template')
+    template.innerHTML = html
+    return document.body.appendChild(template.content.firstElementChild)
+  }
 
-    it('should merge ZeroMdConfig opts into config', async () => {
-      const f = add(`<zero-md manual-render></zero-md>`)
-      await f.waitForReady()
-      assert(f.config.foo === 'bar')
-      f.remove()
-    })
-  })
+  const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
 
-  describe('getters and setters', () => {
-    let f
-    before(() => {
-      f = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
-    })
-    after(() => f.remove())
-
-    it('src reflects', () => {
-      assert(f.src === 'dummy.md')
-      f.src = 'dummy2.md'
-      assert(f.getAttribute('src') === 'dummy2.md')
-    })
-
-    it('boolean equates to true in class prop', () => {
-      assert(f.manualRender === true)
-    })
-
-    it('boolean reflects', () => {
-      f.manualRender = false
-      assert(!f.hasAttribute('manual-render'))
-    })
-  })
-
-  describe('buildStyles()', () => {
-    let f
-    afterEach(() => f.remove())
-
-    it('uses default styles if no template declared', () => {
-      f = add(`<zero-md manual-render></zero-md>`)
-      const s = f.makeNode(f.buildStyles()).outerHTML
-      assert(s.includes('/github-markdown.min.css'))
-    })
-
-    it('uses template styles', () => {
-      f = add(
-        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
-      )
-      const s = f.makeNode(f.buildStyles()).outerHTML
-      assert(!s.includes('/github-markdown.min.css'))
-      assert(s.includes('example.css'))
-    })
-
-    it('prepends correctly', () => {
-      f = add(
-        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
-      )
-      const s = f.makeNode(f.buildStyles()).outerHTML
-      assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
-    })
-
-    it('appends correctly', () => {
-      f = add(
-        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
-      )
-      const s = f.makeNode(f.buildStyles()).outerHTML
-      assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
-    })
-
-    it('allows passing an empty template to override default template', () => {
-      f = add(`<zero-md manual-render><template></template></zero-md>`)
-      const s = f.makeNode(f.buildStyles())
-      assert(s.querySelectorAll('link').length === 0)
-    })
-  })
+  const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
 
   describe('buildMd()', () => {
     let zero
@@ -223,6 +120,208 @@ describe('unit tests', () => {
     })
 
     // TODO: improve coverage
+
+    it('does not render lang without localized option', async () => {
+      zeroAppendScriptMD(`
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>')
+    })
+
+    it('renders lang by main attribute in localized option', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('Hello')
+    })
+
+    it('renders lang by lang option of zero-md config', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+
+      zero.config = { ...zero.config, lang: 'uk' }
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
+    })
+
+    it('renders lang by lang attribute of zero-md', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+      zero.config = { ...zero.config, lang: 'ru' }
+
+      zero.lang = 'uk'
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
+    })
+
+    it('renders lang by lang param of search params', async () => {
+      zeroAppendScriptMD(`
+<localized main="en"/>
+
+<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>`)
+      zero.config = { ...zero.config, lang: 'ru' }
+      zero.lang = 'en'
+
+      window.location.search = '?lang=uk'
+      await zero.render()
+
+      expect(zeroBody$('p').innerHTML).to.equal('Привіт')
+    })
+
+    let params = [
+      ['<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>', 'uk', 'p', 'Привіт'],
+      [
+        `
+<ru>Привет</ru>
+<uk>Привіт</uk>
+<en>Hello</en>`,
+        'uk',
+        'p',
+        'Привіт'
+      ],
+      [
+        `
+<ru>
+Привет
+</ru>
+<uk>
+Привіт
+</uk>
+<en>
+Hello
+</en>`,
+        'uk',
+        'p',
+        'Привіт'
+      ]
+    ]
+    params.forEach((args) => {
+      const [content, lang, selector, localized] = args
+      it(`localized rendering`, async () => {
+        zeroAppendScriptMD('<localized main="en"/>\n\n' + content)
+        zero.lang = lang
+
+        await zero.render()
+
+        expect(zeroBody$(selector).innerHTML).to.equal(localized)
+      })
+    })
+  })
+
+  describe('constructor()', () => {
+    it('should not load marked if marked already loaded', async () => {
+      window.marked = true
+      const fixture = add(`<zero-md manual-render></zero-md>`)
+      await fixture.waitForReady()
+      const nodes = document.head.querySelectorAll('script')
+      for (let a = 0; a < nodes.length; a++) {
+        assert(!nodes[a].src.endsWith('marked.min.js'))
+      }
+      fixture.remove()
+    })
+
+    it('should not load prism if prism already loaded', async () => {
+      window.marked = false
+      let nodes = document.head.querySelectorAll('script')
+      for (let a = 0; a < nodes.length; a++) {
+        if (nodes[a].src.includes('prism')) {
+          nodes[a].remove()
+        }
+      }
+      const f = add(`<zero-md manual-render></zero-md>`)
+      await f.loadScript(f.config.markedUrl)
+      await f.waitForReady()
+      nodes = document.head.querySelectorAll('script')
+      for (let a = 0; a < nodes.length; a++) {
+        assert(!nodes[a].src.includes('prism'))
+      }
+      f.remove()
+    })
+
+    it('should merge ZeroMdConfig opts into config', async () => {
+      const f = add(`<zero-md manual-render></zero-md>`)
+      await f.waitForReady()
+      assert(f.config.foo === 'bar')
+      f.remove()
+    })
+  })
+
+  describe('getters and setters', () => {
+    let f
+    before(() => {
+      f = add(`<zero-md src="dummy.md" manual-render></zero-md>`)
+    })
+    after(() => f.remove())
+
+    it('src reflects', () => {
+      assert(f.src === 'dummy.md')
+      f.src = 'dummy2.md'
+      assert(f.getAttribute('src') === 'dummy2.md')
+    })
+
+    it('boolean equates to true in class prop', () => {
+      assert(f.manualRender === true)
+    })
+
+    it('boolean reflects', () => {
+      f.manualRender = false
+      assert(!f.hasAttribute('manual-render'))
+    })
+  })
+
+  describe('buildStyles()', () => {
+    let f
+    afterEach(() => f.remove())
+
+    it('uses default styles if no template declared', () => {
+      f = add(`<zero-md manual-render></zero-md>`)
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(s.includes('/github-markdown.min.css'))
+    })
+
+    it('uses template styles', () => {
+      f = add(
+        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
+      )
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(!s.includes('/github-markdown.min.css'))
+      assert(s.includes('example.css'))
+    })
+
+    it('prepends correctly', () => {
+      f = add(
+        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
+      )
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
+    })
+
+    it('appends correctly', () => {
+      f = add(
+        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
+      )
+      const s = f.makeNode(f.buildStyles()).outerHTML
+      assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
+    })
+
+    it('allows passing an empty template to override default template', () => {
+      f = add(`<zero-md manual-render><template></template></zero-md>`)
+      const s = f.makeNode(f.buildStyles())
+      assert(s.querySelectorAll('link').length === 0)
+    })
   })
 
   describe('stampBody()', () => {

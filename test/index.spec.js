@@ -263,7 +263,7 @@ describe('unit tests', () => {
         selector: 'p',
         shouldBe: 'Привіт'
       },
-      'of multiline localizations with tags on different lines': {
+      'of multiline localizations (tags on different lines)': {
         given: `
 <ru>
 Привет
@@ -278,7 +278,7 @@ Hello
         selector: 'p',
         shouldBe: 'Привіт'
       },
-      'of multiline codalizations with nested localizations with tags on different lines': {
+      'of multiline codalizations with nested localizations (tags on different lines)': {
         given: `
 <js-ts>
 <ru-uk>
@@ -300,7 +300,63 @@ Test Runner Pytest
         whenCode: 'py',
         selector: '.active p',
         shouldBe: 'Тест ранер Pytest'
-      }
+      },
+      'of multiline codalizations with nested localizations with CODE-translations (tags on different lines)':
+        {
+          given: `
+<!--js~{{TR}}~Jest~-->
+<!--ts~{{TR}}~Jest~-->
+<!--py~{{TR}}~Pytest~-->
+
+<js-ts>
+<ru-uk>
+Тест ранер {{TR}}
+</ru-uk>
+<en>
+Test Runner {{TR}}
+</en>
+</js-ts>
+<py>
+<ru-uk>
+Тест ранер {{TR}}
+</ru-uk>
+<en>
+Test Runner {{TR}}
+</en>
+</py>`,
+          whenLang: 'uk',
+          whenCode: 'py',
+          selector: '.active p',
+          shouldBe: 'Тест ранер Pytest'
+        },
+      'of multiline codalizations with nested localizations with LANG-translations (tags on different lines)':
+        {
+          given: `
+<!--ru~{{Test}}~Тест~-->
+<!--uk~{{Test}}~Тест~-->
+<!--en~{{Test}}~Test~-->
+
+<js-ts>
+<ru-uk>
+{{Test}} ранер Jest
+</ru-uk>
+<en>
+{{Test}} Runner Jest
+</en>
+</js-ts>
+<py>
+<ru-uk>
+{{Test}} ранер Pytest
+</ru-uk>
+<en>
+{{Test}} Runner Pytest
+</en>
+</py>`,
+          whenLang: 'uk',
+          whenCode: 'py',
+          selector: '.active p',
+          shouldBe: 'Тест ранер Pytest'
+        }
     }
     Object.entries(scenarios).forEach((args) => {
       const [scenario, { given, whenLang: lang, whenCode: code, selector, shouldBe: localized }] =

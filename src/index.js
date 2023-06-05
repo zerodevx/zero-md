@@ -212,6 +212,17 @@ export class ZeroMd extends HTMLElement {
     return Promise.all([this.constructor.ready, ready])
   }
 
+  // TODO: ensure this implementation is valid
+  waitForRendered() {
+    const rendered = new Promise((resolve) => {
+      this.addEventListener('zero-md-rendered', function handler() {
+        this.removeEventListener('zero-md-rendered', handler)
+        resolve()
+      })
+    })
+    return Promise.all([this.constructor.ready, rendered])
+  }
+
   fire(name, detail = {}, opts = { bubbles: true, composed: true }) {
     if (detail.msg) {
       console.warn(detail.msg)
@@ -392,7 +403,6 @@ export class ZeroMd extends HTMLElement {
     }
 
     let md = (await src()) || script()
-    console.log('md', md)
 
     /* PROCESS MD */
 
@@ -522,9 +532,11 @@ export class ZeroMd extends HTMLElement {
     }
 
     if (shouldBeLocalized) {
-      const localized = /<(uk|ru|en)>([\s\S]*?)<\/\1>/gim
-      md = md.replace(localized, (match, $1, $2) => {
-        return $1 === (this.lang || defaultLangFromMd) ? $2 : ''
+      const localized = /<((uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
+      md = md.replace(localized, (match, $1, __, ___, $4) => {
+        const candidates = $1.split('-')
+        const content = $4
+        return candidates.includes(this.lang || defaultLangFromMd) ? content : ''
       })
     }
 

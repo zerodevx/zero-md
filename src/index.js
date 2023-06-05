@@ -522,12 +522,20 @@ export class ZeroMd extends HTMLElement {
     })
 
     if (shouldBeCodalized) {
-      const codalized = /<((js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
-      md = md.replace(codalized, (match, $1, __, ___, $4) => {
-        const candidates = $1.split('-')
+      const codalized = /<((not-)?(js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
+      md = md.replace(codalized, (match, $1, inverted, ___, ____, $5) => {
+        const tag = $1
+        const content = $5
+        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         return `<span class="inline-content${
-          candidates.includes(this.code || defaultCodeFromMd) ? ' active' : ''
-        }" id="${$1}">${$4}</span>`
+          inverted
+            ? candidates.includes(this.code || defaultCodeFromMd)
+              ? ''
+              : ' active'
+            : candidates.includes(this.code || defaultCodeFromMd)
+            ? ' active'
+            : ''
+        }" id="${tag}">${content}</span>` // TODO: should we make here id value dependent on inverted?
       })
     }
 

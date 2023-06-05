@@ -5,6 +5,8 @@ mocha.setup({
   ui: 'bdd'
 })
 
+chai.config.truncateThreshold = 0
+
 describe('unit tests', () => {
   const assert = chai.assert
   const expect = chai.expect
@@ -25,7 +27,7 @@ describe('unit tests', () => {
       zero = add(`<zero-md manual-render></zero-md>`)
     })
     afterEach(() => {
-      // zero.remove()
+      zero.remove()
     })
     const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
@@ -218,6 +220,39 @@ describe('unit tests', () => {
         selector: 'p span.active',
         shouldBe: 'pytest'
       },
+      'inline codalization inverted via not- (js from <js>...<not-js>...)': {
+        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        whenCode: 'js',
+        selector: 'p span.active',
+        shouldBe: 'jest'
+      },
+      'inline codalization inverted via not- (ts from <js-ts>...<not-js>...)': {
+        given: 'Test Runner – <js-ts>jest</js-ts><not-js>pytest</not-js>',
+        whenCode: 'ts',
+        selector: 'p',
+        shouldBe:
+          'Test Runner – ' +
+          '<span class="inline-content active" id="js-ts">jest</span>' +
+          '<span class="inline-content active" id="not-js">pytest</span>'
+      }, // TODO: is such behaviour correct?
+      'inline codalization inverted via not- (py from <js-ts>...<not-js-ts>...)': {
+        given: 'Test Runner – <js-ts>jest</js-ts><not-js-ts>pytest</not-js-ts>',
+        whenCode: 'py',
+        selector: 'p span.active',
+        shouldBe: 'pytest'
+      },
+      'inline codalization inverted via not- (py from <js>...<not-js>...)': {
+        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        whenCode: 'py',
+        selector: 'p span.active',
+        shouldBe: 'pytest'
+      },
+      'inline codalization inverted via not- (java from <js>...<not-js>...)': {
+        given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
+        whenCode: 'java',
+        selector: 'p span.active',
+        shouldBe: 'pytest'
+      },
       'inline multi-codalization (ts from <js-ts>...<py>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'ts',
@@ -359,8 +394,14 @@ Test Runner {{TR}}
         }
     }
     Object.entries(scenarios).forEach((args) => {
-      const [scenario, { given, whenLang: lang, whenCode: code, selector, shouldBe: localized }] =
-        args
+      const [
+        scenario,
+        { only, given, whenLang: lang, whenCode: code, selector, shouldBe: localized }
+      ] = args
+      if (only !== undefined && !only) {
+        return
+      }
+
       it(`render: ${scenario}`, async () => {
         zeroAppendScriptMD('<localized main="en"/>\n' + '<codalized main="ts"/>\n\n' + given)
         if (lang) {

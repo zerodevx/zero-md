@@ -479,7 +479,11 @@ export class ZeroMd extends HTMLElement {
       )
     }
 
-    const codalizedMatch = [...md.matchAll(/<codalized( main="(js|ts|py|java|cs)")?\/>/gim)]
+    const codalizedMatch = [
+      ...md.matchAll(
+        /<codalized( main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+      )
+    ]
     const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
       ? codalizedMatch
       : [[]]
@@ -490,7 +494,7 @@ export class ZeroMd extends HTMLElement {
       : [[]]
 
     const translationPerCodeOption =
-      /<!--((?:js|ts|java|py|cs)(?:-(?:js|ts|java|py|cs))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
+      /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2(.*?)\2-->/gim
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -522,7 +526,8 @@ export class ZeroMd extends HTMLElement {
     })
 
     if (shouldBeCodalized) {
-      const codalized = /<((not-)?(js|ts|py|java|cs)(-js|-ts|-py|-java|-cs)*)>([\s\S]*?)<\/\1>/gim
+      const codalized =
+        /<((not-)?(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       md = md.replace(codalized, (match, $1, inverted, ___, ____, $5) => {
         const tag = $1
         const content = $5
@@ -744,6 +749,9 @@ export class ZeroMd extends HTMLElement {
               ${itemsTitles
                 .map((title, index) => {
                   let duplicatedTitle = false
+                  // TODO: name it and find good proper name
+                  // const codeLikeTitle = title[0]
+                  // const customName = title[1]
                   uniqueTitlesArray.includes(title[0])
                     ? (duplicatedTitle = true)
                     : uniqueTitlesArray.push(title[0])
@@ -756,7 +764,9 @@ export class ZeroMd extends HTMLElement {
                       : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0)
                       ? ' active'
                       : ''
-                  }" data-id="${IDfy(title[0])}">${title.length > 1 ? title[1] : title[0]}</button>`
+                  }" data-id="${IDfy(title.length > 1 ? title[0] + '_' + title[1] : title[0])}">${
+                    title.length > 1 ? title[1] : title[0]
+                  }</button>`
                 })
                 .join('\n')}
             </div>
@@ -764,24 +774,23 @@ export class ZeroMd extends HTMLElement {
               ${itemsContent
                 .map((item, index) => {
                   let duplicatedTitle = false
+                  const title = itemsTitles[index]
                   index === 0 ? (uniqueTitlesArray = []) : null
-                  uniqueTitlesArray.includes(itemsTitles[index][0])
+                  uniqueTitlesArray.includes(title[0])
                     ? (duplicatedTitle = true)
-                    : uniqueTitlesArray.push(itemsTitles[index][0])
+                    : uniqueTitlesArray.push(title[0])
 
                   return `<div class="content${
                     manual
                       ? index === 0
                         ? ' active'
                         : ''
-                      : (
-                          code
-                            ? code === IDfy(itemsTitles[index][0]) && !duplicatedTitle
-                            : index === 0
-                        )
+                      : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0)
                       ? ' active'
                       : ''
-                  }" id="${IDfy(itemsTitles[index][0])}">${item}</div>`
+                  }" id="${IDfy(
+                    title.length > 1 ? title[0] + '_' + title[1] : title[0]
+                  )}">${item}</div>`
                 })
                 .join('\n')}
             </div>

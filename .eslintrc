@@ -3,7 +3,7 @@
   "extends": ["eslint:recommended", "prettier"],
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 2019
+    "ecmaVersion": 2021
   },
   "env": {
     "es2021": true,

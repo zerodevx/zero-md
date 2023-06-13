@@ -1,10 +1,17 @@
 <localized main="ru"/>
 <codalized main="ts"/>
 
+<!--«poetryBold»-->
+
+<!--\*\*poetryBold\*\*-->
+
 # header
 
 ```poetry
 this is code-like text with **bold** and ___italic___ inside
+
+if poetryBold option set then surrounded by double __underscores__ and **asterisks** bolds are disabled
+but something like «this» should work if such quotes were set via poetryBold option
 ```
 
 <ru>Можно использовать CSS-селектор, напрямую передавая его команде `element`, и получить чуть более лаконичный код:</ru>

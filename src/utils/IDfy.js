@@ -3,7 +3,7 @@ const notAUnicodeWord =
 
 export default function IDfy(
   name,
-  options = { lowerCase: true, replace: { its: notAUnicodeWord, with: '-' } }
+  options = { lowerCase: true, replace: { its: notAUnicodeWord, with: '-' } },
 ) {
   return options.lowerCase
     ? name.toLowerCase().replace(options.replace.its, options.replace.with)

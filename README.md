@@ -354,8 +354,8 @@ Configuration: https://zerodevx.github.io/zero-md/configuration/
 <script>
   window.ZeroMd = {
     config: {
-      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-    }
+      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css'],
+    },
   }
 </script>
 <script
@@ -366,7 +366,7 @@ Configuration: https://zerodevx.github.io/zero-md/configuration/
 <!-- Now -->
 <script>
   window.ZeroMdConfig = {
-    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
+    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css'],
   }
 </script>
 <script

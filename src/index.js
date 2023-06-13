@@ -1,5 +1,21 @@
 import IDfy from './utils/IDfy'
 
+const htmlTemplate = {
+  /**
+   * @param {{
+   *   code: string | undefined,
+   *   customName: string | undefined,
+   *   content: string,
+   *   isPoetry: boolean | undefined,
+   * }} details
+   * @returns {string}
+   */
+  codeBlock: ({ code, customName, content, isPoetry }) =>
+    `<pre><code${isPoetry ? ' poetry' : ''}${code ? ` class="language-${code}"` : ''}${
+      customName ? ` data-customName="${customName}"` : ''
+    }>${content}</code></pre>`,
+}
+
 export class ZeroMd extends HTMLElement {
   get src() {
     return this.getAttribute('src')
@@ -79,17 +95,17 @@ export class ZeroMd extends HTMLElement {
       markedUrl: 'https://cdn.jsdelivr.net/gh/markedjs/marked@2/marked.min.js',
       prismUrl: [
         ['https://cdn.jsdelivr.net/gh/PrismJS/prism@1/prism.min.js', 'data-manual'],
-        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js'
+        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js',
       ],
       cssUrls: [
         'https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css',
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css',
-        'https://cdn.jsdelivr.net/gh/automician/buttons-menu-custom-element@98902f0ad3f21fa6a2f3e0d1aa75b6f478557936/build/static/css/main.e5d0f3d9.css'
+        'https://cdn.jsdelivr.net/gh/automician/buttons-menu-custom-element@98902f0ad3f21fa6a2f3e0d1aa75b6f478557936/build/static/css/main.e5d0f3d9.css',
       ],
       hostCss:
         ':host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}' +
         `
-        .wrapper {
+        .codeGroup {
           width: auto;
           margin: auto;
           background-color: rgba(27,31,35,.05);
@@ -125,11 +141,11 @@ export class ZeroMd extends HTMLElement {
           background-color: white;
         }
         
-        .content,.inline-content {
+        .tab-content,.inline-content {
           display: none;
         }
         
-        .content.active {
+        .tab-content.active {
           display: block;
         }
         
@@ -143,7 +159,7 @@ export class ZeroMd extends HTMLElement {
         projectId: null,
         path: null,
         branch: 'master',
-        ...window.ZeroMdConfig.gitlab
+        ...window.ZeroMdConfig.gitlab,
       },
       disableCodeHighlightingFor: [],
       shortBreaksNumber: 2,
@@ -157,14 +173,14 @@ export class ZeroMd extends HTMLElement {
       groupCodeGroups: true,
       pTagLang: undefined, // expect string with something like "en-us", "ru", etc...
       ...defaults,
-      ...window.ZeroMdConfig
+      ...window.ZeroMdConfig,
     }
     this.cache = {}
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
         !!window.marked || this.loadScript(this.config.markedUrl),
-        !!window.Prism || this.loadScript(this.config.prismUrl)
+        !!window.Prism || this.loadScript(this.config.prismUrl),
       ])
     }
     this.clicked = this.clicked.bind(this)
@@ -230,8 +246,8 @@ export class ZeroMd extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent(name, {
         detail: { node: this, ...detail },
-        ...opts
-      })
+        ...opts,
+      }),
     )
   }
 
@@ -262,7 +278,7 @@ export class ZeroMd extends HTMLElement {
         el.async = false
         attrs.forEach((attr) => el.setAttribute(attr, ''))
         return this.onload(document.head.appendChild(el))
-      })
+      }),
     )
   }
 
@@ -336,7 +352,7 @@ export class ZeroMd extends HTMLElement {
     }
     const urls = this.arrify(this.config.cssUrls)
     const html = `<div class="markdown-styles"><style>${this.config.hostCss}</style>${get(
-      'template[data-merge="prepend"]'
+      'template[data-merge="prepend"]',
     )}${
       get('template:not([data-merge])') ||
       urls.reduce((a, c) => `${a}<link rel="stylesheet" href="${c}">`, '')
@@ -347,7 +363,7 @@ export class ZeroMd extends HTMLElement {
   // Construct md nodes and return HTML string
   async buildMd(opts = {}) {
     const renderer = new window.marked.Renderer()
-    let isOriginalUnderscoredBoldDisabled = undefined
+    let isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = undefined
     let tocLinks = []
 
     /* DEFINE HOW TO GET MD */
@@ -368,8 +384,8 @@ export class ZeroMd extends HTMLElement {
 
               return fetch(gitlabAbsoluteUrl, {
                 headers: {
-                  'PRIVATE-TOKEN': this.config.gitlab.token
-                }
+                  'PRIVATE-TOKEN': this.config.gitlab.token,
+                },
               })
             })()
           : await (async () => {
@@ -388,7 +404,7 @@ export class ZeroMd extends HTMLElement {
           src: this.src,
           path: this.path,
           lang: this.lang,
-          code: this.code
+          code: this.code,
         })
         return ''
       }
@@ -438,7 +454,7 @@ export class ZeroMd extends HTMLElement {
               !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
             ) {
               const importedFileNestingDepth = importedFileNestingMatch.filter(
-                (item) => item === '..'
+                (item) => item === '..',
               ).length
 
               if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
@@ -464,8 +480,8 @@ export class ZeroMd extends HTMLElement {
 
             response = await fetch(gitlabAbsoluteUrl, {
               headers: {
-                'PRIVATE-TOKEN': this.config.gitlab.token
-              }
+                'PRIVATE-TOKEN': this.config.gitlab.token,
+              },
             })
           } else {
             response = await fetch(importURL)
@@ -475,14 +491,14 @@ export class ZeroMd extends HTMLElement {
             const importedContent = await response.text()
             md = md.replace(match, importedContent)
           }
-        })
+        }),
       )
     }
 
     const codalizedMatch = [
       ...md.matchAll(
-        /<codalized( main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-      )
+        /<codalized( main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim,
+      ),
     ]
     const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
       ? codalizedMatch
@@ -601,107 +617,116 @@ export class ZeroMd extends HTMLElement {
     const mdExtensionsWithId = /\.md#/gim
     md = md.replace(mdExtensionsWithId, `-md${window.location.search}#`)
 
-    const poetryBoldOption = /<!--(.+)poetryBold(.+)-->/i
-    const [, poetryBoldStart, poetryBoldEnd] = md.match(poetryBoldOption) || [null, '__', '__']
+    const poetryBoldOption = /<!--(.+?)poetryBold(.+?)-->/gi
+    const [, poetryBoldStart, poetryBoldEnd] = [...md.matchAll(poetryBoldOption)].at(-1) || [
+      null,
+      '__',
+      '__',
+    ]
 
     const tabNameOption = /<!--(.+)tabNameBrackets(.+)-->/i
     const [, tabNameStart, tabNameEnd] = md.match(tabNameOption) || [null, '"', '"']
 
-    const boldRegExpRule = [
-      new RegExp(`${poetryBoldStart}(.*?)${poetryBoldEnd}`, 'gmi'),
-      '<b>$1</b>'
+    const poetryBoldOptionRule = [
+      new RegExp(
+        `${poetryBoldStart}(?!${poetryBoldStart})(.*?)${poetryBoldEnd}(?!${poetryBoldEnd})`,
+        'gmi',
+      ),
+      '<b>$1</b>',
     ]
     // todo: change to ```poetry ... ``` style
-    const poetries = /---[a-z]*\n([\s\S]*?)\n---/gim
-    // const backTickPoetries = /```poetry[a-z]*\n([\s\S]*?)\n```/gim
-    // const backTickPoetries = /```poetry(:?( [a-z]+)+)?\n([\s\S]*?)\n```/gim;
-    const backTickPoetries = /```poetry: (.+)\n([\s\S]*?)\n```/gim
+    const poetries =
+      /---[a-z]*\n([\s\S]*?)\n---/gim /* TODO: should have same abount of groups as backTickPoetries
+      or should be replaced with backTickPoetries completely, i.e. removed
+    */
+    const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
     const poetryRules = [
-      [/(___)(.*?)\1/gim, '<em>$2</em>'], //emphasis
+      [/(_)___(?!\1)(.*?)____(?!\1)/gim, '<span style="text-decoration:underline">$2</span>'], //underlined
+      [/(_)__(?!\1)(.*?)___(?!\1)/gim, '<em>$2</em>'], //emphasis (aka "italic")
 
-      boldRegExpRule, //bold1
-      [/(\*\*)(.*?)\1/gim, '<b>$2</b>'], //bold2
+      poetryBoldOptionRule, //bold1
+      [/(\*)\*(?!\1)(.*?)\*\*(?!\1)/gim, '<b>$2</b>'], //bold2
 
       // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
       // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
       // read for more info:
       //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
-
-      [/(____)(.*?)\1/gim, '<span style="text-decoration:underline">$2</span>'] //underlined
     ]
-    isOriginalUnderscoredBoldDisabled = poetryBoldStart !== '__'
-    const processPoetry = (rules) => (match, $1, code) => {
-      const [...tabNamesArray] = $1.matchAll(
-        new RegExp('\\w+' + tabNameStart + '[\\w\\d\\s\\S]*?' + tabNameEnd + '|(\\S+)', 'gim')
+    isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
+    const processPoetry = (rules) => (match, $1, $2) => {
+      const info = $1
+      const content = $2
+      // const titles = info.split(/\s+/)
+      // const maybeCodeOrCustomNameOrBoth =
+      // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
+      const maybeCodeOrCustomNameOrBoth = new RegExp(
+        '(?:^|\\s+)' +
+          '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+          `(?:${tabNameStart}(.+?)${tabNameEnd})?`,
+        'g',
       )
+      const maybeCodeOrCustomNameOrBothPairs = [
+        ...(info?.trim().matchAll(maybeCodeOrCustomNameOrBoth) ?? []),
+      ].map((matched) => ({ maybeCode: matched[1], maybeCustomName: matched[2] }))
 
-      const [langs, customNames] = tabNamesArray.reduce(
-        ([langs, customNames], [lang]) => {
-          let customName = null
+      let res = content
 
-          if (lang.includes(tabNameStart)) {
-            customName = (() => {
-              const [[__, customName]] = lang.matchAll(
-                new RegExp(tabNameStart + '([\\w\\d\\s\\S]*?)' + tabNameEnd, 'gim')
-              )
-
-              return customName
-            })()
-
-            lang = lang.split(tabNameStart)[0]
-          }
-
-          return [
-            [...langs, lang],
-            [...customNames, customName]
-          ]
-        },
-        [[], []]
-      )
-
-      let res = code
+      if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {
+        // then we should totally disable original __ and **
+        // in md processing (both by us and marked.js)
+        // by encoding it ...
+        res = res.replace(/(_)_(?!\1)(.*?)__(?!\1)/gim, '‡‡‡$2‡‡‡') // to encode original __
+        if (poetryBoldStart !== '\\*\\*') {
+          res = res.replace(/(\*)\*(?!\1)(.*?)\*\*(?!\1)/gim, '•••$2•••') // to encode original __
+        }
+        // then decode it later once md is processed and we get html...
+      }
 
       for (const rule of rules) {
         res = res.replace(rule[0], rule[1])
       }
 
-      if (isOriginalUnderscoredBoldDisabled) {
-        res.replace(/(__)(.*?)\1/gim, '‡‡‡$2‡‡‡') // to encode original __
-      }
-
-      // return `<pre><code>${res}</code></pre>`;
-      return langs
-        ? langs
-            .map(
-              (lang, index) =>
-                `<pre><code class="language-${lang}" poetry ${
-                  customNames[index] ? `data-customname="${customNames[index]}"` : ''
-                }>${res}</code></pre>`
+      const wrapped = maybeCodeOrCustomNameOrBothPairs.length
+        ? maybeCodeOrCustomNameOrBothPairs
+            .map(({ maybeCode, maybeCustomName }) =>
+              htmlTemplate.codeBlock({
+                code: maybeCode,
+                content: res,
+                customName: maybeCustomName,
+                isPoetry: true,
+              }),
             )
+            // if somebody passed more than one pair in info,
+            // then we clone content into same amount of poetries
             .join('\n')
-        : `<pre>${res}</pre>`
+        : htmlTemplate.codeBlock({ content: res, isPoetry: true })
+
+      return wrapped
     }
 
     md = md.replace(poetries, processPoetry(poetryRules))
     md = md.replace(backTickPoetries, processPoetry(poetryRules))
 
-    const multiCodeBlocks = /```(([a-z]+)( [a-z]+)+)\n([\s\S]*?)\n```/gim
-    md = md.replace(multiCodeBlocks, (match, $1, __, ___, $4) => {
-      const langs = $1.split(' ')
-      const code = $4
-      return langs.map((lang) => `\`\`\`${lang}\n${code}\n\`\`\``).join('\n')
+    const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)\n([\s\S]*?)\n```/gim
+    md = md.replace(multiCodeBlocks, (match, codes, content) => {
+      return codes
+        .split(/\s+/)
+        .map((code) => `\`\`\`${code}\n${content}\n\`\`\``)
+        .join('\n')
     })
 
-    const customNameTabBlocks = new RegExp(
-      '```(\\w+): ' + tabNameStart + '([\\s\\S]+?)' + tabNameEnd + '\n([\\s\\S]*?)```',
-      'gim'
-    )
-    const [...customNameTabs] = [...md.matchAll(customNameTabBlocks)]
-    customNameTabs.forEach(([match, lang, customName, code]) => {
-      md = md.replace(
-        match,
-        `<pre><code class="language-${lang}" data-customname="${customName}">${code}</code></pre>`
-      )
+    // this part is actually have not business value
+    // but was implemented here just for knowledge sharing purposes
+    // probably we gonna remove it one day...
+    const multiTabsWithCustomNamesCodeBlocks =
+      /```\b(?!poetry\b)([a-z]+)(?:: (.+))\n([\s\S]*?)\n```/gim
+    md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
+      const customNames = [
+        ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
+      ].map((matched) => matched[1])
+      return customNames
+        .map((customName) => htmlTemplate.codeBlock({ content, customName }))
+        .join('\n')
     })
 
     /* GET HTML */
@@ -709,13 +734,15 @@ export class ZeroMd extends HTMLElement {
     let html = window.marked(md, {
       baseUrl: this.getBaseUrl(window.location.href),
       renderer,
-      ...opts
+      ...opts,
     })
 
     /* PROCESS HTML */
 
-    if (isOriginalUnderscoredBoldDisabled) {
+    // decode previously decoded
+    if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {
       html = html.replace(/‡‡‡/gim, '__')
+      html = html.replace(/•••/gim, '**')
     }
 
     const tocMarker = /\[toc\]/i
@@ -727,70 +754,94 @@ export class ZeroMd extends HTMLElement {
       const items = $3
 
       const itemMarker =
-        /<pre><code class="language-(\w+)"( poetry)?( data-customname=.(.+).)?.*?>([\s\S]*?)<\/code><\/pre>/gim
+        /<pre><code( poetry)?(?: class="language-(\w+)")?( data-customName="(.+)")?.*?>([\s\S]*?)<\/code><\/pre>/gim
+
+      // const contentAndMaybeCodeOrCustomNameOrAll = [...items.matchAll(itemMarker)].map(
+      //   (matched) => ({
+      //     maybeCode: matched[2],
+      //     maybeCustomName: matched[4],
+      //     content: matched[0],
+      //   }),
+      // )
 
       let [itemsContent, itemsTitles] = [...items.matchAll(itemMarker)].reduce(
-        ([content, titles], [match, title, poetry, __, customName, inner]) => {
-          customName ? (title = [title, customName]) : (title = [title])
+        ([content, titles], [match, _, code, ___, customName, _____]) => {
+          const title = customName ? [code, customName] : [code]
 
           return [
-            [...content, poetry ? `<pre>${inner}</pre>` : match],
-            [...titles, title]
+            [...content, match],
+            [...titles, title],
           ]
         },
-        [[], []]
+        [[], []],
       )
 
-      const code = this.code
-      let uniqueTitlesArray = []
+      let processedCodes = []
       return `
-          <div class="wrapper">
+          <div class="codeGroup">
             <div class="buttonWrapper">
               ${itemsTitles
                 .map((title, index) => {
-                  let duplicatedTitle = false
                   // TODO: name it and find good proper name
-                  // const codeLikeTitle = title[0]
-                  // const customName = title[1]
-                  uniqueTitlesArray.includes(title[0])
-                    ? (duplicatedTitle = true)
-                    : uniqueTitlesArray.push(title[0])
 
-                  return `<button class="tab-button${
+                  const code = title[0]
+                  const customName = title[1]
+
+                  const html = `<button class="tab-button${
                     manual
                       ? index === 0
                         ? ' active'
                         : ''
-                      : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0)
+                      : (
+                          this.code
+                            ? this.code === code && !processedCodes.includes(code)
+                            : index === 0
+                        )
                       ? ' active'
                       : ''
-                  }" data-id="${IDfy(title.length > 1 ? title[0] + '_' + title[1] : title[0])}">${
-                    title.length > 1 ? title[1] : title[0]
-                  }</button>`
+                  }"${
+                    code || customName
+                      ? ' data-id="' + IDfy(customName ? code + '_' + customName : code) + '"'
+                      : ''
+                  }">${customName ?? code ?? '__'}</button>`
+
+                  processedCodes.push(code)
+
+                  return html
                 })
                 .join('\n')}
             </div>
             <div class="contentWrapper">
               ${itemsContent
                 .map((item, index) => {
-                  let duplicatedTitle = false
                   const title = itemsTitles[index]
-                  index === 0 ? (uniqueTitlesArray = []) : null
-                  uniqueTitlesArray.includes(title[0])
-                    ? (duplicatedTitle = true)
-                    : uniqueTitlesArray.push(title[0])
+                  const code = title[0]
+                  const customName = title[1]
+                  if (index === 0) {
+                    processedCodes = [] // TODO: remove this mutation from lambda for map (such lambda should be pure, i.e. not mutating anything from outer scope)
+                  }
 
-                  return `<div class="content${
+                  const html = `<div class="tab-content${
                     manual
                       ? index === 0
                         ? ' active'
                         : ''
-                      : (code ? code === IDfy(title[0]) && !duplicatedTitle : index === 0)
+                      : (
+                          this.code
+                            ? this.code === code && !processedCodes.includes(code)
+                            : index === 0
+                        )
                       ? ' active'
                       : ''
-                  }" id="${IDfy(
-                    title.length > 1 ? title[0] + '_' + title[1] : title[0]
-                  )}">${item}</div>`
+                  }"${
+                    code || customName
+                      ? ' id="' + IDfy(customName ? code + '_' + customName : code) + '"'
+                      : ''
+                  }>${item}</div>`
+
+                  processedCodes.push(code)
+
+                  return html
                 })
                 .join('\n')}
             </div>
@@ -822,7 +873,7 @@ export class ZeroMd extends HTMLElement {
       this.fire('zero-md-error', {
         msg: '[zero-md] An external stylesheet failed to load',
         status: undefined,
-        src: err.href
+        src: err.href,
       })
     })
   }
@@ -847,7 +898,7 @@ export class ZeroMd extends HTMLElement {
         childList: true,
         subtree: true,
         attributes: true,
-        characterData: true
+        characterData: true,
       })
     })
   }
@@ -869,47 +920,50 @@ export class ZeroMd extends HTMLElement {
       const node = this.stampBody(md)
 
       /* PROCESS CODE GROUP - START */
-      const tabsWrappers = node.querySelectorAll('.wrapper')
-      tabsWrappers.forEach(
-        (tabsWrapper) =>
-          (tabsWrapper.onclick = (e) => {
-            const element = e.target
-            const newActiveContentId = element.dataset.id
-            const isElementANonActiveTabButton =
-              !!newActiveContentId && !element.classList.contains('active')
+      const tabsWrappers = node.querySelectorAll('.codeGroup')
+      tabsWrappers.forEach((tabsWrapper) => {
+        if (tabsWrapper.querySelectorAll('.tab-content.active').length === 0) {
+          // hide everything if no active content found
+          tabsWrapper.style.display = 'none'
+        }
+        tabsWrapper.onclick = (e) => {
+          const element = e.target
+          const newActiveContentId = element.dataset.id
+          const isElementANonActiveTabButton =
+            !!newActiveContentId && !element.classList.contains('active')
 
-            if (isElementANonActiveTabButton) {
-              if (this.config.groupCodeGroups) {
-                node.querySelectorAll('.wrapper .tab-button').forEach((tabButton) => {
-                  if (tabButton.dataset.id === newActiveContentId) {
-                    tabButton.classList.add('active')
-                  } else {
-                    tabButton.classList.remove('active')
-                  }
-                })
+          if (isElementANonActiveTabButton) {
+            if (this.config.groupCodeGroups) {
+              node.querySelectorAll('.codeGroup .tab-button').forEach((tabButton) => {
+                if (tabButton.dataset.id === newActiveContentId) {
+                  tabButton.classList.add('active')
+                } else {
+                  tabButton.classList.remove('active')
+                }
+              })
 
-                node.querySelectorAll(`.content,.inline-content`).forEach((content) => {
-                  if (content.id.split('-').includes(newActiveContentId)) {
-                    content.classList.add('active')
-                  } else {
-                    content.classList.remove('active')
-                  }
-                })
-              } else {
-                const buttonsWrapper = element.parentElement
-                buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
-                element.classList.add('active')
-
-                const wrapper = buttonsWrapper.parentElement
-                const contents = wrapper.querySelectorAll('.content')
-                contents.forEach((content) => {
+              node.querySelectorAll(`.tab-content,.inline-content`).forEach((content) => {
+                if (content.id.split('-').includes(newActiveContentId)) {
+                  content.classList.add('active')
+                } else {
                   content.classList.remove('active')
-                })
-                wrapper.querySelector(`#${newActiveContentId}`).classList.add('active')
-              }
+                }
+              })
+            } else {
+              const buttonsWrapper = element.parentElement
+              buttonsWrapper.querySelector('.tab-button.active').classList.remove('active')
+              element.classList.add('active')
+
+              const wrapper = buttonsWrapper.parentElement
+              const contents = wrapper.querySelectorAll('.tab-content')
+              contents.forEach((content) => {
+                content.classList.remove('active')
+              })
+              wrapper.querySelector(`#${newActiveContentId}`).classList.add('active')
             }
-          })
-      )
+          }
+        }
+      })
       /* PROCESS CODE GROUP - END */
 
       stamped.body = true

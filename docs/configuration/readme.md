@@ -140,7 +140,7 @@ object hoisted to the global `window` scope can be defined. For example:
       markedUrl: '/lib/marked.js',
       prismUrl: '/lib/prism.js',
       cssUrls: ['/styles/markdown.css', '/styles/highlight.css'],
-      hostCss: ':host{display:inline-block;}'
+      hostCss: ':host{display:inline-block;}',
     }
   </script>
   <!-- Then load `<zero-md>` -->
@@ -163,7 +163,7 @@ blocks. To update the default external stylesheets globally, define a global con
   <script>
     window.ZeroMdConfig = {
       // Use these stylesheets in default template
-      cssUrls: ['/styles/markdown.css', '/styles/highlight.css']
+      cssUrls: ['/styles/markdown.css', '/styles/highlight.css'],
     }
   </script>
   <script type="module" src="/lib/zero-md.min.js"></script>
@@ -198,7 +198,7 @@ class ZeroMdCustom extends ZeroMd {
       markedUrl: '/lib/marked.js',
       prismUrl: '/lib/prism.js',
       cssUrls: ['/styles/markdown.css', '/styles/highlight.css'],
-      hostCss: ':host{display:inline-block;}'
+      hostCss: ':host{display:inline-block;}',
     })
   }
 }

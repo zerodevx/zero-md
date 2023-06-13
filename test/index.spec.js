@@ -2,7 +2,7 @@
 /* global chai */
 
 mocha.setup({
-  ui: 'bdd'
+  ui: 'bdd',
 })
 
 chai.config.truncateThreshold = 0
@@ -71,7 +71,7 @@ describe('unit tests', () => {
           '\n  }' +
           '\n}' +
           '\n```' +
-          '\n'
+          '\n',
       )
 
       await zero.render()
@@ -91,7 +91,7 @@ describe('unit tests', () => {
           '\n  }' +
           '\n}' +
           '\n```' +
-          '\n'
+          '\n',
       )
 
       await zero.render()
@@ -212,19 +212,19 @@ describe('unit tests', () => {
         given: 'Hello in selected language – «<ru>Привет</ru><uk>Привіт</uk><en>Hello</en>».',
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Привіт».'
+        shouldBe: 'Hello in selected language – «Привіт».',
       },
       'inline codalization': {
         given: 'Test Runner – <js>jest</js><py>pytest</py>.',
         whenCode: 'py',
         selector: 'p span.active',
-        shouldBe: 'pytest'
+        shouldBe: 'pytest',
       },
       'inline codalization inverted via not- (js from <js>...<not-js>...)': {
         given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'js',
         selector: 'p span.active',
-        shouldBe: 'jest'
+        shouldBe: 'jest',
       },
       'inline codalization inverted via not- (ts from <js-ts>...<not-js>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><not-js>pytest</not-js>',
@@ -233,61 +233,61 @@ describe('unit tests', () => {
         shouldBe:
           'Test Runner – ' +
           '<span class="inline-content active" id="js-ts">jest</span>' +
-          '<span class="inline-content active" id="not-js">pytest</span>'
+          '<span class="inline-content active" id="not-js">pytest</span>',
       }, // TODO: is such behaviour correct?
       'inline codalization inverted via not- (py from <js-ts>...<not-js-ts>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><not-js-ts>pytest</not-js-ts>',
         whenCode: 'py',
         selector: 'p span.active',
-        shouldBe: 'pytest'
+        shouldBe: 'pytest',
       },
       'inline codalization inverted via not- (py from <js>...<not-js>...)': {
         given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'py',
         selector: 'p span.active',
-        shouldBe: 'pytest'
+        shouldBe: 'pytest',
       },
       'inline codalization inverted via not- (java from <js>...<not-js>...)': {
         given: 'Test Runner – <js>jest</js><not-js>pytest</not-js>',
         whenCode: 'java',
         selector: 'p span.active',
-        shouldBe: 'pytest'
+        shouldBe: 'pytest',
       },
       'inline multi-codalization (ts from <js-ts>...<py>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'ts',
         selector: 'p span.active',
-        shouldBe: 'jest'
+        shouldBe: 'jest',
       },
       'inline multi-codalization (js from <js-ts>...<py>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'js',
         selector: 'p span.active',
-        shouldBe: 'jest'
+        shouldBe: 'jest',
       },
       'inline multi-codalization (py from <js-ts>...<py>...)': {
         given: 'Test Runner – <js-ts>jest</js-ts><py>pytest</py>.',
         whenCode: 'py',
         selector: 'p span.active',
-        shouldBe: 'pytest'
+        shouldBe: 'pytest',
       },
       'inline multi-localization (ru from <ru-uk>...<en>...)': {
         given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'ru',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Здоров».'
+        shouldBe: 'Hello in selected language – «Здоров».',
       },
       'inline multi-localization (uk from <ru-uk>...<en>...)': {
         given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Здоров».'
+        shouldBe: 'Hello in selected language – «Здоров».',
       },
       'inline multi-localization (en from <ru-uk>...<en>...)': {
         given: 'Hello in selected language – «<ru-uk>Здоров</ru-uk><en>Hello</en>».',
         whenLang: 'en',
         selector: 'p',
-        shouldBe: 'Hello in selected language – «Hello».'
+        shouldBe: 'Hello in selected language – «Hello».',
       },
       'of multiline localizations with tags on same line': {
         given: `
@@ -296,7 +296,7 @@ describe('unit tests', () => {
 <en>Hello</en>`,
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Привіт'
+        shouldBe: 'Привіт',
       },
       'of multiline localizations (tags on different lines)': {
         given: `
@@ -311,7 +311,7 @@ Hello
 </en>`,
         whenLang: 'uk',
         selector: 'p',
-        shouldBe: 'Привіт'
+        shouldBe: 'Привіт',
       },
       'of multiline codalizations with nested localizations (tags on different lines)': {
         given: `
@@ -334,7 +334,7 @@ Test Runner Pytest
         whenLang: 'uk',
         whenCode: 'py',
         selector: '.active p',
-        shouldBe: 'Тест ранер Pytest'
+        shouldBe: 'Тест ранер Pytest',
       },
       'of multiline codalizations with nested localizations with CODE-translations (tags on different lines)':
         {
@@ -362,7 +362,7 @@ Test Runner {{TR}}
           whenLang: 'uk',
           whenCode: 'py',
           selector: '.active p',
-          shouldBe: 'Тест ранер Pytest'
+          shouldBe: 'Тест ранер Pytest',
         },
       'of multiline codalizations with nested localizations with LANG-translations (tags on different lines)':
         {
@@ -390,13 +390,13 @@ Test Runner {{TR}}
           whenLang: 'uk',
           whenCode: 'py',
           selector: '.active p',
-          shouldBe: 'Тест ранер Pytest'
-        }
+          shouldBe: 'Тест ранер Pytest',
+        },
     }
     Object.entries(scenarios).forEach((args) => {
       const [
         scenario,
-        { only, given, whenLang: lang, whenCode: code, selector, shouldBe: localized }
+        { only, given, whenLang: lang, whenCode: code, selector, shouldBe: localized },
       ] = args
       if (only !== undefined && !only) {
         return
@@ -495,7 +495,7 @@ Test Runner {{TR}}
 
     it('uses template styles', () => {
       f = add(
-        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
+        `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`,
       )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(!s.includes('/github-markdown.min.css'))
@@ -504,7 +504,7 @@ Test Runner {{TR}}
 
     it('prepends correctly', () => {
       f = add(
-        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
+        `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`,
       )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
@@ -512,7 +512,7 @@ Test Runner {{TR}}
 
     it('appends correctly', () => {
       f = add(
-        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
+        `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`,
       )
       const s = f.makeNode(f.buildStyles()).outerHTML
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
@@ -562,8 +562,8 @@ Test Runner {{TR}}
         },
         {
           once: true,
-          capture: true
-        }
+          capture: true,
+        },
       )
       await zero.stampStyles(html)
       assert(loaded)
@@ -618,7 +618,7 @@ Test Runner {{TR}}
 
     it('renders partially if body changes but styles do not', async () => {
       f = add(
-        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
+        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`,
       )
       await f.render()
       let detail = {}
@@ -636,7 +636,7 @@ Test Runner {{TR}}
 
     it('renders partially if styles change but body does not', async () => {
       f = add(
-        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`
+        `<zero-md manual-render><template><style>h1{color:red;}</style></template><script type="text/markdown"># test</script></zero-md>`,
       )
       await f.render()
       let detail = {}
@@ -665,7 +665,7 @@ Test Runner {{TR}}
     it.skip('scrolls to element if location.hash set on first render', async () => {
       location.hash = 'tamen-et-veri'
       f = add(
-        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md"></zero-md></div>`,
       )
 
       await sleep(500)
@@ -676,7 +676,7 @@ Test Runner {{TR}}
     // TODO: make it pass
     it.skip('hijacks same-doc hash links and scrolls id into view', async () => {
       f = add(
-        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`,
       )
       const el = f.querySelector('zero-md')
       await el.render()

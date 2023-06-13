@@ -95,7 +95,7 @@ const run = async () => {
     classes: 'line-numbers',
     // These are Marked options
     gfm: false,
-    mangle: false
+    mangle: false,
   })
   alert('Render complete!')
 }

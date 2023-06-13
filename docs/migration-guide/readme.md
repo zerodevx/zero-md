@@ -131,8 +131,8 @@
 <script>
   window.ZeroMd = {
     config: {
-      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-    }
+      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css'],
+    },
   }
 </script>
 <script
@@ -143,7 +143,7 @@
 <!-- Now -->
 <script>
   window.ZeroMdConfig = {
-    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
+    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css'],
   }
 </script>
 <script

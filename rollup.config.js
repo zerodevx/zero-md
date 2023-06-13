@@ -14,9 +14,9 @@ const build = {
   output: {
     sourcemap: true,
     format: 'es',
-    file: 'dist/zero-md.min.js'
+    file: 'dist/zero-md.min.js',
   },
-  plugins: [replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()]
+  plugins: [replace({ $VERSION: pkg.version, delimiters: ['', ''] }), resolve(), terser()],
 }
 
 const buildLegacy = {
@@ -25,15 +25,15 @@ const buildLegacy = {
     sourcemap: true,
     format: 'iife',
     name: 'ZeroMd',
-    file: 'dist/zero-md.legacy.min.js'
+    file: 'dist/zero-md.legacy.min.js',
   },
   plugins: [
     replace({ $VERSION: pkg.version, delimiters: ['', ''] }),
     resolve(),
     babel({ babelHelpers: 'bundled' }),
     commonjs(),
-    terser()
-  ]
+    terser(),
+  ],
 }
 
 const dev = {
@@ -41,7 +41,7 @@ const dev = {
   output: {
     sourcemap: true,
     format: 'es',
-    file: 'test/build/bundle.js'
+    file: 'test/build/bundle.js',
   },
   plugins: [
     resolve(),
@@ -49,17 +49,17 @@ const dev = {
       serve({
         host: 'localhost',
         port: 8000,
-        contentBase: ['test', '']
+        contentBase: ['test', ''],
       }),
     !production &&
       livereload({
         watch: ['test', 'docs', 'dist'],
-        extraExts: ['.md']
-      })
+        extraExts: ['.md'],
+      }),
   ],
   watch: {
-    clearScreen: false
-  }
+    clearScreen: false,
+  },
 }
 
 export default production ? [build, buildLegacy] : dev

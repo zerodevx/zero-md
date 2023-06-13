@@ -106,15 +106,15 @@ In this recipe, a `Copy` button is automatically added to all code blocks using 
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/autoloader/prism-autoloader.min.js',
         // Also load Prism's `toolbar` and `copy-to-clipboard` plugins
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/toolbar/prism-toolbar.min.js',
-        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js'
+        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js',
       ],
       cssUrls: [
         // Default stylesheets
         'https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css',
         'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css',
         // Include CSS for `toolbar` plugin
-        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/toolbar/prism-toolbar.min.css'
-      ]
+        'https://cdn.jsdelivr.net/gh/PrismJS/prism@1/plugins/toolbar/prism-toolbar.min.css',
+      ],
     }
   </script>
   <script
@@ -151,9 +151,9 @@ $a_2 + b^2 = d^e $
       tex: {
         inlineMath: [
           ['$', '$'],
-          ['\\(', '\\)']
-        ]
-      }
+          ['\\(', '\\)'],
+        ],
+      },
     }
   </script>
   <script async src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>

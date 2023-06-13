@@ -1,11 +1,138 @@
-<localized main="ru"/>
-<codalized main="ts"/>
+<!--\*\*poetryBold\*\*-->
 
 <!--«poetryBold»-->
 
-<!--\*\*poetryBold\*\*-->
+<!--«tabNameBrackets»-->
 
-# header
+<localized main="en"/>
+<codalized main="js"/>
+
+# Poetries
+
+## 1
+
+```poetry
+1
+this is **bold** in poetry
+this is __default bold (disabled)__ in poetry
+this is ___italic___ in poetry
+this is ____underlined____ in poetry
+```
+
+## 2
+
+```poetry
+2 this is «bold with custom syntax that disables default» in poetry
+```
+
+## 3 (invisible on asked code)
+
+:::::::::
+```poetry
+3 this is **bold** in poetry tabbed
+```
+:::::::::
+
+## 4 (manual)
+
+:::::::::manual
+```poetry
+4 this is **bold** in poetry tabbed manual
+```
+:::::::::
+
+## 5  (manual, not poetry)
+
+:::::::::manual
+```md: «with custom name»
+5 this is **bold** in markdown tabbed manual with custom name
+```
+:::::::::
+
+## 6 (manual)
+
+:::::::::manual
+```poetry: «with custom name» «same with another name»
+6 this is **bold** in poetry tabbed manual with custom name besides second tab with same content
+```
+:::::::::
+
+## 7
+
+:::::::::
+```poetry: java«with custom name» «same with another name»
+7 this is **bold** in poetry tabbed with custom name with code id besides second tab without code id with same content
+```
+:::::::::
+
+## 8 (manual, not poetry)
+
+:::::::::manual
+```md: «with custom name» «same with another name»
+8 this is **bold** in markdown tabbed manual with custom name besides second tab with same content
+```
+:::::::::
+
+## 9 (visible on asked java or cs | invisible on asked not java or cs, like js)
+
+:::::::::
+```poetry: cs
+9 this is **bold** in poetry tabbed with known name (i.e. = code id) - cs
+```
+```poetry: java
+9 this is **bold** in poetry tabbed with known name (i.e. = code id) - java
+```
+:::::::::
+
+## 10 (visible on no asked code | visible on asked java | invisible on asked not java, like js)
+
+:::::::::
+```poetry: java«JAVA fuked it:)»
+10 this is **bold** in poetry tabbed with known name (i.e. = code id) and custom name
+```
+:::::::::
+
+## 11 (manual => visible allways)
+
+:::::::::manual
+```poetry: java
+11 this is **bold** in poetry tabbed manual with known name
+```
+:::::::::
+
+## 12 (manual => visible allways)
+
+:::::::::manual
+```poetry: «java»
+12 this is **bold** in poetry tabbed manual with custom name of known code
+```
+:::::::::
+
+## 13 (manual, not poetry => visible both with first selected and working switch - allways)
+
+:::::::::manual
+```js ts
+13 // some code
+```
+:::::::::
+
+## 14 (manual => visible allways with first selected and working switch)
+
+:::::::::manual
+```poetry: js ts
+14 // some code
+```
+:::::::::
+
+## 15 (visible on asked js or ts | invisible on asked not js or ts, like java)
+
+:::::::::
+```poetry: js ts
+15 // some code
+```
+:::::::::
+
+# Etc
 
 ```poetry
 this is code-like text with **bold** and ___italic___ inside

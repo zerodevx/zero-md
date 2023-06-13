@@ -725,7 +725,7 @@ export class ZeroMd extends HTMLElement {
         ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
       ].map((matched) => matched[1])
       return customNames
-        .map((customName) => htmlTemplate.codeBlock({ content, customName }))
+        .map((customName) => htmlTemplate.codeBlock({ content, customName, code }))
         .join('\n')
     })
 

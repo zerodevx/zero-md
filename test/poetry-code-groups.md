@@ -1,7 +1,3 @@
-<!--\*\*poetryBold\*\*-->
-
-<!--«poetryBold»-->
-
 <!--«tabNameBrackets»-->
 
 <localized main="en"/>
@@ -131,6 +127,26 @@ this is ____underlined____ in poetry
 15 // some code
 ```
 :::::::::
+
+## 16 (with html and custom quotes in poetry for bold)
+
+Все html-элементы выглядят примерно так:
+
+```html
+<element attribute1="value1" attribute2="value2"> внутренности </element>
+```
+
+bold with «...»
+
+```poetry
+<element attribute1="value1" attribute2="value2"> «какой-то текст» </element>
+```
+
+bold with `**...**`and `__...__`
+
+```poetry
+<element attribute1="value1" attribute2="value2"> **какой**-то __текст__ </element>
+```
 
 # Etc
 

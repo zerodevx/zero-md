@@ -41,6 +41,14 @@ export class ZeroMd extends HTMLElement {
     )
   }
 
+  get debug() {
+    return (
+      new URLSearchParams(window.location.search).get('debug') ||
+      this.getAttribute('debug') ||
+      this.config?.debug
+    )
+  }
+
   set src(val) {
     this.reflect('src', val)
   }
@@ -541,6 +549,8 @@ export class ZeroMd extends HTMLElement {
       }
     })
 
+    this.debug && console.log('===md\n' + md)
+
     if (shouldBeCodalized) {
       const codalized =
         /<((not-)?(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
@@ -559,6 +569,7 @@ export class ZeroMd extends HTMLElement {
         }" id="${tag}">${content}</span>` // TODO: should we make here id value dependent on inverted?
       })
     }
+    this.debug && console.log('===md after codalized\n' + md)
 
     if (shouldBeLocalized) {
       const localized = /<((uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
@@ -568,6 +579,7 @@ export class ZeroMd extends HTMLElement {
         return candidates.includes(this.lang || defaultLangFromMd) ? content : ''
       })
     }
+    this.debug && console.log('===md after localized\n' + md)
 
     const tocStartLevelOption = /<!--TOC>(\d)-->/i
     const [, tocStartLevel] = md.match(tocStartLevelOption) || [null, 0]
@@ -640,12 +652,9 @@ export class ZeroMd extends HTMLElement {
       or should be replaced with backTickPoetries completely, i.e. removed
     */
     const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
-    const poetryRules = [
+    const poetryRulesExceptBold = [
       [/(_)___(?!\1)(.*?)____(?!\1)/gim, '<span style="text-decoration:underline">$2</span>'], //underlined
       [/(_)__(?!\1)(.*?)___(?!\1)/gim, '<em>$2</em>'], //emphasis (aka "italic")
-
-      poetryBoldOptionRule, //bold1
-      [/(\*)\*(?!\1)(.*?)\*\*(?!\1)/gim, '<b>$2</b>'], //bold2
 
       // [/^(?!.*\/\*.*$).*(\*)(.*?)\1/gmi,      '<em>$2</em>'], //emphasis
       // TODO: fix: does not work for lines: ... * ... * ... /* ... */ ...
@@ -671,6 +680,15 @@ export class ZeroMd extends HTMLElement {
 
       let res = content
 
+      // TODO: encode all html elements definition tokens in poetry content with &lt;, &gt;, and &quot;
+      res = res.replace(/</gim, '&lt;')
+      res = res.replace(/>/gim, '&gt;')
+      res = res.replace(/"/gim, '&quot;')
+
+      for (const rule of rules) {
+        res = res.replace(rule[0], rule[1])
+      }
+
       if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {
         // then we should totally disable original __ and **
         // in md processing (both by us and marked.js)
@@ -682,7 +700,12 @@ export class ZeroMd extends HTMLElement {
         // then decode it later once md is processed and we get html...
       }
 
-      for (const rule of rules) {
+      const boldRules = [
+        poetryBoldOptionRule, //bold1
+        [/(\*)\*(?!\1)(.*?)\*\*(?!\1)/gim, '<b>$2</b>'], //bold2
+      ]
+
+      for (const rule of boldRules) {
         res = res.replace(rule[0], rule[1])
       }
 
@@ -699,13 +722,13 @@ export class ZeroMd extends HTMLElement {
             // if somebody passed more than one pair in info,
             // then we clone content into same amount of poetries
             .join('\n')
-        : htmlTemplate.codeBlock({ content: res, isPoetry: true })
+        : htmlTemplate.codeBlock({ code: 'text', content: res, isPoetry: true })
 
       return wrapped
     }
 
-    md = md.replace(poetries, processPoetry(poetryRules))
-    md = md.replace(backTickPoetries, processPoetry(poetryRules))
+    md = md.replace(poetries, processPoetry(poetryRulesExceptBold))
+    md = md.replace(backTickPoetries, processPoetry(poetryRulesExceptBold))
 
     const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)\n([\s\S]*?)\n```/gim
     md = md.replace(multiCodeBlocks, (match, codes, content) => {
@@ -731,6 +754,8 @@ export class ZeroMd extends HTMLElement {
 
     /* GET HTML */
 
+    this.debug && console.log('===md before final processing via marked.js\n' + md)
+
     let html = window.marked(md, {
       baseUrl: this.getBaseUrl(window.location.href),
       renderer,
@@ -738,6 +763,8 @@ export class ZeroMd extends HTMLElement {
     })
 
     /* PROCESS HTML */
+
+    this.debug && console.log('===html\n' + html)
 
     // decode previously decoded
     if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {

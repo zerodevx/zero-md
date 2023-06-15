@@ -552,11 +552,9 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md\n' + md)
 
     if (shouldBeCodalized) {
-      const codalized =
-        /<((not-)?(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
-      md = md.replace(codalized, (match, $1, inverted, ___, ____, $5) => {
-        const tag = $1
-        const content = $5
+      const codalizable =
+        /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+      const codalize = (match, tag, inverted, content) => {
         const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
         return `<span class="inline-content${
           inverted
@@ -567,17 +565,21 @@ export class ZeroMd extends HTMLElement {
             ? ' active'
             : ''
         }" id="${tag}">${content}</span>` // TODO: should we make here id value dependent on inverted?
-      })
+      }
+      while (md.match(codalizable)) {
+        md = md.replace(codalizable, codalize)
+      }
     }
     this.debug && console.log('===md after codalized\n' + md)
 
     if (shouldBeLocalized) {
-      const localized = /<((uk|ru|en)(-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
-      md = md.replace(localized, (match, $1, __, ___, $4) => {
-        const candidates = $1.split('-')
-        const content = $4
-        return candidates.includes(this.lang || defaultLangFromMd) ? content : ''
-      })
+      const localizable = /<((?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
+      const localize = (match, candidates, content) => {
+        return candidates.split('-').includes(this.lang || defaultLangFromMd) ? content : ''
+      }
+      while (md.match(localizable)) {
+        md = md.replace(localizable, localize)
+      }
     }
     this.debug && console.log('===md after localized\n' + md)
 

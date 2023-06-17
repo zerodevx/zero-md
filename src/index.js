@@ -227,7 +227,7 @@ export class ZeroMd extends HTMLElement {
   waitForReady() {
     const ready =
       this.connected ||
-      new Promise((resolve) => {
+      new Promise(resolve => {
         this.addEventListener('zero-md-connected', function handler() {
           this.removeEventListener('zero-md-connected', handler)
           resolve()
@@ -238,7 +238,7 @@ export class ZeroMd extends HTMLElement {
 
   // TODO: ensure this implementation is valid
   waitForRendered() {
-    const rendered = new Promise((resolve) => {
+    const rendered = new Promise(resolve => {
       this.addEventListener('zero-md-rendered', function handler() {
         this.removeEventListener('zero-md-rendered', handler)
         resolve()
@@ -260,7 +260,7 @@ export class ZeroMd extends HTMLElement {
   }
 
   tick() {
-    return new Promise((resolve) => requestAnimationFrame(resolve))
+    return new Promise(resolve => requestAnimationFrame(resolve))
   }
 
   // Coerce anything into an array
@@ -272,19 +272,19 @@ export class ZeroMd extends HTMLElement {
   onload(node) {
     return new Promise((resolve, reject) => {
       node.onload = resolve
-      node.onerror = (err) => reject(err.path ? err.path[0] : err.composedPath()[0])
+      node.onerror = err => reject(err.path ? err.path[0] : err.composedPath()[0])
     })
   }
 
   // Load a url or load (in order) an array of urls via <script> tags
   loadScript(urls) {
     return Promise.all(
-      this.arrify(urls).map((item) => {
+      this.arrify(urls).map(item => {
         const [url, ...attrs] = this.arrify(item)
         const el = document.createElement('script')
         el.src = url
         el.async = false
-        attrs.forEach((attr) => el.setAttribute(attr, ''))
+        attrs.forEach(attr => el.setAttribute(attr, ''))
         return this.onload(document.head.appendChild(el))
       }),
     )
@@ -325,7 +325,7 @@ export class ZeroMd extends HTMLElement {
 
   // Runs Prism highlight async; falls back to sync if Web Workers throw
   highlight(container) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
       /*
        * Prism doesn't auto-detect languages, and original zero-md version was doing this by itself
@@ -345,7 +345,7 @@ export class ZeroMd extends HTMLElement {
       * also currently we need to add it here, not in place of poetry definition
       * because there the parsing logic depends on "not having langauge-xxxx hint for poetries"...
       */
-      unhinted.forEach((block) => block.classList.add('language-text'))
+      unhinted.forEach(block => block.classList.add('language-text'))
 
       try {
         window.Prism.highlightAllUnder(container, true, resolve())
@@ -365,7 +365,7 @@ export class ZeroMd extends HTMLElement {
 
   // Construct styles dom and return HTML string
   buildStyles() {
-    const get = (query) => {
+    const get = query => {
       const node = this.querySelector(query)
       return node ? node.innerHTML || ' ' : ''
     }
@@ -473,7 +473,7 @@ export class ZeroMd extends HTMLElement {
               !(importedFileNestingMatch.length === 1 && importedFileNestingMatch[0] === '.')
             ) {
               const importedFileNestingDepth = importedFileNestingMatch.filter(
-                (item) => item === '..',
+                item => item === '..',
               ).length
 
               if (importedFileNestingDepth <= currentZeroMdFileNestingDepth) {
@@ -628,7 +628,7 @@ export class ZeroMd extends HTMLElement {
     const pageBreaks = /^===/gim
     md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>')
 
-    this.config.disableCodeHighlightingFor.forEach((lang) => {
+    this.config.disableCodeHighlightingFor.forEach(lang => {
       md = md.replace(new RegExp(`\`\`\`${lang}`, 'gim'), '```')
     })
 
@@ -675,7 +675,7 @@ export class ZeroMd extends HTMLElement {
     ]
     isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
     const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
-    const processPoetry = (rules) => (match, info, content) => {
+    const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
       // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
@@ -687,7 +687,7 @@ export class ZeroMd extends HTMLElement {
       )
       const maybeCodeOrCustomNameOrBothPairs = [
         ...(info?.trim().matchAll(maybeCodeOrCustomNameOrBoth) ?? []),
-      ].map((matched) => ({ maybeCode: matched[1], maybeCustomName: matched[2] }))
+      ].map(matched => ({ maybeCode: matched[1], maybeCustomName: matched[2] }))
 
       let res = content
 
@@ -745,7 +745,7 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(multiCodeBlocks, (match, codes, content) => {
       return codes
         .split(/\s+/)
-        .map((code) => `\`\`\`${code}\n${content}\n\`\`\``)
+        .map(code => `\`\`\`${code}\n${content}\n\`\`\``)
         .join('\n')
     })
 
@@ -757,9 +757,9 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
       const customNames = [
         ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
-      ].map((matched) => matched[1])
+      ].map(matched => matched[1])
       return customNames
-        .map((customName) => htmlTemplate.codeBlock({ content, customName, code }))
+        .map(customName => htmlTemplate.codeBlock({ content, customName, code }))
         .join('\n')
     })
 
@@ -901,13 +901,13 @@ export class ZeroMd extends HTMLElement {
   async stampStyles(html) {
     const node = this.makeNode(html)
     const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
-    const target = [...this.root.children].find((n) => n.classList.contains('markdown-styles'))
+    const target = [...this.root.children].find(n => n.classList.contains('markdown-styles'))
     if (target) {
       target.replaceWith(node)
     } else {
       this.root.prepend(node)
     }
-    await Promise.all(links.map((l) => this.onload(l))).catch((err) => {
+    await Promise.all(links.map(l => this.onload(l))).catch(err => {
       this.fire('zero-md-error', {
         msg: '[zero-md] An external stylesheet failed to load',
         status: undefined,
@@ -919,7 +919,7 @@ export class ZeroMd extends HTMLElement {
   // Insert or replace HTML body string into DOM and returns the node
   stampBody(html) {
     const node = this.makeNode(html)
-    const target = [...this.root.children].find((n) => n.classList.contains('markdown-body'))
+    const target = [...this.root.children].find(n => n.classList.contains('markdown-body'))
     if (target) {
       target.replaceWith(node)
     } else {
@@ -931,7 +931,7 @@ export class ZeroMd extends HTMLElement {
   // Start observing for changes in root, templates and scripts
   observeChanges() {
     this.observer.observe(this, { childList: true })
-    this.querySelectorAll('template,script[type="text/markdown"]').forEach((n) => {
+    this.querySelectorAll('template,script[type="text/markdown"]').forEach(n => {
       this.observer.observe(n.content || n, {
         childList: true,
         subtree: true,
@@ -959,12 +959,12 @@ export class ZeroMd extends HTMLElement {
 
       /* PROCESS CODE GROUP - START */
       const tabsWrappers = node.querySelectorAll('.codeGroup')
-      tabsWrappers.forEach((tabsWrapper) => {
+      tabsWrappers.forEach(tabsWrapper => {
         if (tabsWrapper.querySelectorAll('.tab-content.active').length === 0) {
           // hide everything if no active content found
           tabsWrapper.style.display = 'none'
         }
-        tabsWrapper.onclick = (e) => {
+        tabsWrapper.onclick = e => {
           const element = e.target
           const newActiveContentId = element.dataset.id
           const isElementANonActiveTabButton =
@@ -972,7 +972,7 @@ export class ZeroMd extends HTMLElement {
 
           if (isElementANonActiveTabButton) {
             if (this.config.groupCodeGroups) {
-              node.querySelectorAll('.codeGroup .tab-button').forEach((tabButton) => {
+              node.querySelectorAll('.codeGroup .tab-button').forEach(tabButton => {
                 if (tabButton.dataset.id === newActiveContentId) {
                   tabButton.classList.add('active')
                 } else {
@@ -980,7 +980,7 @@ export class ZeroMd extends HTMLElement {
                 }
               })
 
-              node.querySelectorAll(`.tab-content,.inline-content`).forEach((content) => {
+              node.querySelectorAll(`.tab-content,.inline-content`).forEach(content => {
                 if (content.id.split('-').includes(newActiveContentId)) {
                   content.classList.add('active')
                 } else {
@@ -994,7 +994,7 @@ export class ZeroMd extends HTMLElement {
 
               const wrapper = buttonsWrapper.parentElement
               const contents = wrapper.querySelectorAll('.tab-content')
-              contents.forEach((content) => {
+              contents.forEach(content => {
                 content.classList.remove('active')
               })
               wrapper.querySelector(`#${newActiveContentId}`).classList.add('active')

@@ -178,7 +178,7 @@ To catch `src` errors:
 ```html
 <zero-md id="app" src="not-found.md"></zero-md>
 <script>
-  app.addEventListener('zero-md-error', (ev) => {
+  app.addEventListener('zero-md-error', ev => {
     // `src` download errors will return a response code
     if (ev.detail.status) {
       console.log('Error encountered while loading src', ev.detail.status)
@@ -196,7 +196,7 @@ To catch `<link rel="stylesheet">` errors:
   </template>
 </zero-md>
 <script>
-  app.addEventListener('zero-md-error', (ev) => {
+  app.addEventListener('zero-md-error', ev => {
     // External stylesheet download errors will NOT return status
     if (!ev.detail.status) {
       console.log('Error encountered while loading an external stylesheet')

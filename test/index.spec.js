@@ -11,15 +11,15 @@ describe('unit tests', () => {
   const assert = chai.assert
   const expect = chai.expect
 
-  const add = (html) => {
+  const add = html => {
     const template = document.createElement('template')
     template.innerHTML = html
     return document.body.appendChild(template.content.firstElementChild)
   }
 
-  const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t))
+  const sleep = t => new Promise(resolve => setTimeout(resolve, t))
 
-  const tick = () => new Promise((resolve) => requestAnimationFrame(resolve))
+  const tick = () => new Promise(resolve => requestAnimationFrame(resolve))
 
   describe('buildMd()', () => {
     let zero
@@ -29,12 +29,12 @@ describe('unit tests', () => {
     afterEach(() => {
       zero.remove()
     })
-    const zero$ = (selector) => zero.shadowRoot.querySelector(selector)
+    const zero$ = selector => zero.shadowRoot.querySelector(selector)
     const zeroBody = () => zero$('.markdown-body')
-    const zeroBody$ = (selector) => zeroBody().querySelector(selector)
-    const zeroBody$$ = (selector) => zeroBody().querySelectorAll(selector)
+    const zeroBody$ = selector => zeroBody().querySelector(selector)
+    const zeroBody$$ = selector => zeroBody().querySelectorAll(selector)
 
-    const zeroAppendScriptMD = (text) => {
+    const zeroAppendScriptMD = text => {
       const script = document.createElement('script')
       script.setAttribute('type', 'text/markdown')
       script.text = text
@@ -393,7 +393,7 @@ Test Runner {{TR}}
           shouldBe: 'Тест ранер Pytest',
         },
     }
-    Object.entries(scenarios).forEach((args) => {
+    Object.entries(scenarios).forEach(args => {
       const [
         scenario,
         { only, given, whenLang: lang, whenCode: code, selector, shouldBe: localized },
@@ -581,7 +581,7 @@ Test Runner {{TR}}
     let f
     afterEach(() => f.remove())
 
-    it('auto re-renders when src change', (done) => {
+    it('auto re-renders when src change', done => {
       f = add(`<zero-md src="fixture.md"></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
         if (f.src === 'fixture.md') {
@@ -622,7 +622,7 @@ Test Runner {{TR}}
       )
       await f.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', (e) => {
+      f.addEventListener('zero-md-rendered', e => {
         detail = e.detail
       })
       f.querySelector('script').innerText = '# test2'
@@ -640,7 +640,7 @@ Test Runner {{TR}}
       )
       await f.render()
       let detail = {}
-      f.addEventListener('zero-md-rendered', (e) => {
+      f.addEventListener('zero-md-rendered', e => {
         detail = e.detail
       })
       const tpl = f.querySelector('template')
@@ -693,7 +693,7 @@ Test Runner {{TR}}
     afterEach(() => f.remove())
 
     // TODO: make it pass
-    it.skip('auto re-renders content when inline markdown script changes', (done) => {
+    it.skip('auto re-renders content when inline markdown script changes', done => {
       let isInitialRender = true
       f = add(`<zero-md><script type="text/markdown"># markdown-fixture</script></zero-md>`)
       f.addEventListener('zero-md-rendered', () => {
@@ -708,7 +708,7 @@ Test Runner {{TR}}
       })
     })
 
-    it('auto re-renders styles when styles template changes', (done) => {
+    it('auto re-renders styles when styles template changes', done => {
       let isInitialRender = true
       f = add(`<zero-md>
         <template>

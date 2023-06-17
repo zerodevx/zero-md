@@ -326,7 +326,8 @@ export class ZeroMd extends HTMLElement {
   // Runs Prism highlight async; falls back to sync if Web Workers throw
   highlight(container) {
     return new Promise(resolve => {
-      const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
+      /** commented as temporal workaround of "prisma breaks poetry html highlighting in all browsers except FF" */
+      // const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
       /*
        * Prism doesn't auto-detect languages, and original zero-md version was doing this by itself
        * but actually we don't need this magic, it nevertheless was not smart enough:)
@@ -345,13 +346,33 @@ export class ZeroMd extends HTMLElement {
       * also currently we need to add it here, not in place of poetry definition
       * because there the parsing logic depends on "not having langauge-xxxx hint for poetries"...
       */
-      unhinted.forEach(block => block.classList.add('language-text'))
+      // unhinted.forEach(block => block.classList.add('language-text'))
+
+      this.debug &&
+        console.log(
+          '\n===highlighting...\n' +
+            document.querySelector('zero-md').shadowRoot.querySelector('.markdown-body').innerHTML,
+        )
 
       try {
         window.Prism.highlightAllUnder(container, true, resolve())
+
+        this.debug &&
+          console.log(
+            '\n===highlighted:\n' +
+              document.querySelector('zero-md').shadowRoot.querySelector('.markdown-body')
+                .innerHTML,
+          )
       } catch {
         window.Prism.highlightAllUnder(container)
         resolve()
+
+        this.debug &&
+          console.log(
+            '\n===highlighted:\n' +
+              document.querySelector('zero-md').shadowRoot.querySelector('.markdown-body')
+                .innerHTML,
+          )
       }
     })
   }
@@ -953,6 +974,7 @@ export class ZeroMd extends HTMLElement {
       await this.tick()
     }
     const md = await pending
+    this.debug && console.log('\n===built md:\n' + md)
     if (md !== this.cache.body) {
       this.cache.body = md
       const node = this.stampBody(md)

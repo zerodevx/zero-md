@@ -11,9 +11,9 @@ const htmlTemplate = {
    * @returns {string}
    */
   codeBlock: ({ code, customName, content, isPoetry }) =>
-    `<pre><code${isPoetry ? ' poetry' : ''}${code ? ` class="language-${code}"` : ''}${
-      customName ? ` data-customName="${customName}"` : ''
-    }>${content}</code></pre>`,
+    `<pre><code${isPoetry ? ' poetry' : ''}${
+      code ? ` class="${isPoetry ? 'code' : 'language'}-${code}"` : ''
+    }${customName ? ` data-customName="${customName}"` : ''}>${content}</code></pre>`,
 }
 
 export class ZeroMd extends HTMLElement {
@@ -327,6 +327,11 @@ export class ZeroMd extends HTMLElement {
   highlight(container) {
     return new Promise((resolve) => {
       const unhinted = container.querySelectorAll('pre>code:not([class*="language-"])')
+      /*
+       * Prism doesn't auto-detect languages, and original zero-md version was doing this by itself
+       * but actually we don't need this magic, it nevertheless was not smart enough:)
+       * and it conflicted with current poetry implementation
+       * that lefts intentationally poetry without .language-xxxx hint
       unhinted.forEach((n) => {
         // Dead simple language detection :)
         const lang = n.innerText.match(/^\s*</)
@@ -336,6 +341,12 @@ export class ZeroMd extends HTMLElement {
           : 'js'
         n.classList.add(`language-${lang}`)
       })
+      * yet in have consistent css for all code blocks let's add language-text to all of not-hinted ones 
+      * also currently we need to add it here, not in place of poetry definition
+      * because there the parsing logic depends on "not having langauge-xxxx hint for poetries"...
+      */
+      unhinted.forEach((block) => block.classList.add('language-text'))
+
       try {
         window.Prism.highlightAllUnder(container, true, resolve())
       } catch {
@@ -653,7 +664,6 @@ export class ZeroMd extends HTMLElement {
       /---[a-z]*\n([\s\S]*?)\n---/gim /* TODO: should have same abount of groups as backTickPoetries
       or should be replaced with backTickPoetries completely, i.e. removed
     */
-    const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
     const poetryRulesExceptBold = [
       [/(_)___(?!\1)(.*?)____(?!\1)/gim, '<span style="text-decoration:underline">$2</span>'], //underlined
       [/(_)__(?!\1)(.*?)___(?!\1)/gim, '<em>$2</em>'], //emphasis (aka "italic")
@@ -664,9 +674,8 @@ export class ZeroMd extends HTMLElement {
       //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
     ]
     isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
-    const processPoetry = (rules) => (match, $1, $2) => {
-      const info = $1
-      const content = $2
+    const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
+    const processPoetry = (rules) => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
       // /(?:^|\s+)(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?(?:"(.+?)")?"/g
@@ -766,7 +775,7 @@ export class ZeroMd extends HTMLElement {
 
     /* PROCESS HTML */
 
-    this.debug && console.log('===html\n' + html)
+    this.debug && console.log('===html before processing\n' + html)
 
     // decode previously decoded
     if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {
@@ -779,11 +788,9 @@ export class ZeroMd extends HTMLElement {
     html = html.replace(tocMarker, toc)
 
     const codeGroups = /<p>(:::+)(manual)?<\/p>([\s\S]*?)<p>\1<\/p>/gim
-    const processCodeGroup = (match, $1, manual, $3) => {
-      const items = $3
-
+    const processCodeGroup = (match, _, manual, items) => {
       const itemMarker =
-        /<pre><code( poetry)?(?: class="language-(\w+)")?( data-customName="(.+)")?.*?>([\s\S]*?)<\/code><\/pre>/gim
+        /<pre><code( poetry)?(?: class="(?:language|code)-(\w+)")?( data-customName="(.+)")?.*?>([\s\S]*?)<\/code><\/pre>/gim
 
       // const contentAndMaybeCodeOrCustomNameOrAll = [...items.matchAll(itemMarker)].map(
       //   (matched) => ({
@@ -882,6 +889,8 @@ export class ZeroMd extends HTMLElement {
 
     const languageJsMarker = /<pre><code class="language-(js|javascript)"/gim
     html = html.replace(languageJsMarker, '<pre><code class="language-typescript"')
+
+    this.debug && console.log('===html after processing\n' + html)
 
     return `<div class="markdown-body${
       opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''

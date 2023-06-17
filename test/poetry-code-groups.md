@@ -5,15 +5,64 @@
 
 # Poetries
 
-## 1
+## 1.1
 
 ```poetry
-1
+1.1
 this is **bold** in poetry
 this is __default bold (disabled)__ in poetry
+this is «custom bold» in poetry
 this is ___italic___ in poetry
 this is ____underlined____ in poetry
 ```
+
+## 1.2 (with code id)
+
+```poetry: java
+// 1.2 (with code id)
+// this is **bold** in poetry
+// this is __default bold (disabled)__ in poetry
+// this is «custom bold» in poetry
+// this is ___italic___ in poetry
+// this is ____underlined____ in poetry
+```
+
+## 1.3 (with code id, tabbed, mixed with not-poetry)
+
+::::::::::
+```poetry: java
+// 1.2 (with code id = java)
+// this is **bold** in poetry
+// this is __default bold (disabled)__ in poetry
+// this is «custom bold» in poetry
+// this is ___italic___ in poetry
+// this is ____underlined____ in poetry
+```
+```java: «java highlighted block, not poetry»
+// 1.2 (with code id = java, NOT POETRY)
+// this is **bold** in poetry
+// this is __default bold (disabled)__ in poetry
+// this is «custom bold» in poetry
+// this is ___italic___ in poetry
+// this is ____underlined____ in poetry
+```
+```poetry: py
+# 1.2 (with code id = py)
+# this is **bold** in poetry
+# this is __default bold (disabled)__ in poetry
+# this is «custom bold» in poetry
+# this is ___italic___ in poetry
+# this is ____underlined____ in poetry
+```
+```poetry
+1.2 (without code id)
+this is **bold** in poetry
+this is __default bold (disabled)__ in poetry
+this is «custom bold» in poetry
+this is ___italic___ in poetry
+this is ____underlined____ in poetry
+```
+::::::::::
 
 ## 2
 
@@ -57,7 +106,7 @@ this is ____underlined____ in poetry
 
 :::::::::
 ```poetry: java«with custom name» «same with another name»
-7 this is **bold** in poetry tabbed with custom name with code id besides second tab without code id with same content
+// 7 this is **asterisks bold** and «custom bold» and ___italic___ in poetry tabbed with custom name with code id besides second tab without code id with same content
 ```
 :::::::::
 

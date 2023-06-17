@@ -81,7 +81,7 @@ describe('unit tests', () => {
       assert(el.classList.contains('token'))
     })
 
-    it('language-detects unhinted code blocks as js o_O', async () => {
+    it('language-detects unhinted code blocks as text o_O', async () => {
       zeroAppendScriptMD(
         '\n' +
           '\n```' +
@@ -96,7 +96,7 @@ describe('unit tests', () => {
 
       await zero.render()
 
-      assert(zeroBody$('pre>code').classList.contains('language-js'))
+      assert(zeroBody$('pre>code').classList.contains('language-text'))
     })
 
     it('dedents when script data-dedent set', async () => {

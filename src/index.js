@@ -549,10 +549,20 @@ export class ZeroMd extends HTMLElement {
       ? localizedMatch
       : [[]]
 
-    const translation = /<!--((?![-])\W)(.*?)\1([\s\S]*?)\1-->/gim
+    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
+    this.debug && console.log('===translation===\n')
     ;[...md.matchAll(translation)].forEach(([_match, _delimiter, from, to]) => {
-      md = md.replace(new RegExp(from, 'gmi'), to)
+      try {
+        md = md.replace(new RegExp(from, 'gmi'), to)
+      } catch (e) {
+        this.debug && console.log('===match\n' + _match)
+        this.debug && console.log('===delimiter\n' + _delimiter)
+        this.debug && console.log('===from\n' + from)
+        this.debug && console.log('===to\n' + to)
+        console.error(e)
+      }
     })
+    this.debug && console.log('=================\n')
 
     const translationPerCodeOption =
       /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim

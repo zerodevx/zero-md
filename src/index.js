@@ -535,19 +535,14 @@ export class ZeroMd extends HTMLElement {
       )
     }
 
-    const codalizedMatch = [
-      ...md.matchAll(
-        /<codalized( main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim,
-      ),
-    ]
-    const [[shouldBeCodalized, __, defaultCodeFromMd]] = codalizedMatch.length
-      ? codalizedMatch
-      : [[]]
+    const codalizedOption =
+      /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
+    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+    this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
+    this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedMatch = [...md.matchAll(/<localized( main="(uk|ru|en)")?\/>/gim)]
-    const [[shouldBeLocalized, _, defaultLangFromMd]] = localizedMatch.length
-      ? localizedMatch
-      : [[]]
+    const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
+    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
 
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     this.debug && console.log('===translation===\n')

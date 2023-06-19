@@ -5,6 +5,52 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 ![cat!](test1/cat.jpg)
 
+## Templates + General Translation + Translation to multiline
+
+<!--~{{LOOM\(https:\/\/www\.loom\.com\/share\/(\w+)\)}}~<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/$1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,~-->
+
+{{LOOM(https://www.loom.com/share/09c97fcc9ed24fdc830062f778d01828)}}
+
+{{LOOM(https://www.loom.com/share/09c97fcc9ed24fdc830062f778d01828)}}
+
+## 🐞 Normal code blocks – higlighting of html and css does not work in Firefox! 🐞
+
+### Separate
+
+```js
+// comment
+const a = 1;
+```
+
+```html
+<!-- comment -->
+<div>1</div>
+```
+
+```css
+/* comment */
+div { color: red; }
+```
+
+### Tabbed
+
+::::::::::
+```js
+// comment
+const a = 1;
+```
+```html
+<!-- comment -->
+<div>1</div>
+```
+```css
+/* comment */
+div { color: red; }
+```
+::::::::::
+
 ## Anchor link test
 
 Clicking [Taman et veri](#tamen-et-veri) should scroll to the correct section.

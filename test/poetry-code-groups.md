@@ -64,6 +64,30 @@ this is ____underlined____ in poetry
 ```
 ::::::::::
 
+## 1.4 (manual, without code id, tabbed, mixed with not-poetry where poetry is not in first tab)
+
+::::::::::manual
+```textile
+this is **bold** in poetry
+```
+```text
+this is **bold** in poetry
+```
+```poetry: «poetry»
+1.2 (without code id)
+this is **bold** in poetry
+this is __default bold (disabled)__ in poetry
+this is «custom bold» in poetry
+this is ___italic___ in poetry
+this is ____underlined____ in poetry
+
+(without custom name or id this content will never be switched to if previous content was text or poetry)
+```
+```html
+this is **bold** in poetry
+```
+::::::::::
+
 ## 2
 
 ```poetry
@@ -105,7 +129,7 @@ this is ____underlined____ in poetry
 ## 7
 
 :::::::::
-```poetry: java«with custom name» «same with another name»
+```poetry: «with custom name» java«same with another name»
 // 7 this is **asterisks bold** and «custom bold» and ___italic___ in poetry tabbed with custom name with code id besides second tab without code id with same content
 ```
 :::::::::

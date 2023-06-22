@@ -183,7 +183,7 @@ export class ZeroMd extends HTMLElement {
         }
         pre{
           padding:1em !important;
-          margin:.5em 0 !important;
+          margin:0 0 1em 0 !important;
           overflow:auto !important;
         }
         :not(pre)>code,pre{

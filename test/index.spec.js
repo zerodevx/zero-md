@@ -325,6 +325,15 @@ describe('unit tests', () => {
       assert(f.scrollTop > 0)
     })
 
+    it('scrolls to element if zero-md used in no-shadow mode', async () => {
+      location.hash = 'tamen-et-veri'
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" no-shadow></zero-md></div>`
+      )
+      await sleep(500)
+      assert(f.scrollTop > 0)
+    })
+
     it('hijacks same-doc hash links and scrolls id into view', async () => {
       f = add(
         `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`

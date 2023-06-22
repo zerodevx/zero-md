@@ -643,9 +643,16 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after codalized\n' + md)
 
     if (shouldBeLocalized) {
-      const localizable = /<((?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
-      const localize = (match, candidates, content) => {
-        return candidates.split('-').includes(this.lang || defaultLangFromMd) ? content : ''
+      const localizable = /<((not-)?(?:uk|ru|en)(?:-uk|-ru|-en)*)>([\s\S]*?)<\/\1>/gim
+      const localize = (match, tag, inverted, content) => {
+        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        return inverted
+          ? candidates.includes(this.lang || defaultLangFromMd)
+            ? ''
+            : content
+          : candidates.includes(this.lang || defaultLangFromMd)
+          ? content
+          : ''
       }
       while (md.match(localizable)) {
         md = md.replace(localizable, localize)

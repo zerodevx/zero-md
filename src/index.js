@@ -180,10 +180,11 @@ export class ZeroMd extends HTMLElement {
           -moz-hyphens:none !important;
           -ms-hyphens:none !important;
           hyphens:none !important;
-          // background: #f5f2f0 !important;
         }
         pre{
-          margin: 0 !important;
+          padding:1em !important;
+          margin:.5em 0 !important;
+          overflow:auto !important;
         }
         :not(pre)>code,pre{
           background:#f5f2f0 !important;

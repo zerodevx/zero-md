@@ -150,9 +150,9 @@ export class ZeroMd extends HTMLElement {
   // Scroll to selected element
   goto(id) {
     if (id) {
-      const el = this.root.getElementById
-        ? this.root.getElementById(id.substring(1))
-        : document.getElementById(id.substring(1))
+      const el = this.hasAttribute('no-shadow')
+        ? document.getElementById(id.substring(1))
+        : this.root.getElementById(id.substring(1))
       if (el) {
         el.scrollIntoView()
       }

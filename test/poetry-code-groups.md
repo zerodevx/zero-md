@@ -1,5 +1,3 @@
-<!--«tabNameBrackets»-->
-
 <localized main="en"/>
 <codalized main="js"/>
 

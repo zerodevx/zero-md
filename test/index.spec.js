@@ -346,6 +346,19 @@ describe('unit tests', () => {
       assert(f.scrollTop > 0)
       assert(location.hash === '#tamen-et-veri')
     })
+
+    it('hijacks same-doc hash links and scrolls id into view in no-shadow mode', async () => {
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render no-shadow></zero-md></div>`
+      )
+      const el = f.querySelector('zero-md')
+      await el.render()
+      const a = document.querySelector('a[href="#tamen-et-veri"]')
+      a.click()
+      await sleep(50)
+      assert(f.scrollTop > 0)
+      assert(location.hash === '#tamen-et-veri')
+    })
   })
 
   describe('Mutation Observer tests', () => {

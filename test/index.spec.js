@@ -325,6 +325,15 @@ describe('unit tests', () => {
       assert(f.scrollTop > 0)
     })
 
+    it('scrolls to element if zero-md used in no-shadow mode', async () => {
+      location.hash = 'tamen-et-veri'
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" no-shadow></zero-md></div>`
+      )
+      await sleep(500)
+      assert(f.scrollTop > 0)
+    })
+
     it('hijacks same-doc hash links and scrolls id into view', async () => {
       f = add(
         `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render></zero-md></div>`
@@ -332,6 +341,19 @@ describe('unit tests', () => {
       const el = f.querySelector('zero-md')
       await el.render()
       const a = el.shadowRoot.querySelector('a[href="#tamen-et-veri"]')
+      a.click()
+      await sleep(50)
+      assert(f.scrollTop > 0)
+      assert(location.hash === '#tamen-et-veri')
+    })
+
+    it('hijacks same-doc hash links and scrolls id into view in no-shadow mode', async () => {
+      f = add(
+        `<div style="height:200px;overflow:hidden;"><zero-md src="fixture.md" manual-render no-shadow></zero-md></div>`
+      )
+      const el = f.querySelector('zero-md')
+      await el.render()
+      const a = document.querySelector('a[href="#tamen-et-veri"]')
       a.click()
       await sleep(50)
       assert(f.scrollTop > 0)

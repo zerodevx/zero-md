@@ -174,3 +174,38 @@ $a_2 + b^2 = d^e $
 ```
 
 Demo: https://plnkr.co/edit/SdzWj39SOVpntGTn
+
+### Support [AnchorJS]
+
+[AnchorJS]: https://github.com/bryanbraun/anchorjs
+
+To load the links, `<zero-md>` must be used with `no-shadow` tag. See [#84](https://github.com/zerodevx/zero-md/issues/84) for more information.
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+    <script type="module">
+      import "https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js";
+      document.addEventListener("zero-md-rendered", function (event) {
+          anchors.add();
+       });
+    </script>
+  </head>
+
+  <body>
+    <zero-md src="anchorjs.md" no-shadow>
+      <template>
+        <style>
+          .anchorjs-link {
+            text-decoration: none;
+          }
+        </style>
+      </template>
+    </zero-md>
+  </body>
+</html>
+```
+
+Demo: <https://plnkr.co/edit/Mot4w8o5bCPYy4B7>

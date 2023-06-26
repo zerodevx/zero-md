@@ -227,12 +227,12 @@ Configuration: https://zerodevx.github.io/zero-md/configuration/
 
 1. Support for `<xmp>` tag is removed; use `<script type="text/markdown">` instead.
 
+<!-- prettier-ignore -->
 ```html
 <!-- Previous -->
 <zero-md>
   <template>
-    <xmp
->
+    <xmp>
 # `This` is my [markdown](example.md)
     </xmp>
   </template>
@@ -259,79 +259,78 @@ Configuration: https://zerodevx.github.io/zero-md/configuration/
 
 2. Markdown source behaviour has changed. Think of `<script type="text/markdown">` as a "fallback".
 
+<!-- prettier-ignore -->
 ```html
 <!-- Previous -->
 <zero-md src="will-not-render.md">
   <template>
-    <xmp
->
+    <xmp>
 # This has first priority and will be rendered instead of `will-not-render.md`
     </xmp>
   </template>
-  <zero-md>
-    <!-- Now -->
-    <zero-md src="will-render-unless-falsy.md">
-      <script type="text/markdown">
-        # This will NOT be rendered _unless_ `src` resolves to falsy
-      </script>
-      <zero-md></zero-md></zero-md></zero-md
-></zero-md>
+<zero-md>
+
+<!-- Now -->
+<zero-md src="will-render-unless-falsy.md">
+  <script type="text/markdown">
+    # This will NOT be rendered _unless_ `src` resolves to falsy
+  </script>
+</zero-md>
 ```
 
 3. The `css-urls` attribute is deprecated. Use `<link rel="stylesheet">` instead.
 
+<!-- prettier-ignore -->
 ```html
 <!-- Previous -->
-<zero-md src="example.md" css-urls='["/style1.css", "/style2.css"]'
-  ><zero-md>
-    <!-- Now, this... -->
-    <zero-md src="example.md"></zero-md>
+<zero-md src="example.md" css-urls='["/style1.css", "/style2.css"]'><zero-md>
+  
+<!-- Now, this... -->
+<zero-md src="example.md"></zero-md>
 
-    <!-- ...is actually equivalent to this -->
-    <zero-md src="example.md">
-      <template>
-        <!-- These are the default stylesheets -->
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
-        />
-      </template>
-    </zero-md>
+<!-- ...is actually equivalent to this -->
+<zero-md src="example.md">
+  <template>
+    <!-- These are the default stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
+    />
+  </template>
+</zero-md>
 
-    <!-- So, to apply your own external stylesheets... -->
-    <zero-md src="example.md">
-      <!-- ...you overwrite the default template -->
-      <template>
-        <!-- Use <link> tags to reference your own stylesheets -->
-        <link rel="stylesheet" href="/style1.css" />
-        <link rel="stylesheet" href="/style2.css" />
-        <!-- You can even apply additional styles -->
-        <style>
-          p {
-            color: red;
-          }
-        </style>
-      </template>
-    </zero-md>
+<!-- So, to apply your own external stylesheets... -->
+<zero-md src="example.md">
+  <!-- ...you overwrite the default template -->
+  <template>
+    <!-- Use <link> tags to reference your own stylesheets -->
+    <link rel="stylesheet" href="/style1.css" />
+    <link rel="stylesheet" href="/style2.css" />
+    <!-- You can even apply additional styles -->
+    <style>
+      p {
+        color: red;
+      }
+    </style>
+  </template>
+</zero-md>
 
-    <!-- If you like the default stylesheets but wish to apply some overrides -->
-    <zero-md src="example.md">
-      <!-- Set `data-merge` to "append" to apply this template AFTER the default template -->
-      <!-- Or "prepend" to apply this template BEFORE -->
-      <template data-merge="append">
-        <style>
-          p {
-            color: red;
-          }
-        </style>
-      </template>
-    </zero-md></zero-md
-  ></zero-md
->
+<!-- If you like the default stylesheets but wish to apply some overrides -->
+<zero-md src="example.md">
+  <!-- Set `data-merge` to "append" to apply this template AFTER the default template -->
+  <!-- Or "prepend" to apply this template BEFORE -->
+  <template data-merge="append">
+    <style>
+      p {
+        color: red;
+      }
+    </style>
+  </template>
+</zero-md>
 ```
 
 4. The attributes `marked-url` and `prism-url` are deprecated. To load `marked` or `prism` from
@@ -431,7 +430,8 @@ ISC
 
 Big thank you to contributors [@EmilePerron](https://github.com/EmilePerron),
 [@bennypowers](https://github.com/bennypowers), [@TheUnlocked](https://github.com/TheUnlocked),
-[@ernsheong](https://github.com/ernsheong) for your code commits. :thumbsup:
+[@ernsheong](https://github.com/ernsheong), [@alifeee](https://github.com/alifeee) for your code
+commits. :thumbsup:
 
 ## Version History
 

@@ -149,12 +149,11 @@ export class ZeroMd extends HTMLElement {
 
   // Scroll to selected element
   goto(id) {
-    if (id) {
-      const el = this.root.querySelector(id)
-      if (el) {
-        el.scrollIntoView()
-      }
-    }
+    let el
+    try {
+      el = this.root.querySelector(id)
+    } catch {}
+    if (el) el.scrollIntoView()
   }
 
   // Hijack same-doc anchor hash links

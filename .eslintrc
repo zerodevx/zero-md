@@ -9,5 +9,8 @@
     "es2021": true,
     "node": true,
     "browser": true
+  },
+  "rules": {
+    "no-empty": ["error", { "allowEmptyCatch": true }]
   }
 }

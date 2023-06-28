@@ -175,22 +175,25 @@ $a_2 + b^2 = d^e $
 
 Demo: https://plnkr.co/edit/SdzWj39SOVpntGTn
 
-### Support [AnchorJS]
+### Support AnchorJS
 
-[AnchorJS]: https://github.com/bryanbraun/anchorjs
-
-To load the links, `<zero-md>` must be used with `no-shadow` tag. See [#84](https://github.com/zerodevx/zero-md/issues/84) for more information.
+To transform header links with [AnchorJS](https://github.com/bryanbraun/anchorjs), `<zero-md>` must
+be used with `no-shadow` tag. See [#84](https://github.com/zerodevx/zero-md/issues/84) for more
+information.
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+    ></script>
     <script type="module">
-      import "https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js";
-      document.addEventListener("zero-md-rendered", function (event) {
-          anchors.add();
-       });
+      import 'https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js'
+      document.addEventListener('zero-md-rendered', function (event) {
+        anchors.add()
+      })
     </script>
   </head>
 

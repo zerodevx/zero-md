@@ -426,13 +426,11 @@ To make changes to docs, simply raise a PR on any `readme.md` files should suffi
 
 ISC
 
-## Acknowledgements
-
-Big thank you to contributors [@EmilePerron](https://github.com/EmilePerron),
-[@bennypowers](https://github.com/bennypowers), [@TheUnlocked](https://github.com/TheUnlocked),
-[@ernsheong](https://github.com/ernsheong), [@alifeee](https://github.com/alifeee) for your code
-commits. :thumbsup:
-
-## Version History
+## Changelog
 
 Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
+
+## Contributors
+
+<!-- prettier-ignore -->
+<kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd> <kbd>[<img src="https://github.com/EmilePerron.png" width="60px;"/>](https://github.com/EmilePerron)</kbd> <kbd>[<img src="https://github.com/bennypowers.png" width="60px;"/>](https://github.com/bennypowers)</kbd> <kbd>[<img src="https://github.com/TheUnlocked.png" width="60px;"/>](https://github.com/TheUnlocked)</kbd> <kbd>[<img src="https://github.com/ernsheong.png" width="60px;"/>](https://github.com/ernsheong)</kbd>

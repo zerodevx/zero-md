@@ -585,7 +585,7 @@ export class ZeroMd extends HTMLElement {
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     const translate = ([_match, _delimiter, from, to]) => {
       try {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp('(?<!<!--(\\W))' + from + '\\1', 'gmi'), to)
       } catch (e) {
         this.debug && console.log('===match\n' + _match)
         this.debug && console.log('===delimiter\n' + _delimiter)

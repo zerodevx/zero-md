@@ -585,7 +585,7 @@ export class ZeroMd extends HTMLElement {
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     const translate = ([_match, _delimiter, from, to]) => {
       try {
-        md = md.replace(new RegExp('(?<!<!--(\\W))' + from + '\\1', 'gmi'), to)
+        md = md.replace(new RegExp('(?<!<!--\\W)' + from, 'gmi'), to)
       } catch (e) {
         this.debug && console.log('===match\n' + _match)
         this.debug && console.log('===delimiter\n' + _delimiter)
@@ -595,11 +595,13 @@ export class ZeroMd extends HTMLElement {
       }
     }
     ;[...md.matchAll(translation)].forEach(translate)
+    this.debug && console.log('===md after first general translation\n' + md)
     // next duplicated line is a crazy hack...
     // to allow nested translations to work... (at least one-level-nested)
     // TODO: refactor it for proper implementation
     ;[...md.matchAll(translation)].forEach(translate)
     this.debug && console.log('=================\n')
+    this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
       /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
@@ -632,7 +634,7 @@ export class ZeroMd extends HTMLElement {
       }
     })
 
-    this.debug && console.log('===md\n' + md)
+    this.debug && console.log('===md after all translations\n' + md)
 
     if (shouldBeCodalized) {
       const codalizable =

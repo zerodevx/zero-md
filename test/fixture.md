@@ -3,7 +3,17 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum).
 A Lorem Ipsum generator that doesn't suck. :P
 
-![cat!](test1/cat.jpg)
+![cat!](fixtures/cat.jpg)
+
+## Nested translations
+
+<!--~{{CHILD}}~son~-->
+
+<!--~{{PARENT_AND_CHILD}}~Father loves his {{CHILD}}~-->
+
+Father's {{CHILD}} is a good boy.
+
+{{PARENT_AND_CHILD}}.
 
 ## Templates + General Translation + Translation to multiline
 

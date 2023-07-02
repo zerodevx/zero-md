@@ -581,9 +581,9 @@ export class ZeroMd extends HTMLElement {
     const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
     const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
 
-    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
     this.debug && console.log('===translation===\n')
-    ;[...md.matchAll(translation)].forEach(([_match, _delimiter, from, to]) => {
+    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
+    const translate = ([_match, _delimiter, from, to]) => {
       try {
         md = md.replace(new RegExp(from, 'gmi'), to)
       } catch (e) {
@@ -593,7 +593,12 @@ export class ZeroMd extends HTMLElement {
         this.debug && console.log('===to\n' + to)
         console.error(e)
       }
-    })
+    }
+    ;[...md.matchAll(translation)].forEach(translate)
+    // next duplicated line is a crazy hack...
+    // to allow nested translations to work... (at least one-level-nested)
+    // TODO: refactor it for proper implementation
+    ;[...md.matchAll(translation)].forEach(translate)
     this.debug && console.log('=================\n')
 
     const translationPerCodeOption =

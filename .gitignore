@@ -6,6 +6,7 @@ test/scratch.html
 tmp/
 test/*.local.*
 test/*-local.*
+*.zip
 
 ### macOS ###
 # General

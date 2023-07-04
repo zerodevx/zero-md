@@ -604,7 +604,7 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -619,7 +619,7 @@ export class ZeroMd extends HTMLElement {
       }
     })
     const translationPerLangOption =
-      /<!--((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
     ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')

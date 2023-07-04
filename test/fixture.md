@@ -5,6 +5,15 @@ A Lorem Ipsum generator that doesn't suck. :P
 
 ![cat!](fixtures/cat.jpg)
 
+## Indented translation definition to align translations for easier refactoring
+
+<!--js-ts~{{browser\.config\.baseUrl}}~browser.config.baseUrl~-->
+<!-----py~{{browser\.config\.baseUrl}}~browser.config.base_url~-->
+<!---java~{{browser\.config\.baseUrl}}~Configuration.baseUrl~-->
+<!-----cs~{{browser\.config\.baseUrl}}~Configuration.BaseUrl~-->
+
+Option to configure base url: `{{browser.config.baseUrl}}`
+
 ## Nested translations
 
 <!--~{{CHILD}}~son~-->

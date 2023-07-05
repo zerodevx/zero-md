@@ -582,10 +582,10 @@ export class ZeroMd extends HTMLElement {
     const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
 
     this.debug && console.log('===translation===\n')
-    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gim
+    const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
     const translate = ([_match, _delimiter, from, to]) => {
       try {
-        md = md.replace(new RegExp('(?<!<!--\\W)' + from, 'gmi'), to)
+        md = md.replace(new RegExp('(?<!<!--\\W)' + from, 'gm'), to)
       } catch (e) {
         this.debug && console.log('===match\n' + _match)
         this.debug && console.log('===delimiter\n' + _delimiter)
@@ -604,7 +604,7 @@ export class ZeroMd extends HTMLElement {
     this.debug && console.log('===md after general translations\n' + md)
 
     const translationPerCodeOption =
-      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-(?:js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerCodeOption)].forEach(([_, perCode, __, from, to]) => {
       if (perCode.split('-').length > 1) {
         perCode = perCode.split('-')
@@ -615,11 +615,11 @@ export class ZeroMd extends HTMLElement {
           ? perCode.includes(this.code || defaultCodeFromMd)
           : (this.code || defaultCodeFromMd) === perCode
       ) {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
     const translationPerLangOption =
-      /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gim
+      /<!--(?:-*)((?:uk|ru|en)(?:-(?:uk|ru|en))*)((?![-])\W)(.*?)\2([\s\S]*?)\2-->/gm
     ;[...md.matchAll(translationPerLangOption)].forEach(([_, perLang, __, from, to]) => {
       if (perLang.split('-').length > 1) {
         perLang = perLang.split('-')
@@ -630,7 +630,7 @@ export class ZeroMd extends HTMLElement {
           ? perLang.includes(this.lang || defaultLangFromMd)
           : (this.lang || defaultLangFromMd) === perLang
       ) {
-        md = md.replace(new RegExp(from, 'gmi'), to)
+        md = md.replace(new RegExp(from, 'gm'), to)
       }
     })
 

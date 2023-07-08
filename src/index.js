@@ -51,7 +51,6 @@ export class ZeroMd extends HTMLElement {
       ...defaults,
       ...window.ZeroMdConfig
     }
-    this.cache = {}
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
@@ -148,10 +147,10 @@ export class ZeroMd extends HTMLElement {
   }
 
   // Scroll to selected element
-  goto(id) {
+  goto(sel) {
     let el
     try {
-      el = this.root.querySelector(id)
+      el = this.root.querySelector(sel)
     } catch {}
     if (el) el.scrollIntoView()
   }
@@ -260,11 +259,32 @@ export class ZeroMd extends HTMLElement {
     return html
   }
 
-  // Insert or replace HTML styles string into DOM and wait for links to load
+  /**
+   * Returns 32-bit DJB2a hash in base36
+   * @param {string} str
+   * @returns {string}
+   */
+  getHash(str) {
+    let hash = 5381
+    for (let index = 0; index < str.length; index++) {
+      hash = ((hash << 5) + hash) ^ str.charCodeAt(index)
+    }
+    return (hash >>> 0).toString(36)
+  }
+
+  /**
+   * Insert or replace styles node in root from a HTML string. If there are external stylesheet
+   * links, wait for them to load.
+   * @param {string} html styles string
+   * @returns {Promise<boolean>} returns true if stamped
+   */
   async stampStyles(html) {
-    const node = this.makeNode(html)
-    const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
+    const hash = this.getHash(html)
     const target = [...this.root.children].find((n) => n.classList.contains('markdown-styles'))
+    if (target && target.getAttribute('data-hash') === hash) return false
+    const node = this.makeNode(html)
+    node.setAttribute('data-hash', hash)
+    const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
     if (target) {
       target.replaceWith(node)
     } else {
@@ -277,18 +297,27 @@ export class ZeroMd extends HTMLElement {
         src: err.href
       })
     })
+    return true
   }
 
-  // Insert or replace HTML body string into DOM and returns the node
-  stampBody(html) {
-    const node = this.makeNode(html)
+  /**
+   * Insert or replace HTML body string into DOM
+   * @param {string} html markdown-body string
+   * @returns {Promise<boolean>} returns true if stamped
+   */
+  async stampBody(html) {
+    const hash = this.getHash(html)
     const target = [...this.root.children].find((n) => n.classList.contains('markdown-body'))
+    if (target && target.getAttribute('data-hash') === hash) return false
+    const node = this.makeNode(html)
+    await this.highlight(node)
+    node.setAttribute('data-hash', hash)
     if (target) {
       target.replaceWith(node)
     } else {
       this.root.append(node)
     }
-    return node
+    return true
   }
 
   // Start observing for changes in root, templates and scripts
@@ -306,23 +335,11 @@ export class ZeroMd extends HTMLElement {
 
   async render(opts = {}) {
     await this.waitForReady()
-    const stamped = {}
     const pending = this.buildMd(opts)
-    const css = this.buildStyles()
-    if (css !== this.cache.styles) {
-      this.cache.styles = css
-      await this.stampStyles(css)
-      stamped.styles = true
-      await this.tick()
-    }
-    const md = await pending
-    if (md !== this.cache.body) {
-      this.cache.body = md
-      const node = this.stampBody(md)
-      stamped.body = true
-      await this.highlight(node)
-    }
-    this.fire('zero-md-rendered', { stamped })
+    const styles = await this.stampStyles(this.buildStyles())
+    await this.tick()
+    const body = await this.stampBody(await pending)
+    this.fire('zero-md-rendered', { node: this, stamped: { styles, body } })
   }
 }
 

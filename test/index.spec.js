@@ -187,15 +187,15 @@ describe('unit tests', () => {
     })
     afterEach(() => f.remove())
 
-    it('stamps html body into shadow dom', () => {
-      f.stampBody('<div class="test">hello</div>')
+    it('stamps html body into shadow dom', async () => {
+      await f.stampBody('<div class="test">hello</div>')
       assert(f.shadowRoot.querySelector('.test').innerHTML === 'hello')
     })
 
-    it('stamps html body into light dom if no-shadow set', () => {
+    it('stamps html body into light dom if no-shadow set', async () => {
       f.remove()
       f = add(`<zero-md manual-render no-shadow></zero-md>`)
-      f.stampBody('<div class="test">hello</div>')
+      await f.stampBody('<div class="test">hello</div>')
       assert(f.querySelector('.test').innerHTML === 'hello')
     })
   })

@@ -182,7 +182,7 @@ be used with `no-shadow` tag. See [#84](https://github.com/zerodevx/zero-md/issu
 information.
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <script

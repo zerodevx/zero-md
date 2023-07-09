@@ -422,15 +422,24 @@ Documentation is in the `/docs` folder in the form of `readme.md` files, and pub
 
 To make changes to docs, simply raise a PR on any `readme.md` files should suffice.
 
-## License
-
-ISC
-
 ## Changelog
 
 Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 
-## Contributors
+## License
+
+ISC
+
+## Acknowledgement
+
+A big thank you to the following contributors and sponsors! :pray:
+
+### Contributors
 
 <!-- prettier-ignore -->
 <kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd> <kbd>[<img src="https://github.com/EmilePerron.png" width="60px;"/>](https://github.com/EmilePerron)</kbd> <kbd>[<img src="https://github.com/bennypowers.png" width="60px;"/>](https://github.com/bennypowers)</kbd> <kbd>[<img src="https://github.com/TheUnlocked.png" width="60px;"/>](https://github.com/TheUnlocked)</kbd> <kbd>[<img src="https://github.com/ernsheong.png" width="60px;"/>](https://github.com/ernsheong)</kbd>
+
+### Sponsors
+
+<!-- prettier-ignore -->
+<kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd>

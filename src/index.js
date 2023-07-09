@@ -52,6 +52,10 @@ export class ZeroMd extends HTMLElement {
       ...window.ZeroMdConfig
     }
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
+    this.root.prepend(
+      this.makeNode(`<div class="markdown-styles"></div>`),
+      this.makeNode(`<div class="markdown-body"></div>`)
+    )
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
         !!window.marked || this.loadScript(this.config.markedUrl),
@@ -276,48 +280,46 @@ export class ZeroMd extends HTMLElement {
    * Insert or replace styles node in root from a HTML string. If there are external stylesheet
    * links, wait for them to load.
    * @param {string} html styles string
-   * @returns {Promise<boolean>} returns true if stamped
+   * @returns {Promise<boolean|undefined>} returns true if stamped
    */
   async stampStyles(html) {
     const hash = this.getHash(html)
-    const target = [...this.root.children].find((n) => n.classList.contains('markdown-styles'))
-    if (target && target.getAttribute('data-hash') === hash) return false
-    const node = this.makeNode(html)
-    node.setAttribute('data-hash', hash)
-    const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
-    if (target) {
+    const target = this.root.querySelector('.markdown-styles')
+    if (target.getAttribute('data-hash') !== hash) {
+      const node = this.makeNode(html)
+      node.setAttribute('data-hash', hash)
+      const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
       target.replaceWith(node)
-    } else {
-      this.root.prepend(node)
-    }
-    await Promise.all(links.map((l) => this.onload(l))).catch((err) => {
-      this.fire('zero-md-error', {
-        msg: '[zero-md] An external stylesheet failed to load',
-        status: undefined,
-        src: err.href
+      await Promise.all(links.map((l) => this.onload(l))).catch((err) => {
+        this.fire('zero-md-error', {
+          msg: '[zero-md] An external stylesheet failed to load',
+          status: undefined,
+          src: err.href
+        })
       })
-    })
-    return true
+      return true
+    }
   }
 
   /**
    * Insert or replace HTML body string into DOM
    * @param {string} html markdown-body string
-   * @returns {Promise<boolean>} returns true if stamped
+   * @returns {Promise<boolean|undefined>} returns true if stamped
    */
   async stampBody(html) {
     const hash = this.getHash(html)
-    const target = [...this.root.children].find((n) => n.classList.contains('markdown-body'))
-    if (target && target.getAttribute('data-hash') === hash) return false
-    const node = this.makeNode(html)
-    await this.highlight(node)
-    node.setAttribute('data-hash', hash)
-    if (target) {
-      target.replaceWith(node)
-    } else {
-      this.root.append(node)
+    const target = this.root.querySelector('.markdown-body')
+    if (target.getAttribute('data-hash') !== hash) {
+      const node = this.makeNode(html)
+      await this.highlight(node)
+      node.setAttribute('data-hash', hash)
+      if (target) {
+        target.replaceWith(node)
+      } else {
+        this.root.append(node)
+      }
+      return true
     }
-    return true
   }
 
   // Start observing for changes in root, templates and scripts

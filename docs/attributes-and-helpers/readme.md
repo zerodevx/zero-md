@@ -104,52 +104,42 @@ run()
 
 ### Helpers
 
-Internally, the `render()` function may look something like this:
+Internally, the `render()` function looks like this:
 
 ```js
 async function render(opts = {}) {
   // Ensure everything is initialised
   await this.waitForReady()
-  const stamped = {}
-  // Start generating the CSS and Markdown HTML strings
+
+  // Start generating markdown HTML string in parallel
   const pending = this.buildMd(opts)
-  const css = this.buildStyles()
-  // Stamp styles if none exists; replace if there're changes
-  if (css !== this.cache.styles) {
-    this.cache.styles = css
-    // Ensure that external stylesheets are loaded, then queue next repaint to prevent FOUC
-    await this.stampStyles(css)
-    stamped.styles = true
-    await this.tick()
-  }
-  // Then stamp body if none exists; replace if there're changes
-  const md = await pending
-  if (md !== this.cache.body) {
-    this.cache.body = md
-    const node = this.stampBody(md)
-    stamped.body = true
-    // Begin asynchronous Prism highlight
-    await this.highlight(node)
-  }
+
+  // Insert or replace styles into DOM
+  const styles = await this.stampStyles(this.buildStyles())
+  await this.tick()
+
+  // Insert or replace body into DOM
+  const body = await this.stampBody(await pending)
+
   // Finally, fire the rendered event
-  this.fire('zero-md-rendered', { stamped })
+  this.fire('zero-md-rendered', { stamped: { styles, body } })
 }
 ```
 
 The helper functions shown above are public; you can re-create your own `render()` function using a
 mix of these helpers to fit your specific use-case. Some helpers include:
 
-| Method               | Description                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| waitForReady()       | Returns a `Promise` that resolves when element is connected, and both Marked and Prism are loaded.                                                          |
-| makeNode(html)       | Converts a HTML string into a DOM node and returns it.                                                                                                      |
-| buildStyles()        | Constructs the style HTML string and returns it.                                                                                                            |
-| buildMd({opts})      | Download the `src` file, if specified, transforms the markdown (with optional opts), and returns a `Promise` that resolves into a HTML string.              |
-| stampStyles(html)    | Insert or replace a styles HTML string into DOM and returns a `Promise` that resolves eagerly when all `<link>` stylesheets are downloaded.                 |
-| stampBody(html)      | Insert or replace a markdown HTML string into DOM and returns the new node.                                                                                 |
-| highlight(container) | Runs `Prism` highlight on a container node asynchronously (using Web Workers, or falls back to synchronous if it throws) and returns a `Promise` when done. |
-| tick()               | Wait for next repaint.                                                                                                                                      |
-| fire(name, {opts})   | Dispatches a new custom event.                                                                                                                              |
+| Method               | Description                                                                                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| waitForReady()       | Returns a `Promise` that resolves when element is connected, and both Marked and Prism are loaded.                                                                        |
+| makeNode(html)       | Converts a HTML string into a DOM node and returns it.                                                                                                                    |
+| buildStyles()        | Constructs the style HTML string and returns it.                                                                                                                          |
+| buildMd({opts})      | Download the `src` file, if specified, transforms the markdown (with optional opts), and returns a `Promise` that resolves into a HTML string.                            |
+| stampStyles(html)    | Insert or replace a styles HTML string into DOM, waits for external stylesheets (if any) to load, and returns a `Promise` that resolves to truthy if stamping occurred.   |
+| stampBody(html)      | Insert or replace a markdown HTML string into DOM, runs the `highlight()` function, and returns a `Promise` that resolves to truthy if stamping occurred.                 |
+| highlight(container) | Runs `Prism` highlight on a container node asynchronously (using Web Workers, or falls back to synchronous if it throws) and returns a `Promise` that resolves when done. |
+| tick()               | Wait for next repaint.                                                                                                                                                    |
+| fire(name, {opts})   | Dispatches a new custom event.                                                                                                                                            |
 
 ### Events
 

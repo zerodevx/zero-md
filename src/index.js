@@ -830,17 +830,24 @@ export class ZeroMd extends HTMLElement {
         .join('\n')
     })
 
-    // this part is actually have not business value
-    // but was implemented here just for knowledge sharing purposes
-    // probably we gonna remove it one day...
     const multiTabsWithCustomNamesCodeBlocks =
       /```\b(?!poetry\b)([a-z]+)(?:: (.+))\n([\s\S]*?)\n```/gim
     md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
-      const customNames = [
-        ...info.matchAll(new RegExp(tabNameStart + '(.+?)' + tabNameEnd, 'gim')),
-      ].map(matched => matched[1])
-      return customNames
-        .map(customName => htmlTemplate.codeBlock({ content, customName, code }))
+      const customNameAndMaybeCode = [
+        ...info.matchAll(
+          new RegExp(
+            '(js|ts|java|py|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)?' +
+              tabNameStart +
+              '(.+?)' +
+              tabNameEnd,
+            'gim',
+          ),
+        ),
+      ].map(matched => ({ maybeCode: matched[1], customName: matched[2] }))
+      return customNameAndMaybeCode
+        .map(({ maybeCode, customName }) =>
+          htmlTemplate.codeBlock({ content, customName, code: maybeCode ?? code }),
+        )
         .join('\n')
     })
 

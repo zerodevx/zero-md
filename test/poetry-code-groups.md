@@ -110,7 +110,7 @@ this is **bold** in poetry
 ```
 :::::::::
 
-## 5  (manual, not poetry)
+## 5  (manual, not poetry, with custom name)
 
 :::::::::manual
 ```md: «with custom name»
@@ -134,11 +134,27 @@ this is **bold** in poetry
 ```
 :::::::::
 
-## 8 (manual, not poetry)
+## 8.1 (manual, not poetry, with 2 custom namees)
 
 :::::::::manual
 ```md: «with custom name» «same with another name»
-8 this is **bold** in markdown tabbed manual with custom name besides second tab with same content
+8.1 this is **bold** in markdown tabbed manual with custom name besides second tab with same content
+```
+:::::::::
+
+## 8.2 (manual, not poetry, with 2 custom namees with codes)
+
+:::::::::manual
+```js: js«js with custom name» ts«ts with another name»
+// 8.2 this is **bold** in markdown tabbed manual with custom name besides second tab with same content but another code id
+```
+:::::::::
+
+## 8.3 (not manual, not poetry, with 2 custom namees with codes)
+
+:::::::::
+```js: js«js with custom name» ts«ts with another name»
+// 8.3 this is **bold** in markdown tabbed not manual with custom name besides second tab with same content but another code id
 ```
 :::::::::
 

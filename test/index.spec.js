@@ -85,7 +85,7 @@ describe('unit tests', () => {
 
     it('uses default styles if no template declared', () => {
       f = add(`<zero-md manual-render></zero-md>`)
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = [...f.makeNodes(f.buildStyles())].reduce((a, c) => `${a}${c.outerHTML}`, '')
       assert(s.includes('/github-markdown.min.css'))
     })
 
@@ -93,7 +93,7 @@ describe('unit tests', () => {
       f = add(
         `<zero-md manual-render><template><link rel="stylesheet" href="example.css"></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = [...f.makeNodes(f.buildStyles())].reduce((a, c) => `${a}${c.outerHTML}`, '')
       assert(!s.includes('/github-markdown.min.css'))
       assert(s.includes('example.css'))
     })
@@ -102,7 +102,7 @@ describe('unit tests', () => {
       f = add(
         `<zero-md manual-render><template data-merge="prepend"><style>p{color:red;}</style></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = [...f.makeNodes(f.buildStyles())].reduce((a, c) => `${a}${c.outerHTML}`, '')
       assert(s.indexOf('p{color:red;}') < s.indexOf('markdown.min'))
     })
 
@@ -110,14 +110,14 @@ describe('unit tests', () => {
       f = add(
         `<zero-md manual-render><template data-merge="append"><style>p{color:red;}</style></template></zero-md>`
       )
-      const s = f.makeNode(f.buildStyles()).outerHTML
+      const s = [...f.makeNodes(f.buildStyles())].reduce((a, c) => `${a}${c.outerHTML}`, '')
       assert(s.indexOf('p{color:red;}') > s.indexOf('markdown.min'))
     })
 
     it('allows passing an empty template to override default template', () => {
       f = add(`<zero-md manual-render><template></template></zero-md>`)
-      const s = f.makeNode(f.buildStyles())
-      assert(s.querySelectorAll('link').length === 0)
+      const s = [...f.makeNodes(f.buildStyles())].filter((i) => i.tagName === 'LINK')
+      assert(s.length === 0)
     })
   })
 
@@ -208,7 +208,7 @@ describe('unit tests', () => {
     afterEach(() => f.remove())
 
     it('stamps html styles and wait for stylesheet links to resolve', async () => {
-      const html = '<div><link rel="stylesheet" href="fixture.css"></div>'
+      const html = '<link rel="stylesheet" href="fixture.css">'
       let loaded = false
       f.shadowRoot.addEventListener(
         'load',
@@ -400,6 +400,30 @@ describe('unit tests', () => {
           done()
         }
       })
+    })
+
+    it('zero-md-rendered event fires only once when changed', async () => {
+      let count = 0
+      f = add(
+        `<zero-md src="fixture.md"><template data-merge="append"><style>h1{color:red;}</style></template></zero-md>`
+      )
+      f.addEventListener('zero-md-rendered', () => count++)
+      await sleep(200)
+      f.querySelector('template').innerHTML = `<style>h1{color:blue;}</style>`
+      await sleep(200)
+      assert(count === 2)
+    })
+
+    it('zero-md-rendered event fires only once when changed in no-shadow mode', async () => {
+      let count = 0
+      f = add(
+        `<zero-md src="fixture.md" no-shadow><template data-merge="append"><style>h1{color:red;}</style></template></zero-md>`
+      )
+      f.addEventListener('zero-md-rendered', () => count++)
+      await sleep(200)
+      f.querySelector('template').innerHTML = `<style>h1{color:blue;}</style>`
+      await sleep(200)
+      assert(count === 2)
     })
   })
 

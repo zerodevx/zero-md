@@ -53,8 +53,7 @@ export class ZeroMd extends HTMLElement {
     }
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     this.root.prepend(
-      this.makeNode(`<div class="markdown-styles"></div>`),
-      this.makeNode(`<div class="markdown-body"></div>`)
+      ...this.makeNodes(`<div class="markdown-styles"></div><div class="markdown-body"></div>`)
     )
     if (!this.constructor.ready) {
       this.constructor.ready = Promise.all([
@@ -204,35 +203,42 @@ export class ZeroMd extends HTMLElement {
     })
   }
 
-  // Converts HTML string into node
-  makeNode(html) {
+  /**
+   * Converts HTML string into HTMLCollection of nodes
+   * @param {string} html
+   * @returns {HTMLCollection}
+   */
+  makeNodes(html) {
     const tpl = document.createElement('template')
     tpl.innerHTML = html
-    return tpl.content.firstElementChild
+    return tpl.content.children
   }
 
-  // Construct styles dom and return HTML string
+  /**
+   * Constructs the styles dom and returns HTML string
+   * @returns {string}
+   */
   buildStyles() {
     const get = (query) => {
       const node = this.querySelector(query)
       return node ? node.innerHTML || ' ' : ''
     }
     const urls = this.arrify(this.config.cssUrls)
-    const html = `<div class="markdown-styles"><style>${this.config.hostCss}</style>${get(
-      'template[data-merge="prepend"]'
-    )}${
+    const html = `<style>${this.config.hostCss}</style>${get('template[data-merge="prepend"]')}${
       get('template:not([data-merge])') ||
       urls.reduce((a, c) => `${a}<link rel="stylesheet" href="${c}">`, '')
-    }${get('template[data-merge="append"]')}</div>`
+    }${get('template[data-merge="append"]')}`
     return html
   }
 
-  // Construct md nodes and return HTML string
+  /**
+   * Constructs the markdown body nodes and returns HTML string
+   * @param {*} opts Markedjs options
+   * @returns {string}
+   */
   async buildMd(opts = {}) {
     const src = async () => {
-      if (!this.src) {
-        return ''
-      }
+      if (!this.src) return ''
       const resp = await fetch(this.src)
       if (resp.ok) {
         const md = await resp.text()
@@ -251,16 +257,11 @@ export class ZeroMd extends HTMLElement {
     }
     const script = () => {
       const el = this.querySelector('script[type="text/markdown"]')
-      if (!el) {
-        return ''
-      }
+      if (!el) return ''
       const md = el.hasAttribute('data-dedent') ? this.dedent(el.text) : el.text
       return window.marked.parse(md, opts)
     }
-    const html = `<div class="markdown-body${
-      opts.classes ? this.arrify(opts.classes).reduce((a, c) => `${a} ${c}`, ' ') : ''
-    }">${(await src()) || script()}</div>`
-    return html
+    return (await src()) || script()
   }
 
   /**
@@ -286,10 +287,13 @@ export class ZeroMd extends HTMLElement {
     const hash = this.getHash(html)
     const target = this.root.querySelector('.markdown-styles')
     if (target.getAttribute('data-hash') !== hash) {
-      const node = this.makeNode(html)
-      node.setAttribute('data-hash', hash)
-      const links = [...node.querySelectorAll('link[rel="stylesheet"]')]
-      target.replaceWith(node)
+      target.setAttribute('data-hash', hash)
+      const nodes = this.makeNodes(html)
+      const links = [...nodes].filter(
+        (i) => i.tagName === 'LINK' && i.getAttribute('rel') === 'stylesheet'
+      )
+      target.innerHTML = ''
+      target.append(...nodes)
       await Promise.all(links.map((l) => this.onload(l))).catch((err) => {
         this.fire('zero-md-error', {
           msg: '[zero-md] An external stylesheet failed to load',
@@ -304,20 +308,22 @@ export class ZeroMd extends HTMLElement {
   /**
    * Insert or replace HTML body string into DOM
    * @param {string} html markdown-body string
+   * @param {string[]} [classes] list of classes to apply to `.markdown-body` wrapper
    * @returns {Promise<boolean|undefined>} returns true if stamped
    */
-  async stampBody(html) {
-    const hash = this.getHash(html)
+  async stampBody(html, opts = {}) {
+    const hash = this.getHash(html + JSON.stringify(opts))
     const target = this.root.querySelector('.markdown-body')
     if (target.getAttribute('data-hash') !== hash) {
-      const node = this.makeNode(html)
-      await this.highlight(node)
-      node.setAttribute('data-hash', hash)
-      if (target) {
-        target.replaceWith(node)
-      } else {
-        this.root.append(node)
-      }
+      target.setAttribute('data-hash', hash)
+      target.setAttribute(
+        'class',
+        `markdown-body${opts.classes ? ` ${this.arrify(opts.classes).join(' ')}` : ''}`
+      )
+      const nodes = this.makeNodes(html)
+      target.innerHTML = ''
+      target.append(...nodes)
+      await this.highlight(target)
       return true
     }
   }
@@ -340,7 +346,7 @@ export class ZeroMd extends HTMLElement {
     const pending = this.buildMd(opts)
     const styles = await this.stampStyles(this.buildStyles())
     await this.tick()
-    const body = await this.stampBody(await pending)
+    const body = await this.stampBody(await pending, opts)
     this.fire('zero-md-rendered', { node: this, stamped: { styles, body } })
   }
 }

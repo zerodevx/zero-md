@@ -145,9 +145,18 @@ $a_2 + b^2 = d^e $
 
 ```html
 <head>
-  <!-- Configure your MathJax settings -->
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
+</head>
+
+<body>
+  <!-- Render zero-md into light dom -->
+  <zero-md id="md" src="math.md" no-shadow></zero-md>
   <script>
-    window.MathJax = {
+    // Configure your MathJax settings
+    MathJax = {
       tex: {
         inlineMath: [
           ['$', '$'],
@@ -155,25 +164,21 @@ $a_2 + b^2 = d^e $
         ]
       }
     }
-  </script>
-  <script async src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
-</head>
-<body>
-  <!-- Render zero-md into light dom -->
-  <zero-md id="app" src="my-markdown.md" no-shadow></zero-md>
-
-  <!-- Load the MathJax library AFTER markdown is rendered -->
-  <script>
-    app.addEventListener('zero-md-rendered', () => {
-      let el = document.createElement('script')
-      el.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
-      document.head.appendChild(el)
-    })
+    // Load the MathJax library AFTER markdown is rendered
+    md.addEventListener(
+      'zero-md-rendered',
+      () => {
+        const el = document.createElement('script')
+        el.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
+        document.head.append(el)
+      },
+      { once: true }
+    )
   </script>
 </body>
 ```
 
-Demo: https://plnkr.co/edit/SdzWj39SOVpntGTn
+Demo: https://plnkr.co/edit/UvyPVQKD5CTCr33q
 
 ### Support AnchorJS
 

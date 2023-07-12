@@ -138,24 +138,15 @@ Demo: https://plnkr.co/edit/quiZ7THsQRypBcKL
 ```
 ## Hello World
 
-$a_2 + b^2 = d^e $
+$a_2 + b^2 = d^e$
 ```
 
 `index.html`
 
 ```html
 <head>
-  <script
-    type="module"
-    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
-  ></script>
-</head>
-
-<body>
-  <!-- Render zero-md into light dom -->
-  <zero-md id="md" src="math.md" no-shadow></zero-md>
   <script>
-    // Configure your MathJax settings
+    // Configure MathJax settings
     MathJax = {
       tex: {
         inlineMath: [
@@ -164,21 +155,24 @@ $a_2 + b^2 = d^e $
         ]
       }
     }
-    // Load the MathJax library AFTER markdown is rendered
-    md.addEventListener(
-      'zero-md-rendered',
-      () => {
-        const el = document.createElement('script')
-        el.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js'
-        document.head.append(el)
-      },
-      { once: true }
-    )
+    addEventListener('zero-md-rendered', () => MathJax.typeset())
   </script>
+  <!-- Load MathJax library -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <!-- Load zero-md -->
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
+</head>
+
+<body>
+  <!-- Render zero-md into light dom -->
+  <zero-md src="math.md" no-shadow></zero-md>
 </body>
 ```
 
-Demo: https://plnkr.co/edit/UvyPVQKD5CTCr33q
+Demo: https://plnkr.co/edit/apY6wXIkcT4PnuJH
 
 ### Support AnchorJS
 

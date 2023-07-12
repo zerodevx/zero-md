@@ -67,13 +67,26 @@ export class ZeroMd extends HTMLElement {
       // on refresh. It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
       this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     }
-    this.observer = new MutationObserver(async () => {
+    this.observer = new MutationObserver(() => {
       this.observeChanges()
-      if (!this.manualRender) {
-        await this.render()
-      }
+      if (!this.manualRender) this.render()
     })
+    this.observer.observe(this, { childList: true })
     this.observeChanges()
+  }
+
+  /**
+   * Start observing changes, if not already so, in `template` and `script`.
+   */
+  observeChanges() {
+    this.querySelectorAll('template,script[type="text/markdown"]').forEach((n) => {
+      this.observer.observe(n.content || n, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+      })
+    })
   }
 
   connectedCallback() {
@@ -326,19 +339,6 @@ export class ZeroMd extends HTMLElement {
       await this.highlight(target)
       return true
     }
-  }
-
-  // Start observing for changes in root, templates and scripts
-  observeChanges() {
-    this.observer.observe(this, { childList: true })
-    this.querySelectorAll('template,script[type="text/markdown"]').forEach((n) => {
-      this.observer.observe(n.content || n, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        characterData: true
-      })
-    })
   }
 
   async render(opts = {}) {

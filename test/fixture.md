@@ -24,6 +24,50 @@ Father's {{CHILD}} is a good boy.
 
 {{PARENT_AND_CHILD}}.
 
+## Should have no longBreak ====+ inside code blocks
+
+```js
+/*
+
+====
+
+*/
+```
+
+::::::::::manual
+```poetry: js"js (poetry)"
+/*
+
+====
+
+*/
+```
+::::::::::
+
+## Should have longBreak instead of ====+
+
+====
+
+There should be long break above starting from the header.
+
+## Should have longBreak instead of ====+ from variable
+
+<!--ru~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩РЕШЕНИЕ⇩**
+============~-->
+<!--uk~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩РОЗВ‘ЯЗОК⇩**
+============~-->
+<!--en~{{SOLUTION}}~,,,,,,,,,,,,
+**⇩SOLUTION⇩**
+============~-->
+
+You will see answer to the main question in the universe after long break below...
+
+{{SOLUTION}}
+
+42
+
 ## Templates + General Translation + Translation to multiline
 
 <!--~{{LOOM\(https:\/\/www\.loom\.com\/share\/(\w+)\)}}~<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/$1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>

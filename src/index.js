@@ -703,10 +703,7 @@ export class ZeroMd extends HTMLElement {
     const shortBreaks = /^,,,,+/gim
     md = md.replace(shortBreaks, '<br/>'.repeat(this.config.shortBreaksNumber))
 
-    const longBreaks = /^====+/gim
-    md = md.replace(longBreaks, '<br/>'.repeat(this.config.longBreaksNumber))
-
-    const pageBreaks = /^===/gim
+    const pageBreaks = /^===$/gim
     md = md.replace(pageBreaks, '<div style="page-break-after: always;"></div>')
 
     this.config.disableCodeHighlightingFor.forEach(lang => {
@@ -864,6 +861,18 @@ export class ZeroMd extends HTMLElement {
     /* PROCESS HTML */
 
     this.debug && console.log('===html before processing\n' + html)
+
+    /* long breaks moved to be processed after md processing
+     * as a draft workaround to disable longBreaks processing inside code blocks
+     */
+    // const longBreaks = /^====+/gim
+    const longBreakInParagrapth = /<p>====+<\/p>/gim
+    html = html.replace(longBreakInParagrapth, '<br/>'.repeat(this.config.longBreaksNumber))
+    const longBreakAtParagraphEnding = /^====+<\/p>/gim
+    html = html.replace(
+      longBreakAtParagraphEnding,
+      '<br/>'.repeat(this.config.longBreaksNumber) + '</p>',
+    )
 
     // decode previously decoded
     if (isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption) {

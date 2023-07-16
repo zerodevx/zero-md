@@ -442,4 +442,4 @@ A big thank you to the following contributors and sponsors! :pray:
 ### Sponsors
 
 <!-- prettier-ignore -->
-<kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd>
+<kbd>[<img src="https://github.com/RootofalleviI.png" width="60px;"/>](https://github.com/RootofalleviI)</kbd><kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd>

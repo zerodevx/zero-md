@@ -752,7 +752,7 @@ export class ZeroMd extends HTMLElement {
       //    https://stackoverflow.com/questions/7376238/javascript-regex-look-behind-alternative
     ]
     isOriginalUnderscoredBoldDisabledByNonDefaultPoetryBoldOption = poetryBoldStart !== '__'
-    const backTickPoetries = /```poetry(?::( .+))?\n([\s\S]*?)\n```/gim
+    const backTickPoetries = /```poetry(?::( .+))?(?:\n|\r\n)([\s\S]*?)\n```/gim
     const processPoetry = rules => (match, info, content) => {
       // const titles = info.split(/\s+/)
       // const maybeCodeOrCustomNameOrBoth =
@@ -819,7 +819,7 @@ export class ZeroMd extends HTMLElement {
     md = md.replace(poetries, processPoetry(poetryRulesExceptBold))
     md = md.replace(backTickPoetries, processPoetry(poetryRulesExceptBold))
 
-    const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)\n([\s\S]*?)\n```/gim
+    const multiCodeBlocks = /```((?:[a-z]+)(?: [a-z]+)+)(?:\n|\r\n)([\s\S]*?)\n```/gim
     md = md.replace(multiCodeBlocks, (match, codes, content) => {
       return codes
         .split(/\s+/)
@@ -828,7 +828,7 @@ export class ZeroMd extends HTMLElement {
     })
 
     const multiTabsWithCustomNamesCodeBlocks =
-      /```\b(?!poetry\b)([a-z]+)(?:: (.+))\n([\s\S]*?)\n```/gim
+      /```\b(?!poetry\b)([a-z]+)(?:: (.+))(?:\n|\r\n)([\s\S]*?)\n```/gim
     md = md.replace(multiTabsWithCustomNamesCodeBlocks, (match, code, info, content) => {
       const customNameAndMaybeCode = [
         ...info.matchAll(

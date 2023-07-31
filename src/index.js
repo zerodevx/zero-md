@@ -113,6 +113,10 @@ export class ZeroMd extends HTMLElement {
       hostCss:
         ':host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}' +
         `
+        .markdown-body a {
+          color: #00b7ce !important;
+        }
+        
         .codeGroup {
           width: auto;
           margin: auto;

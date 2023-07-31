@@ -1,5 +1,21 @@
 <localized main="en"/>
-<codalized main="js"/>
+<codalized main="py"/>
+<!--«tabNameBrackets»-->
+<py>
+
+3333333333333
+
+</py>
+<java>
+
+111111
+
+</java>
+<js>
+
+222222222
+
+</js>
 
 <!--«tabNameBrackets»-->
 

@@ -7,6 +7,7 @@ tmp/
 test/*.local.*
 test/*-local.*
 *.zip
+dist/
 
 ### macOS ###
 # General

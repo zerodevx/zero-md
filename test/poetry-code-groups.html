@@ -6,13 +6,23 @@
 
     <script>
       window.ZeroMdConfig = {
-        groupCodeGroups: false,
+        groupCodeGroups: true,
       }
     </script>
     <script type="module" src="build/bundle.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/automician/buttons-menu-custom-element@9860553efcf96a00201b0f0368578f52e3fea3ee/build/static/js/main.5d301d99.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/automician/buttons-menu-custom-element@4067cfd2d61ef83ed59d3721bec742f826b158e0/build/static/css/main.b900ed86.css" rel="stylesheet">
   </head>
-
   <body>
     <zero-md src="./poetry-code-groups.md"></zero-md>
+
+    <fixed-layout>
+      <buttons-menu change-selector="zero-md" change-attribute="code" values="js,ts,py,java, cs"
+      default="java"></buttons-menu>
+
+      <buttons-menu change-selector="zero-md" change-attribute="lang" values="en,uk,ru"
+      default="uk"></buttons-menu>
+    </fixed-layout>
+    
   </body>
 </html>

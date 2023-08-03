@@ -576,14 +576,21 @@ export class ZeroMd extends HTMLElement {
       )
     }
 
-    const codalizedOption =
-      /<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\/>/gim
-    const [shouldBeCodalized, defaultCodeFromMd] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const codalizedOption = new RegExp(
+      '<codalized(?: main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)")?\\/>' +
+      '|' +
+      '<!--codalized(?:\\s)*?\\(main="(js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)"\\)-->',
+      'gim'
+    )
+    const [shouldBeCodalized, $1, $2] = [...md.matchAll(codalizedOption)].at(-1) || []
+    const defaultCodeFromMd = $1 || $2
+    this.debug && console.log('===shouldBeCodalized===\n' + shouldBeCodalized)
     this.debug && console.log('===defaultCodeFromMd===\n' + defaultCodeFromMd)
 
-    const localizedOption = /<localized(?: main="(uk|ru|en)")?\/>/gim
-    const [shouldBeLocalized, defaultLangFromMd] = [...md.matchAll(localizedOption)].at(-1) || []
-
+    const localizedOption = /(?:<localized(?: main="(uk|ru|en)")?\/>)|(?:<!--localized(?:\s)*?\(main="(uk|ru|en)"\)-->)/gim
+    const [shouldBeLocalized, $group1, $group2] = [...md.matchAll(localizedOption)].at(-1) || []
+    const defaultLangFromMd = $group1 || $group2
+    
     this.debug && console.log('===translation===\n')
     const translation = /<!--((?![-\s])\W)(.*?)\1([\s\S]*?)\1-->/gm
     const translate = ([_match, _delimiter, from, to]) => {

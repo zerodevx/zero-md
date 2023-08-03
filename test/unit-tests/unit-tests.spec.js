@@ -418,6 +418,23 @@ Test Runner {{TR}}
         expect(zeroBody$(selector).innerHTML).to.equal(localized)
         expect(zeroBody$$(selector).length).to.equal(1)
       })
+
+      it(`refactored localized/codalized tag, render: ${scenario}`, async () => {
+        zeroAppendScriptMD('<!--localized(main="en")-->\n' + '<!--codalized(main="py")-->\n\n' + given)
+        if (lang) {
+          zero.lang = lang
+        }
+        if (code) {
+          zero.code = code
+        }
+
+        await zero.render()
+
+        // console.log(`=========\n${scenario}\n\nfrom\n---------\n`, given)
+        // console.log('---------\nto:\n---------\n', zeroBody$(selector).innerHTML)
+        expect(zeroBody$(selector).innerHTML).to.equal(localized)
+        expect(zeroBody$$(selector).length).to.equal(1)
+      })
     })
   })
 }

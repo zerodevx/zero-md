@@ -648,9 +648,10 @@ export class ZeroMd extends HTMLElement {
 
     if (shouldBeCodalized) {
       const codalizable =
-        /<((not-)?(?:js|ts|py|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
+        /<((not-)?(?:js|ts|py|python|java|cs|kt|rb|kt|shell|sh|bash|bat|pwsh|text|md|yaml|json|html|xml)(?:-js|-ts|-py|-python|-java|-cs|-kt|-rb|-kt|-shell|-sh|-bash|-bat|-pwsh|-text|-md|-yaml|-json|-html|-xml)*)>([\s\S]*?)<\/\1>/gim
       const codalize = (match, tag, inverted, content) => {
-        const candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        let candidates = inverted ? tag.split('-').slice(1) : tag.split('-')
+        candidates =  candidates.map((item) => item === 'python' ? 'py' : item)
 
         return `<span class="inline-content${
           inverted

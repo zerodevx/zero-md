@@ -229,7 +229,7 @@ export class ZeroMd extends HTMLElement {
 
   /**
    * Constructs the styles dom and returns HTML string
-   * @returns {string}
+   * @returns {string} `markdown-styles` string
    */
   buildStyles() {
     const get = (query) => {
@@ -247,7 +247,7 @@ export class ZeroMd extends HTMLElement {
   /**
    * Constructs the markdown body nodes and returns HTML string
    * @param {*} opts Markedjs options
-   * @returns {string}
+   * @returns {Promise<string>} `markdown-body` string
    */
   async buildMd(opts = {}) {
     const src = async () => {
@@ -324,15 +324,14 @@ export class ZeroMd extends HTMLElement {
    * @param {string[]} [classes] list of classes to apply to `.markdown-body` wrapper
    * @returns {Promise<boolean|undefined>} returns true if stamped
    */
-  async stampBody(html, opts = {}) {
-    const hash = this.getHash(html + JSON.stringify(opts))
+  async stampBody(html, classes) {
+    const names = this.arrify(classes)
+    const hash = this.getHash(html + JSON.stringify(names))
     const target = this.root.querySelector('.markdown-body')
     if (target.getAttribute('data-hash') !== hash) {
       target.setAttribute('data-hash', hash)
-      target.setAttribute(
-        'class',
-        `markdown-body${opts.classes ? ` ${this.arrify(opts.classes).join(' ')}` : ''}`
-      )
+      names.unshift('markdown-body')
+      target.setAttribute('class', names.join(' '))
       const nodes = this.makeNodes(html)
       target.innerHTML = ''
       target.append(...nodes)
@@ -346,7 +345,7 @@ export class ZeroMd extends HTMLElement {
     const pending = this.buildMd(opts)
     const styles = await this.stampStyles(this.buildStyles())
     await this.tick()
-    const body = await this.stampBody(await pending, opts)
+    const body = await this.stampBody(await pending, opts.classes)
     this.fire('zero-md-rendered', { node: this, stamped: { styles, body } })
   }
 }

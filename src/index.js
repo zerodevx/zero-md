@@ -203,8 +203,8 @@ export class ZeroMd extends HTMLElement {
         const lang = n.innerText.match(/^\s*</)
           ? 'markup'
           : n.innerText.match(/^\s*(\$|#)/)
-          ? 'bash'
-          : 'js'
+            ? 'bash'
+            : 'js'
         n.classList.add(`language-${lang}`)
       })
       try {

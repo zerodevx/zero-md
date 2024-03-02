@@ -85,9 +85,11 @@ markdown parser.
 <zero-md id="app" src="example.md" manual-render></zero-md>
 <script>
   // Pass marked opts into render() function
-  app.render({
-    gfm: false,
-    ...
-  })
+  window.onload = function () {
+    app.render({
+      gfm: false,
+      ...
+    })
+  }
 </script>
 ```

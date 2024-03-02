@@ -1,5 +1,0 @@
-dist/
-test/**
-!test/index.spec.js
-!test/*.html
-docs/**/*.html

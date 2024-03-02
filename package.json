@@ -1,44 +1,29 @@
 {
   "name": "zero-md",
-  "version": "2.5.4",
+  "version": "3.0.0",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
-  "type": "module",
-  "exports": "./src/index.js",
   "scripts": {
-    "dev": "rollup -c -w",
-    "format": "prettier --write --ignore-path=.prettierignore .",
-    "lint": "prettier --check --ignore-path=.prettierignore . && eslint .",
-    "test": "npm run dev",
-    "build": "rollup -c",
-    "prepublishOnly": "npm run format && npm run lint && npm run build",
-    "docs:build": "zero-md-docs && sscli -b https://zerodevx.github.io/zero-md/ -r docs -i 'v1/**' --slash"
+    "dev": "NODE_ENV=development vite src",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "check": "tsc --allowJs --checkJs --noEmit src/**/*.js",
+    "lint": "prettier --check . && npm run check && eslint src/**/*.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.5",
-    "@rollup/plugin-terser": "^0.4.4",
-    "chai": "^4.4.1",
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.24",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "mocha": "^10.3.0",
     "prettier": "^3.2.5",
-    "rollup": "^3.29.4",
-    "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-serve": "^2.0.3",
-    "static-sitemap-cli": "^2.2.3",
-    "zero-md-docs": "^0.1.8"
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
   },
-  "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
-  },
+  "type": "module",
+  "exports": "./src/lib/index.js",
   "files": [
-    "src/",
-    "dist/"
+    "dist"
   ],
   "license": "ISC",
   "repository": "github:zerodevx/zero-md",
@@ -48,6 +33,8 @@
     "customelements",
     "markdown-to-html",
     "marked",
-    "prism"
+    "highlightjs",
+    "mathjax",
+    "mermaidjs"
   ]
 }

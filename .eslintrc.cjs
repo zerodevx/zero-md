@@ -14,5 +14,8 @@ module.exports = {
   rules: {
     'no-tabs': 'error',
     'no-unexpected-multiline': 'error'
+  },
+  globals: {
+    __VERSION__: true
   }
 }

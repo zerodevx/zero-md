@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs'
 const { version } = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8'))
 
 export default defineConfig({
-  publicDir: 'fixtures',
   build: {
     lib: {
       entry: 'src/lib/index.js',
@@ -14,6 +13,7 @@ export default defineConfig({
     },
     minify: false
   },
+  publicDir: false,
   define: {
     __VERSION__: JSON.stringify(version)
   }

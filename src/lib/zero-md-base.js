@@ -1,16 +1,16 @@
-import { Marked } from 'marked'
-import { baseUrl as setBaseUrl } from 'marked-base-url'
-import { gfmHeadingId } from 'marked-gfm-heading-id'
-
 const DEFAULT_HOST_CSS =
   '<style>:host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}</style>'
-const DEFAULT_STYLESHEETS =
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css">'
 
 /**
- * zero-md base class includes marked, marked-base-url and marked-gfm-heading-id
- * @extends {HTMLElement}
+ * @typedef {object} ZeroMdRenderObject
+ * @property {'styles'|'body'} [target]
+ * @property {string} [text]
+ * @property {string} [hash]
+ * @property {boolean} [changed]
+ * @property {string} [baseUrl]
+ * @property {boolean} [stamped]
  */
+
 class ZeroMdBase extends HTMLElement {
   get src() {
     return this.getAttribute('src')
@@ -32,6 +32,7 @@ class ZeroMdBase extends HTMLElement {
   constructor() {
     super()
     this.version = __VERSION__
+    this.template = DEFAULT_HOST_CSS
     /** @type {HTMLElement|ShadowRoot} */
     this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     const handler = (/** @type {*} */ e) => {
@@ -45,15 +46,28 @@ class ZeroMdBase extends HTMLElement {
       this._observe()
       if (this.auto) this.render()
     })
-    this.marked = new Marked(gfmHeadingId(), { async: true })
-    this.template = DEFAULT_HOST_CSS + DEFAULT_STYLESHEETS
+    // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this
+    // on refresh. It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
+    if (this.auto) {
+      this.addEventListener(
+        'zero-md-rendered',
+        () => setTimeout(() => this.goto(location.hash), 250),
+        { once: true }
+      )
+    }
+    this._init = false
   }
 
   static get observedAttributes() {
     return ['src', 'body-class']
   }
 
-  attributeChangedCallback(name = '', old = '', val = '') {
+  /**
+   * @param {string} name
+   * @param {string} old
+   * @param {string} val
+   */
+  attributeChangedCallback(name, old, val) {
     if (this._connected && old !== val) {
       switch (name) {
         case 'body-class':
@@ -65,18 +79,20 @@ class ZeroMdBase extends HTMLElement {
     }
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    if (!this._init) {
+      await this.init()
+      this._init = true
+    }
     this.root.prepend(
       this.frag(`<div class="markdown-styles"></div><div class="${this.bodyClass}"></div>`)
     )
     this.shadowRoot?.addEventListener('click', this._clicked)
     this._observer.observe(this, { childList: true })
     this._observe()
-    // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this
-    // on refresh. It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
-    if (this.auto) this.render().then(() => setTimeout(() => this.goto(location.hash), 250))
     this._connected = true
     this.fire('zero-md-ready')
+    if (this.auto) this.render()
   }
 
   disconnectedCallback() {
@@ -95,6 +111,23 @@ class ZeroMdBase extends HTMLElement {
         })
       }
     )
+  }
+
+  /**
+   * Async initialisation hook that runs after constructor. Like constructor, only runs once.
+   * @returns {Promise<*>}
+   */
+  async init() {}
+
+  /**
+   * Async parse function that takes in markdown and returns the html-formatted string.
+   * Can use any md parser you prefer, like marked.js
+   * @param {ZeroMdRenderObject} _obj
+   * @returns {Promise<string>}
+   */
+  // eslint-disable-next-line no-unused-vars
+  async parse(_obj) {
+    return ''
   }
 
   /**
@@ -149,16 +182,6 @@ class ZeroMdBase extends HTMLElement {
   fire(name, detail = {}) {
     this.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }))
   }
-
-  /**
-   * @typedef {object} ZeroMdRenderObject
-   * @property {'styles'|'body'} [target]
-   * @property {string} [text]
-   * @property {string} [hash]
-   * @property {boolean} [changed]
-   * @property {string} [baseUrl]
-   * @property {boolean} [stamped]
-   */
 
   /**
    * Retrieve raw style templates and markdown strings
@@ -237,15 +260,6 @@ class ZeroMdBase extends HTMLElement {
   }
 
   /**
-   * Parse markdown string into html string
-   * @param {ZeroMdRenderObject} obj
-   * @returns {Promise<string>}
-   */
-  async parse({ text }) {
-    return text ? this.marked.parse(text) : ''
-  }
-
-  /**
    * Start rendering
    * @param {{ fire?: boolean }} obj
    * @returns {Promise<*>}
@@ -255,8 +269,7 @@ class ZeroMdBase extends HTMLElement {
     const pending = styles.changed && this.stamp(styles)
     const md = await this.read({ target: 'body' })
     if (md.changed) {
-      this.marked.use(setBaseUrl(md.baseUrl || ''))
-      const parsed = await this.parse(md)
+      const parsed = this.parse(md)
       await pending
       await this.tick()
       await this.stamp({ ...md, text: await parsed })
@@ -267,5 +280,5 @@ class ZeroMdBase extends HTMLElement {
   }
 }
 
-export { DEFAULT_HOST_CSS, DEFAULT_STYLESHEETS }
+export { DEFAULT_HOST_CSS }
 export default ZeroMdBase

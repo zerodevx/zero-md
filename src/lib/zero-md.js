@@ -1,41 +1,68 @@
 import ZeroMdBase from './zero-md-base.js'
-import { markedHighlight } from 'marked-highlight'
-import extensions from './katex.js'
 
 let uid = 0
 
 /**
- * Extends ZeroMdBase with syntax highlighting, math and mermaid features
+ * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 class ZeroMd extends ZeroMdBase {
-  constructor() {
-    super()
+  async init() {
     this.template +=
       '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"><link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">'
+    if (!this.marked) {
+      const urls = [
+        'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
+        'https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm',
+        'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm',
+        'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm'
+      ]
+      const mods = await Promise.all(urls.map((url) => import(url)))
+      this.marked = new mods[0].Marked(mods[1].gfmHeadingId(), { async: true })
+      this.markedHighlight = mods[2].markedHighlight
+      this.setBaseUrl = mods[3].baseUrl
+    }
+    const loadKatex = async () =>
+      (this.katex = (
+        await import('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs')
+      ).default)
+    /* eslint-disable */
+    const inlineRule =
+      /^(\${1,2})(?!\$)((?:\\.|[^\\\n])*?(?:\\.|[^\\\n\$]))\1(?=[\s?!\.,:？！。，：]|$)/
+    const blockRule = /^(\${1,2})\n((?:\\[^]|[^\\])+?)\n\1(?:\n|$)/
+    /* eslint-enable */
     this.marked.use(
       {
-        ...markedHighlight({
+        ...this.markedHighlight({
           async: true,
-          highlight: async (code, lang) => {
+          highlight: async (code = '', lang = '') => {
             if (lang === 'mermaid') {
-              if (!this.mermaid) await this.loadMermaid()
+              if (!this.mermaid) {
+                this.mermaid = (
+                  await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
+                ).default
+                this.mermaid.initialize({ startOnLoad: false })
+              }
               const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
               return svg
             }
             if (lang === 'math') {
-              if (!this.katex) await this.loadKatex()
-              return this.runKatex(code, { displayMode: true })
+              if (!this.katex) await loadKatex()
+              return this.parseKatex(code, { displayMode: true })
             }
-            if (!this.hljs) await this.loadHljs()
-            if (this.hljs.getLanguage(lang)) {
-              return this.hljs.highlight(code, { language: lang }).value
-            } else {
-              return this.hljs.highlightAuto(code).value
+            if (!this.hljs) {
+              this.hljs = (
+                await import(
+                  'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
+                )
+              ).default
             }
+            return this.hljs.getLanguage(lang)
+              ? this.hljs.highlight(code, { language: lang }).value
+              : this.hljs.highlightAuto(code).value
           }
         }),
         renderer: {
-          code: (code, lang) => {
+          code: (code = '', lang = '') => {
             if (lang === 'mermaid') return `<pre class="mermaid">${code}</pre>`
             if (lang === 'math') return code
             return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${code}\n</code></pre>`
@@ -43,34 +70,80 @@ class ZeroMd extends ZeroMdBase {
         }
       },
       {
-        extensions: extensions(),
-        walkTokens: async (token) => {
+        extensions: [
+          {
+            name: 'inlineKatex',
+            level: 'inline',
+            start(/** @type {*} */ src) {
+              let index
+              let indexSrc = src
+              while (indexSrc) {
+                index = indexSrc.indexOf('$')
+                if (index === -1) return
+                if (index === 0 || indexSrc.charAt(index - 1) === ' ') {
+                  const possibleKatex = indexSrc.substring(index)
+                  if (possibleKatex.match(inlineRule)) {
+                    return index
+                  }
+                }
+                indexSrc = indexSrc.substring(index + 1).replace(/^\$+/, '')
+              }
+            },
+            tokenizer(/** @type {*} */ src) {
+              const match = src.match(inlineRule)
+              if (match) {
+                return {
+                  type: 'inlineKatex',
+                  raw: match[0],
+                  text: match[2].trim(),
+                  displayMode: match[1].length === 2
+                }
+              }
+            },
+            renderer(/** @type {*} */ token) {
+              return token.text
+            }
+          },
+          {
+            name: 'blockKatex',
+            level: 'block',
+            tokenizer(/** @type {*} */ src) {
+              const match = src.match(blockRule)
+              if (match) {
+                return {
+                  type: 'blockKatex',
+                  raw: match[0],
+                  text: match[2].trim(),
+                  displayMode: match[1].length === 2
+                }
+              }
+            },
+            renderer(/** @type {*} */ token) {
+              return token.text
+            }
+          }
+        ],
+        walkTokens: async (/** @type {*} */ token) => {
           if (['inlineKatex', 'blockKatex'].includes(token.type)) {
-            if (!this.katex) await this.loadKatex()
-            // @ts-ignore
-            token.text = this.runKatex(token.text, { displayMode: token.type === 'blockKatex' })
+            if (!this.katex) await loadKatex()
+            token.text = this.parseKatex(token.text, { displayMode: token.type === 'blockKatex' })
           }
         }
       }
     )
   }
-  async loadHljs() {
-    const module = await import(
-      'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
-    )
-    this.hljs = module.default
-  }
-  async loadMermaid() {
-    const module = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
-    this.mermaid = module.default
-    this.mermaid.initialize({ startOnLoad: false })
-  }
-  async loadKatex() {
-    const module = await import('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs')
-    this.katex = module.default
-  }
-  runKatex(text = '', opts = {}) {
+
+  parseKatex(text = '', opts = {}) {
     return this.katex.renderToString(text, { ...opts, throwOnError: false })
+  }
+
+  /**
+   * @param {import('./zero-md-base.js').ZeroMdRenderObject} obj
+   * @returns
+   */
+  async parse({ text, baseUrl }) {
+    this.marked.use(this.setBaseUrl(baseUrl || ''))
+    return this.marked.parse(text)
   }
 }
 

@@ -1,27 +1,31 @@
 {
   "name": "zero-md",
-  "version": "3.0.0",
+  "version": "3.0.0-next.1",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {
-    "dev": "NODE_ENV=development vite src",
-    "build": "vite build",
+    "dev": "vite -c vite.config.js src",
+    "build": "vite build && terser -c -m --module dist/dist/index.js > dist/dist/index.min.js && cp src/lib/** dist && npx publint",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "check": "tsc --allowJs --checkJs --noEmit src/**/*.js",
-    "lint": "prettier --check . && npm run check && eslint src/**/*.js"
+    "lint": "prettier --check . && eslint src/**/*.js",
+    "test": "playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
-    "@types/node": "^20.11.24",
+    "@types/node": "^20.11.27",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.4"
+    "terser": "^5.29.1",
+    "vite": "^5.1.6"
   },
   "type": "module",
-  "exports": "./src/lib/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist": "./dist/dist/index.js"
+  },
+  "jsdelivr": "./dist/dist/index.min.js",
   "files": [
     "dist"
   ],
@@ -35,6 +39,6 @@
     "marked",
     "highlightjs",
     "mathjax",
-    "mermaidjs"
+    "mermaid"
   ]
 }

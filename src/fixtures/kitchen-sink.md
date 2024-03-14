@@ -3,7 +3,7 @@
 Generated from [Lorem Markdownum](https://github.com/jaspervdj/lorem-markdownum). A Lorem Ipsum
 generator that doesn't suck. :P
 
-![cat!](test1/cat.jpg)
+![cat!](cat.jpg)
 
 ## Anchor link test
 

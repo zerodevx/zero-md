@@ -3,10 +3,100 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="lib/index.js"></script>
+    <script type="module" src="./lib/index.js" data-zero-md-register></script>
+    <!--<script type="module">
+      import ZeroMd from './lib/index.js'
+      import { markedEmoji } from 'https://cdn.jsdelivr.net/npm/marked-emoji@1/src/index.js'
+      import { Octokit } from 'https://esm.sh/@octokit/rest'
+
+      const octokit = new Octokit()
+      const res = await octokit.rest.emojis.get()
+      const emojis = res.data
+
+      customElements.define(
+        'zero-md',
+        class extends ZeroMd {
+          async init() {
+            await super.init()
+            this.marked.use(markedEmoji({ emojis, unicode: false }))
+          }
+        }
+      )
+    </script>-->
     <title>Test</title>
   </head>
   <body>
-    <zero-md src="fixture.md" />
+    <zero-md src="fixtures/kitchen-sink.md" body-class="test">
+      <template data-merge="append">
+        <style>
+          h1 {
+            color: red;
+          }
+        </style>
+      </template>
+      <!-- prettier-ignore -->
+      <script type="text/markdown">
+# Let's test integration features
+
+I :heart: emojis!
+
+First, some basic javascript:
+
+```js
+console.log('hello world!')
+```
+
+This is inline katex: $c = \pm\sqrt{a^2 + b^2}$
+
+This is block level katex:
+
+$$
+c = \pm\sqrt{a^2 + b^2}
+$$
+
+Another block level math:
+
+```math
+\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
+```
+
+Here comes the mermaid test:
+
+```mermaid
+flowchart TD
+    A[Deploy to production] --> B{Is it Friday?};
+    B --> |Yes| C[Do not deploy!];
+    B --> |No| D[Run deploy.sh to deploy!]
+    C --> E[Enjoy your weekend!];
+    D --> E[Enjoy your weekend!];
+```
+
+Here's some sample python:
+
+```py
+# This program adds two numbers
+
+num1 = 1.5
+num2 = 6.3
+
+# Add two numbers
+sum = num1 + num2
+
+# Display the sum
+print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))
+```
+
+Another diagram!
+
+```mermaid
+sequenceDiagram
+    Pumbaa->>Timon:I ate like a pig.
+    Timon->>Pumbaa:Pumbaa, you ARE a pig.
+```
+      </script>
+    </zero-md>
   </body>
+  <script>
+    window.addEventListener('zero-md-rendered', (e) => console.log(e))
+  </script>
 </html>

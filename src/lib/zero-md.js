@@ -16,14 +16,14 @@ class ZeroMd extends ZeroMdBase {
         'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm',
         'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm'
       ]
-      const mods = await Promise.all(urls.map((url) => import(url)))
+      const mods = await Promise.all(urls.map((url) => import(/* @vite-ignore */ url)))
       this.marked = new mods[0].Marked(mods[1].gfmHeadingId(), { async: true })
       this.markedHighlight = mods[2].markedHighlight
       this.setBaseUrl = mods[3].baseUrl
     }
     const loadKatex = async () =>
       (this.katex = (
-        await import('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs')
+        await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs')
       ).default)
     /* eslint-disable */
     const inlineRule =
@@ -38,7 +38,9 @@ class ZeroMd extends ZeroMdBase {
             if (lang === 'mermaid') {
               if (!this.mermaid) {
                 this.mermaid = (
-                  await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs')
+                  await import(
+                    /* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'
+                  )
                 ).default
                 this.mermaid.initialize({ startOnLoad: false })
               }
@@ -52,7 +54,7 @@ class ZeroMd extends ZeroMdBase {
             if (!this.hljs) {
               this.hljs = (
                 await import(
-                  'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
+                  /* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
                 )
               ).default
             }

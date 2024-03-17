@@ -9,7 +9,7 @@ export default defineConfig({
       entry: 'src/lib/index.js',
       name: 'zero-md',
       formats: ['es'],
-      fileName: 'dist/index'
+      fileName: 'index'
     },
     minify: false
   },

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ridiculously simple zero-config markdown displayer - a markdown-to-html web component based on Custom Elements V1 specs to load and display an external MD file."
+    />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <title>&lt;zero-md&gt; | zero-config markdown displayer</title>
+    <script>
+      window.ZeroMdDocsConfig = {
+        links: [
+          ['Overview', 'readme.md', '<zero-md> | zero-config markdown displayer'],
+          ['Installation', 'installation.md'],
+          ['Basic Usage', 'basic.md'],
+          ['Advanced Usage', 'advanced.md'],
+          ['Configuration', 'configuration.md'],
+          ['Recipes', 'recipes.md'],
+          ['Migration Guide (V2 to V3)', 'migration.md'],
+          ['Legacy V2 Docs', 'https://zerodevx.github.io/zero-md/v2/'],
+          ['Legacy V1 Docs', 'https://zerodevx.github.io/zero-md/v1/']
+        ]
+      }
+    </script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@next"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md-docs@next"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/zero-md-docs@next/dist/default.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Seaweed+Script&text=<zero-md>&display=swap"
+    />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJS2EY950X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-LJS2EY950X')
+    </script>
+  </head>
+  <body>
+    <header
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 3.75rem;
+        margin-top: 0.75rem;
+      "
+    >
+      <h1 style="font-family: 'Seaweed Script', sans-serif">&lt;zero-md&gt;</h1>
+      <div style="margin-top: 0.75rem; margin-bottom: 1.5rem">
+        <a href="https://github.com/zerodevx/zero-md" title="Fork me on Github">
+          <img
+            src="https://img.shields.io/github/package-json/v/zerodevx/zero-md?style=for-the-badge&logo=github&label=fork+me+on+github"
+            alt="version"
+          />
+        </a>
+      </div>
+    </header>
+    <div id="app"></div>
+  </body>
+</html>

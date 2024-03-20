@@ -198,11 +198,11 @@ class ZeroMdBase extends HTMLElement {
     }
     switch (target) {
       case 'styles': {
-        const get = (query = '') => this.querySelector(query)?.innerHTML || ''
+        const get = (query = '') => this.querySelector(query)?.innerHTML
         return results(
-          get('template[data-prepend]') +
-            (get('template:not([data-prepend],[data-append])') || this.template) +
-            get('template[data-append]')
+          (get('template[data-prepend]') ?? '') +
+            (get('template:not([data-prepend],[data-append])') ?? this.template) +
+            (get('template[data-append]') ?? '')
         )
       }
       case 'body': {

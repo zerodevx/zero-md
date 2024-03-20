@@ -33,8 +33,6 @@ class ZeroMdBase extends HTMLElement {
     super()
     this.version = __VERSION__
     this.template = DEFAULT_HOST_CSS
-    /** @type {HTMLElement|ShadowRoot} */
-    this.root = this.hasAttribute('no-shadow') ? this : this.attachShadow({ mode: 'open' })
     const handler = (/** @type {*} */ e) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
       const a = e.target?.closest('a')
@@ -56,6 +54,8 @@ class ZeroMdBase extends HTMLElement {
       )
     }
     this._init = false
+    /** @type {HTMLElement|ShadowRoot} */
+    this.root = this
   }
 
   static get observedAttributes() {
@@ -81,6 +81,9 @@ class ZeroMdBase extends HTMLElement {
 
   async connectedCallback() {
     if (!this._init) {
+      if (!this.hasAttribute('no-shadow')) {
+        this.root = this.attachShadow({ mode: 'open' })
+      }
       await this.init()
       this._init = true
     }

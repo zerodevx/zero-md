@@ -14,6 +14,7 @@ export default defineConfig({
     minify: false
   },
   publicDir: false,
+  appType: 'mpa',
   define: {
     __VERSION__: JSON.stringify(version)
   }

@@ -201,7 +201,7 @@ class ZeroMdBase extends HTMLElement {
         const get = (query = '') => this.querySelector(query)?.innerHTML || ''
         return results(
           get('template[data-prepend]') +
-            (get('template:not([data-prepend]):not([data-append])') || this.template) +
+            (get('template:not([data-prepend],[data-append])') || this.template) +
             get('template[data-append]')
         )
       }

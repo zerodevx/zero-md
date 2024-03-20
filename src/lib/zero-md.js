@@ -1,5 +1,15 @@
 import ZeroMdBase from './zero-md-base.js'
 
+const MARKED_URLS = [
+  'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
+  'https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm',
+  'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm',
+  'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm'
+]
+const HLJS_URL = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
+const KATEX_URL = 'https://cdn.jsdelivr.net/npm/katex@0/dist/katex.mjs'
+const MERMAID_URL = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'
+
 let uid = 0
 
 /**
@@ -10,21 +20,14 @@ class ZeroMd extends ZeroMdBase {
     this.template +=
       '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"><link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">'
     if (!this.marked) {
-      const urls = [
-        'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
-        'https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm',
-        'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm',
-        'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm'
-      ]
-      const mods = await Promise.all(urls.map((url) => import(/* @vite-ignore */ url)))
+      const mods = await Promise.all(MARKED_URLS.map((url) => import(/* @vite-ignore */ url)))
       this.marked = new mods[0].Marked(mods[1].gfmHeadingId(), { async: true })
       this.markedHighlight = mods[2].markedHighlight
       this.setBaseUrl = mods[3].baseUrl
     }
-    const loadKatex = async () =>
-      (this.katex = (
-        await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs')
-      ).default)
+    const loadKatex = async () => {
+      this.katex = (await import(/* @vite-ignore */ KATEX_URL)).default
+    }
     /* eslint-disable */
     const inlineRule =
       /^(\${1,2})(?!\$)((?:\\.|[^\\\n])*?(?:\\.|[^\\\n\$]))\1(?=[\s?!\.,:？！。，：]|$)/
@@ -37,11 +40,7 @@ class ZeroMd extends ZeroMdBase {
           highlight: async (code = '', lang = '') => {
             if (lang === 'mermaid') {
               if (!this.mermaid) {
-                this.mermaid = (
-                  await import(
-                    /* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'
-                  )
-                ).default
+                this.mermaid = (await import(/* @vite-ignore */ MERMAID_URL)).default
                 this.mermaid.initialize({ startOnLoad: false })
               }
               const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
@@ -52,11 +51,7 @@ class ZeroMd extends ZeroMdBase {
               return this.parseKatex(code, { displayMode: true })
             }
             if (!this.hljs) {
-              this.hljs = (
-                await import(
-                  /* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
-                )
-              ).default
+              this.hljs = (await import(/* @vite-ignore */ HLJS_URL)).default
             }
             return this.hljs.getLanguage(lang)
               ? this.hljs.highlight(code, { language: lang }).value

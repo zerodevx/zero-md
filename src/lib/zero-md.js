@@ -16,7 +16,7 @@ let uid = 0
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 class ZeroMd extends ZeroMdBase {
-  async init() {
+  async load() {
     this.template +=
       '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"><link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">'
     if (!this.marked) {

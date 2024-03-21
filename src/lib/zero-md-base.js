@@ -44,16 +44,6 @@ class ZeroMdBase extends HTMLElement {
       this._observe()
       if (this.auto) this.render()
     })
-    // Scroll to hash id after first render. However, `history.scrollRestoration` inteferes with this
-    // on refresh. It's much better to use a `setTimeout` rather than to alter the browser's behaviour.
-    if (this.auto) {
-      this.addEventListener(
-        'zero-md-rendered',
-        () => setTimeout(() => this.goto(location.hash), 250),
-        { once: true }
-      )
-    }
-
     this._loaded = false
     /** @type {HTMLElement|ShadowRoot} */
     this.root = this
@@ -265,10 +255,10 @@ class ZeroMdBase extends HTMLElement {
 
   /**
    * Start rendering
-   * @param {{ fire?: boolean }} obj
+   * @param {{ fire?: boolean, goto?: string|false }} obj
    * @returns {Promise<*>}
    */
-  async render({ fire = true } = {}) {
+  async render({ fire = true, goto = location.hash } = {}) {
     const styles = await this.read({ target: 'styles' })
     const pending = styles.changed && this.stamp(styles)
     const md = await this.read({ target: 'body' })
@@ -277,9 +267,11 @@ class ZeroMdBase extends HTMLElement {
       await pending
       await this.tick()
       await this.stamp({ ...md, text: await parsed })
-    }
+    } else await pending
+    await this.tick()
     const detail = { styles: styles.changed, body: md.changed }
     if (fire) this.fire('zero-md-rendered', detail)
+    if (goto) this.goto(goto)
     return detail
   }
 }

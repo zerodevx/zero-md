@@ -53,7 +53,8 @@ class ZeroMdBase extends HTMLElement {
         { once: true }
       )
     }
-    this._init = false
+
+    this._loaded = false
     /** @type {HTMLElement|ShadowRoot} */
     this.root = this
   }
@@ -80,12 +81,12 @@ class ZeroMdBase extends HTMLElement {
   }
 
   async connectedCallback() {
-    if (!this._init) {
+    if (!this._loaded) {
       if (!this.hasAttribute('no-shadow')) {
         this.root = this.attachShadow({ mode: 'open' })
       }
-      await this.init()
-      this._init = true
+      await this.load()
+      this._loaded = true
     }
     this.root.prepend(
       this.frag(`<div class="markdown-styles"></div><div class="${this.bodyClass}"></div>`)
@@ -117,10 +118,10 @@ class ZeroMdBase extends HTMLElement {
   }
 
   /**
-   * Async initialisation hook that runs after constructor. Like constructor, only runs once.
+   * Async load function that runs after constructor. Like constructor, only runs once.
    * @returns {Promise<*>}
    */
-  async init() {}
+  async load() {}
 
   /**
    * Async parse function that takes in markdown and returns the html-formatted string.

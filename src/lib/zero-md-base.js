@@ -271,7 +271,7 @@ class ZeroMdBase extends HTMLElement {
     await this.tick()
     const detail = { styles: styles.changed, body: md.changed }
     if (fire) this.fire('zero-md-rendered', detail)
-    if (goto) this.goto(goto)
+    if (this.auto && goto) this.goto(goto)
     return detail
   }
 }

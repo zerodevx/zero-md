@@ -3,12 +3,21 @@ import ZeroMdBase from './zero-md-base.js'
 const MARKED_URLS = [
   'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
   'https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm',
-  'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm',
-  'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm'
+  'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm',
+  'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm'
 ]
 const HLJS_URL = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
 const KATEX_URL = 'https://cdn.jsdelivr.net/npm/katex@0/dist/katex.mjs'
 const MERMAID_URL = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'
+const STYLESHEETS = [
+  ['https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css'],
+  ['https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css'],
+  [
+    'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css',
+    'media="(prefers-color-scheme:dark)"'
+  ],
+  ['https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css']
+]
 
 let uid = 0
 
@@ -17,13 +26,14 @@ let uid = 0
  */
 class ZeroMd extends ZeroMdBase {
   async load() {
-    this.template +=
-      '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"><link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">'
+    this.template += STYLESHEETS.map(
+      ([href, ...attrs]) => `<link ${['rel="stylesheet"', ...attrs].join(' ')} href="${href}">`
+    ).join('')
     if (!this.marked) {
       const mods = await Promise.all(MARKED_URLS.map((url) => import(/* @vite-ignore */ url)))
       this.marked = new mods[0].Marked(mods[1].gfmHeadingId(), { async: true })
-      this.markedHighlight = mods[2].markedHighlight
-      this.setBaseUrl = mods[3].baseUrl
+      this.setBaseUrl = mods[2].baseUrl
+      this.markedHighlight = mods[3].markedHighlight
     }
     const loadKatex = async () => {
       this.katex = (await import(/* @vite-ignore */ KATEX_URL)).default

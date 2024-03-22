@@ -72,15 +72,13 @@ class ZeroMdBase extends HTMLElement {
 
   async connectedCallback() {
     if (!this._loaded) {
-      if (!this.hasAttribute('no-shadow')) {
-        this.root = this.attachShadow({ mode: 'open' })
-      }
+      if (!this.hasAttribute('no-shadow')) this.root = this.attachShadow({ mode: 'open' })
+      this.root.prepend(
+        this.frag(`<div class="markdown-styles"></div><div class="${this.bodyClass}"></div>`)
+      )
       await this.load()
       this._loaded = true
     }
-    this.root.prepend(
-      this.frag(`<div class="markdown-styles"></div><div class="${this.bodyClass}"></div>`)
-    )
     this.shadowRoot?.addEventListener('click', this._clicked)
     this._observer.observe(this, { childList: true })
     this._observe()
@@ -92,18 +90,18 @@ class ZeroMdBase extends HTMLElement {
   disconnectedCallback() {
     this.shadowRoot?.removeEventListener('click', this._clicked)
     this._observer.disconnect()
+    this._connected = false
   }
 
   _observe() {
     this.querySelectorAll('template,script[type="text/markdown"]').forEach(
-      (/** @type {*} */ node) => {
+      (/** @type {*} */ node) =>
         this._observer.observe(node.content || node, {
           childList: true,
           subtree: true,
           attributes: true,
           characterData: true
         })
-      }
     )
   }
 

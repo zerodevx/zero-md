@@ -127,9 +127,8 @@ class ZeroMdBase extends HTMLElement {
    * @param {string} id
    */
   goto(id) {
-    const context = this.shadowRoot || document
-    const el = context.getElementById(id[0] === '#' ? id.slice(1) : id)
-    if (el) el.scrollIntoView()
+    const ctx = this.shadowRoot || document
+    id && ctx.getElementById(id[0] === '#' ? id.slice(1) : id)?.scrollIntoView()
   }
 
   /**

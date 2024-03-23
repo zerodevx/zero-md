@@ -123,14 +123,12 @@ class ZeroMdBase extends HTMLElement {
   }
 
   /**
-   * Scroll to selector
-   * @param {string} selector
+   * Scroll to heading id
+   * @param {string} id
    */
-  goto(selector) {
-    let el
-    try {
-      el = this.root.querySelector(selector)
-    } catch {} // eslint-disable-line no-empty
+  goto(id) {
+    const context = this.shadowRoot || document
+    const el = context.getElementById(id[0] === '#' ? id.slice(1) : id)
     if (el) el.scrollIntoView()
   }
 

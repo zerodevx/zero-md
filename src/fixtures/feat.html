@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+    <script type="module" src="../lib/index.js" data-zero-md-register></script>
+  </head>
+  <body>
+    <zero-md data-testid="basic">
+      <!-- prettier-ignore -->
+      <script type="text/markdown">
+# Test integration features
+
+I :heart: emojis!
+
+<img src="cat.jpg" />
+
+Basic javascript:
+
+```js
+console.log('hello world!')
+```
+
+Unhinted code:
+
+```
+# This program adds two numbers
+
+num1 = 1.5
+num2 = 6.3
+
+# Add two numbers
+sum = num1 + num2
+
+# Display the sum
+print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))
+```
+
+Inline katex: $I = \pm\sqrt{a^2 + b^2}$
+
+Block level katex:
+
+$$
+B = \pm\sqrt{a^2 + b^2}
+$$
+
+Math code block:
+
+```math
+\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
+```
+
+Mermaid flowchart:
+
+```mermaid
+flowchart TD
+    A[Deploy to production] --> B{Is it Friday?};
+    B --> |Yes| C[Do not deploy!];
+    B --> |No| D[Run deploy.sh to deploy!]
+    C --> E[Enjoy your weekend!];
+    D --> E[Enjoy your weekend!];
+```
+
+
+Mermaid diagram:
+
+```mermaid
+sequenceDiagram
+    Pumbaa->>Timon:I ate like a pig.
+    Timon->>Pumbaa:Pumbaa, you ARE a pig.
+```
+      </script>
+    </zero-md>
+  </body>
+</html>

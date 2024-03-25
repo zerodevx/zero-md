@@ -7,7 +7,7 @@ test.describe('basic tests', () => {
     await page.goto('/')
   })
 
-  test('src works', async ({ page }) => {
+  test('src and inline works', async ({ page }) => {
     await expect(page.getByTestId('basic')).toContainText('Test src is loaded')
     await page.getByTestId('removeBtn').click()
     await expect(page.getByTestId('basic')).toContainText('Test fallback is loaded')
@@ -21,6 +21,15 @@ test.describe('basic tests', () => {
     await page.getByTestId('appendBtn').click()
     await page.getByTestId('prependBtn').click()
     await expect(page.locator('.markdown-body p')).toHaveCSS('color', 'rgb(255, 0, 0)')
+  })
+
+  test('dynamically add and move works', async ({ page }) => {
+    await page.getByTestId('addBtn').click()
+    await expect(page.locator('[data-testid="insertOne"] div')).toHaveCount(2)
+    await page.getByTestId('moveBtn').click()
+    await expect(page.locator('[data-testid="insert"] [data-hash]')).toHaveCount(2)
+    await page.getByTestId('moveBtn').click()
+    await expect(page.locator('[data-testid="insert"] [data-hash]')).toHaveCount(2)
   })
 })
 

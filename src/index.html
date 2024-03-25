@@ -8,7 +8,8 @@
     <script type="module">
       const get = (id) => document.querySelector(`[data-testid="${id}"]`)
       const clicked = (id, fn) => get(id).addEventListener('click', fn)
-      //const TPL = get('basic').template
+      const dynamicEl = document.createElement('zero-md')
+      dynamicEl.src = 'fixtures/basic.md'
 
       clicked('resetBtn', () => get('basic').setAttribute('src', 'fixtures/basic.md'))
       clicked('removeBtn', () => get('basic').removeAttribute('src'))
@@ -29,6 +30,8 @@
         const el = get('basic')
         el.append(el.frag(`<template></template>`))
       })
+      clicked('addBtn', () => get('insertOne').append(dynamicEl))
+      clicked('moveBtn', () => get('insertTwo').append(dynamicEl))
     </script>
   </head>
   <body>
@@ -39,11 +42,17 @@
     <button data-testid="appendBtn">Append style</button>
     <button data-testid="changeBtn">Change default style</button>
     <button data-testid="clearBtn">Clear default style</button>
+    <button data-testid="addBtn">Dynamically add</button>
+    <button data-testid="moveBtn">Dynamically move</button>
     <zero-md data-testid="basic" src="fixtures/basic.md">
       <!-- prettier-ignore -->
       <script type="text/markdown"># Basic fallback
 Test fallback is loaded.
       </script>
     </zero-md>
+    <div data-testid="insert">
+      <div data-testid="insertOne"></div>
+      <div data-testid="insertTwo"></div>
+    </div>
   </body>
 </html>

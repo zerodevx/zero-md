@@ -59,7 +59,7 @@ class ZeroMdBase extends HTMLElement {
    * @param {string} val
    */
   attributeChangedCallback(name, old, val) {
-    if (this._connected && old !== val) {
+    if (this.ready && old !== val) {
       switch (name) {
         case 'body-class':
           this.root.querySelector('.markdown-body')?.setAttribute('class', this.bodyClass)
@@ -82,7 +82,7 @@ class ZeroMdBase extends HTMLElement {
     this.shadowRoot?.addEventListener('click', this._clicked)
     this._observer.observe(this, { childList: true })
     this._observe()
-    this._connected = true
+    this.ready = true
     this.fire('zero-md-ready')
     if (this.auto) this.render()
   }
@@ -90,7 +90,7 @@ class ZeroMdBase extends HTMLElement {
   disconnectedCallback() {
     this.shadowRoot?.removeEventListener('click', this._clicked)
     this._observer.disconnect()
-    this._connected = false
+    this.ready = false
   }
 
   _observe() {

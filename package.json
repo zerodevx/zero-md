@@ -1,15 +1,17 @@
 {
   "name": "zero-md",
-  "version": "3.0.0-next.7",
+  "version": "3.0.0-next.8",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {
     "dev": "vite -c vite.config.js src",
     "dev:docs": "vite docs",
-    "build": "npm run lint && vite build && terser -c -m --module dist/index.js > dist/index.min.js && npx publint",
+    "build": "npm run lint && vite build && npm run build:min && npm run build:tsc && npx publint",
+    "build:min": "terser -c -m --module dist/index.js > dist/index.min.js",
+    "build:tsc": "tsc src/lib/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/types",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint src/**/*.js",
-    "test": "playwright test"
+    "test": "npm run lint && playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
@@ -17,12 +19,19 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
     "terser": "^5.29.2",
-    "vite": "^5.2.4"
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6"
   },
   "type": "module",
   "exports": {
-    ".": "./src/lib/index.js",
-    "./dist": "./dist/index.js"
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./lib/*.js": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./src/lib/*.js"
+    }
   },
   "jsdelivr": "./dist/index.min.js",
   "files": [
@@ -38,7 +47,7 @@
     "markdown-to-html",
     "marked",
     "highlightjs",
-    "mathjax",
+    "katex",
     "mermaid"
   ]
 }

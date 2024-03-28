@@ -1,12 +1,15 @@
 import ZeroMdBase, { DEFAULT_HOST_CSS } from './zero-md-base.js'
-import ZeroMd from './zero-md.js'
+import ZeroMd, { DEFAULT_CDN_URLS } from './zero-md.js'
 
-if (
-  document?.head?.querySelector(
-    `script[src="${import.meta.url}"][type="module"],script[data-zero-md-register]`
-  )
-)
-  customElements.define('zero-md', ZeroMd)
+/**
+ * Synthetic sugar for `customElements.define('zero-md', Class)`
+ * @param {CustomElementConstructor} Class
+ */
+function register(Class) {
+  customElements.define('zero-md', Class)
+}
 
-export { ZeroMdBase, DEFAULT_HOST_CSS }
+if (new URL(import.meta.url).searchParams.has('register')) register(ZeroMd)
+
+export { register, ZeroMdBase, DEFAULT_HOST_CSS, DEFAULT_CDN_URLS }
 export default ZeroMd

@@ -83,10 +83,16 @@ test.describe('feature tests', () => {
   })
 
   test('mermaid flowchart', async ({ page }) => {
-    await expect(page.locator('p:has-text("Mermaid flowchart:")+pre svg')).toHaveCount(1)
+    await expect(page.locator('p:has-text("Mermaid flowchart:")+* svg')).toHaveCount(1)
   })
 
   test('mermaid diagram', async ({ page }) => {
-    await expect(page.locator('p:has-text("Mermaid diagram:")+pre svg')).toHaveCount(1)
+    await expect(page.locator('p:has-text("Mermaid diagram:")+* svg')).toHaveCount(1)
+  })
+
+  test('github alerts', async ({ page }) => {
+    await expect(
+      page.locator('p:has-text("This is a Github Alert.")').locator('xpath=..')
+    ).toHaveClass('markdown-alert markdown-alert-note')
   })
 })

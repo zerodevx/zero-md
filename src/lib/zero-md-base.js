@@ -31,7 +31,9 @@ class ZeroMdBase extends HTMLElement {
 
   constructor() {
     super()
-    this.version = __VERSION__
+    try {
+      this.version = __VERSION__
+    } catch {} // eslint-disable-line no-empty
     this.template = DEFAULT_HOST_CSS
     const handler = (/** @type {*} */ e) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return

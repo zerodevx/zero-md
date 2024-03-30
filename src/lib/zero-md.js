@@ -12,9 +12,12 @@ const DEFAULT_CDN_URLS = {
   ],
   marked: [
     'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
-    'https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm',
     'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm',
     'https://cdn.jsdelivr.net/npm/marked-highlight@2/+esm'
+  ],
+  extensions: [
+    ['https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3/+esm', 'gfmHeadingId'],
+    ['https://cdn.jsdelivr.net/npm/marked-alert@2/+esm']
   ],
   hljs: 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js',
   katex: 'https://cdn.jsdelivr.net/npm/katex@0/dist/katex.mjs',
@@ -27,22 +30,32 @@ let uid = 0
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 class ZeroMd extends ZeroMdBase {
+  constructor() {
+    super()
+    this.urls = DEFAULT_CDN_URLS
+  }
   async load() {
-    this.template += DEFAULT_CDN_URLS.stylesheets
-      .map(
-        ([href, ...attrs]) => `<link ${['rel="stylesheet"', ...attrs].join(' ')} href="${href}">`
-      )
-      .join('')
+    this.template +=
+      this.urls.stylesheets
+        .map(
+          ([href, ...attrs]) => `<link ${['rel="stylesheet"', ...attrs].join(' ')} href="${href}">`
+        )
+        .join('') + '<style>.markdown-alert{padding:0.25rem 0 0 1rem!important;}</style>'
     if (!this.marked) {
       const mods = await Promise.all(
-        DEFAULT_CDN_URLS.marked.map((url) => import(/* @vite-ignore */ url))
+        this.urls.marked.concat(this.urls.extensions.map((i) => i[0])).map((i) => import(i))
       )
-      this.marked = new mods[0].Marked(mods[1].gfmHeadingId(), { async: true })
-      this.setBaseUrl = mods[2].baseUrl
-      this.markedHighlight = mods[3].markedHighlight
+      this.marked = new mods[0].Marked({ async: true })
+      this.setBaseUrl = mods[1].baseUrl
+      this.markedHighlight = mods[2].markedHighlight
+      for (const [mod, key] of mods
+        .slice(3)
+        .map((i, idx) => [i, this.urls.extensions[idx][1] || 'default'])) {
+        this.marked.use(mod[key]())
+      }
     }
     const loadKatex = async () => {
-      this.katex = (await import(/* @vite-ignore */ DEFAULT_CDN_URLS.katex)).default
+      this.katex = (await import(this.urls.katex)).default
     }
     /* eslint-disable */
     const inlineRule =
@@ -56,7 +69,7 @@ class ZeroMd extends ZeroMdBase {
           highlight: async (code = '', lang = '') => {
             if (lang === 'mermaid') {
               if (!this.mermaid) {
-                this.mermaid = (await import(/* @vite-ignore */ DEFAULT_CDN_URLS.mermaid)).default
+                this.mermaid = (await import(this.urls.mermaid)).default
                 this.mermaid.initialize({ startOnLoad: false })
               }
               const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
@@ -67,7 +80,7 @@ class ZeroMd extends ZeroMdBase {
               return this.parseKatex(code, { displayMode: true })
             }
             if (!this.hljs) {
-              this.hljs = (await import(/* @vite-ignore */ DEFAULT_CDN_URLS.hljs)).default
+              this.hljs = (await import(this.urls.hljs)).default
             }
             return this.hljs.getLanguage(lang)
               ? this.hljs.highlight(code, { language: lang }).value
@@ -76,7 +89,7 @@ class ZeroMd extends ZeroMdBase {
         }),
         renderer: {
           code: (code = '', lang = '') => {
-            if (lang === 'mermaid') return `<pre class="mermaid">${code}</pre>`
+            if (lang === 'mermaid') return `<div class="mermaid">${code}</div>`
             if (lang === 'math') return code
             return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${code}\n</code></pre>`
           }
@@ -150,11 +163,7 @@ class ZeroMd extends ZeroMdBase {
     return this.katex.renderToString(text, { ...opts, throwOnError: false })
   }
 
-  /**
-   * @param {import('./zero-md-base.js').ZeroMdRenderObject} obj
-   * @returns
-   */
-  async parse({ text, baseUrl }) {
+  async parse({ text = '', baseUrl = '' }) {
     this.marked.use(this.setBaseUrl(baseUrl || ''))
     return this.marked.parse(text)
   }

@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "3.0.0-next.9",
+  "version": "3.0.0-next.11",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {
@@ -18,20 +18,25 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
-    "terser": "^5.30.0",
+    "terser": "^5.30.1",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6"
+    "vite": "^5.2.7"
   },
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
+    },
+    "./src/*.js": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./src/lib/*.js"
     }
   },
   "jsdelivr": "./dist/index.min.js",
   "files": [
-    "dist"
+    "dist",
+    "src/lib"
   ],
   "license": "ISC",
   "repository": "github:zerodevx/zero-md",

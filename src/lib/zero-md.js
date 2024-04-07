@@ -1,15 +1,19 @@
 import ZeroMdBase from './zero-md-base.js'
 
-const DEFAULT_CDN_URLS = {
-  stylesheets: [
-    ['https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css'],
-    ['https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css'],
-    [
-      'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css',
-      'media="(prefers-color-scheme:dark)"'
-    ],
-    ['https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css']
+/**
+ * @type {string[][]} First element is href, subsequent elements if any are attributes
+ */
+const DEFAULT_STYLESHEETS = [
+  ['https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css'],
+  ['https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css'],
+  [
+    'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css',
+    'media="(prefers-color-scheme:dark)"'
   ],
+  ['https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css']
+]
+
+const DEFAULT_LIBRARIES = {
   marked: [
     'https://cdn.jsdelivr.net/npm/marked@12/lib/marked.esm.js',
     'https://cdn.jsdelivr.net/npm/marked-base-url@1/+esm',
@@ -30,32 +34,30 @@ let uid = 0
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 class ZeroMd extends ZeroMdBase {
-  constructor() {
-    super()
-    this.urls = DEFAULT_CDN_URLS
-  }
-  async load() {
+  async load({ stylesheets = DEFAULT_STYLESHEETS, libraries = DEFAULT_LIBRARIES } = {}) {
     this.template +=
-      this.urls.stylesheets
+      stylesheets
         .map(
           ([href, ...attrs]) => `<link ${['rel="stylesheet"', ...attrs].join(' ')} href="${href}">`
         )
         .join('') + '<style>.markdown-alert{padding:0.25rem 0 0 1rem!important;}</style>'
     if (!this.marked) {
       const mods = await Promise.all(
-        this.urls.marked.concat(this.urls.extensions.map((i) => i[0])).map((i) => import(i))
+        libraries.marked
+          .concat(libraries.extensions.map((i) => i[0]))
+          .map((i) => import(/* @vite-ignore */ i))
       )
       this.marked = new mods[0].Marked({ async: true })
       this.setBaseUrl = mods[1].baseUrl
       this.markedHighlight = mods[2].markedHighlight
       for (const [mod, key] of mods
         .slice(3)
-        .map((i, idx) => [i, this.urls.extensions[idx][1] || 'default'])) {
+        .map((i, idx) => [i, libraries.extensions[idx][1] || 'default'])) {
         this.marked.use(mod[key]())
       }
     }
     const loadKatex = async () => {
-      this.katex = (await import(this.urls.katex)).default
+      this.katex = (await import(/* @vite-ignore */ libraries.katex)).default
     }
     /* eslint-disable */
     const inlineRule =
@@ -69,7 +71,7 @@ class ZeroMd extends ZeroMdBase {
           highlight: async (code = '', lang = '') => {
             if (lang === 'mermaid') {
               if (!this.mermaid) {
-                this.mermaid = (await import(this.urls.mermaid)).default
+                this.mermaid = (await import(/* @vite-ignore */ libraries.mermaid)).default
                 this.mermaid.initialize({ startOnLoad: false })
               }
               const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
@@ -80,7 +82,7 @@ class ZeroMd extends ZeroMdBase {
               return this.parseKatex(code, { displayMode: true })
             }
             if (!this.hljs) {
-              this.hljs = (await import(this.urls.hljs)).default
+              this.hljs = (await import(/* @vite-ignore */ libraries.hljs)).default
             }
             return this.hljs.getLanguage(lang)
               ? this.hljs.highlight(code, { language: lang }).value
@@ -169,5 +171,5 @@ class ZeroMd extends ZeroMdBase {
   }
 }
 
-export { DEFAULT_CDN_URLS }
+export { DEFAULT_STYLESHEETS, DEFAULT_LIBRARIES }
 export default ZeroMd

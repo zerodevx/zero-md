@@ -7,3 +7,4 @@
 - [Migration Guide](migration-guide.md)
 - [Recipes](recipes.md)
 - [Contributing](contributing.md)
+- [Legacy V1 Docs](/v1/)

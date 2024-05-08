@@ -1,157 +1,55 @@
+# &lt;zero-md&gt;
+
+![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
+![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
+![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
+![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
+
 ## Migration Guide
 
-### Migrating from V1 to V2
+This documents migration from `v2` to `v3`. The motivations for `v3` include spec compliance, first
+class support for math and diagrams, and upgrading to the latest ESM rewrites of `marked`.
 
-1. Support for `<xmp>` tag is removed; use `<script type="text/markdown">` instead.
+> [!WARNING]  
+> These are breaking changes! Please read through the list carefully!
 
-```html
-<!-- Previous -->
-<zero-md>
-  <template>
-    <xmp
->
-# `This` is my [markdown](example.md)
-    </xmp>
-  </template>
-</zero-md>
+#### 1. New CDN URL
 
-<!-- Now -->
-<zero-md>
-  <!-- No need to wrap with <template> tag -->
-  <script type="text/markdown">
-    # `This` is my [markdown](example.md)
-  </script>
-</zero-md>
-
-<!-- If you need your code to be pretty, -->
-<zero-md>
-  <!-- Set `data-dedent` to opt-in to dedent the text during render -->
-  <script type="text/markdown" data-dedent>
-    # It is important to be pretty
-
-    So having spacing makes me happy.
-  </script>
-</zero-md>
+```
+https://cdn.jsdelivr.net/npm/zero-md@3?register
 ```
 
-2. Markdown source behaviour has changed. Think of `<script type="text/markdown">` as a "fallback".
+By default, the component definition is **not** defined into the `CustomElementRegistry`; opt-in to
+auto-register the custom element with the `?register` query param.
 
-```html
-<!-- Previous -->
-<zero-md src="will-not-render.md">
-  <template>
-    <xmp
->
-# This has first priority and will be rendered instead of `will-not-render.md`
-    </xmp>
-  </template>
-  <zero-md>
-    <!-- Now -->
-    <zero-md src="will-render-unless-falsy.md">
-      <script type="text/markdown">
-        # This will NOT be rendered _unless_ `src` resolves to falsy
-      </script>
-      <zero-md></zero-md></zero-md></zero-md
-></zero-md>
-```
+#### 2. Syntax highlighting
 
-3. The `css-urls` attribute is deprecated. Use `<link rel="stylesheet">` instead.
+[Prismjs](https://github.com/PrismJS/prism) is un-maintained and has been replaced by
+[highlightjs](https://github.com/highlightjs/highlight.js).
 
-```html
-<!-- Previous -->
-<zero-md src="example.md" css-urls='["/style1.css", "/style2.css"]'
-  ><zero-md>
-    <!-- Now, this... -->
-    <zero-md src="example.md"></zero-md>
+#### 3. Merging style templates
 
-    <!-- ...is actually equivalent to this -->
-    <zero-md src="example.md">
-      <template>
-        <!-- These are the default stylesheets -->
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
-        />
-      </template>
-    </zero-md>
+`data-merge="append"` and `data-merge="prepend"` template tag attributes renamed to `data-append`
+and `data-prepend` respectively.
 
-    <!-- So, to apply your own external stylesheets... -->
-    <zero-md src="example.md">
-      <!-- ...you overwrite the default template -->
-      <template>
-        <!-- Use <link> tags to reference your own stylesheets -->
-        <link rel="stylesheet" href="/style1.css" />
-        <link rel="stylesheet" href="/style2.css" />
-        <!-- You can even apply additional styles -->
-        <style>
-          p {
-            color: red;
-          }
-        </style>
-      </template>
-    </zero-md>
+#### 4. Normalising indentation
 
-    <!-- If you like the default stylesheets but wish to apply some overrides -->
-    <zero-md src="example.md">
-      <!-- Set `data-merge` to "append" to apply this template AFTER the default template -->
-      <!-- Or "prepend" to apply this template BEFORE -->
-      <template data-merge="append">
-        <style>
-          p {
-            color: red;
-          }
-        </style>
-      </template>
-    </zero-md></zero-md
-  ></zero-md
->
-```
+`data-dedent` script tag attribute is deprecated; please use **spec-compliant** markdown in your
+inline-markdown.
 
-4. The attributes `marked-url` and `prism-url` are deprecated. To load `marked` or `prism` from
-   another location, simply load their scripts _before_ importing `zero-md`.
+#### 5. Manual render
 
-```html
-<head>
-  ...
-  <script defer src="/lib/marked.js"></script>
-  <script defer src="/lib/prism.js"></script>
-  <script type="module" src="/lib/zero-md.min.js"></script>
-</head>
-```
+`manual-render` element attribute has been renamed to `no-auto`.
 
-5. The global config object has been renamed from `ZeroMd.config` to `ZeroMdConfig`.
+#### 6. Global config
 
-```html
-<!-- Previous -->
-<script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-<script>
-  window.ZeroMd = {
-    config: {
-      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-    }
-  }
-</script>
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"
-></script>
+The `ZeroMdConfig` global is deprecated. Set global config the
+[spec-compliant way](./advanced-usage.md#global-config) instead.
 
-<!-- Now -->
-<script>
-  window.ZeroMdConfig = {
-    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-  }
-</script>
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
-></script>
-```
+#### 7. Events
 
-6. The convenience events `zero-md-marked-ready` and `zero-md-prism-ready` are removed and **will no
-   longer fire**. Instead, the `zero-md-ready` event guarantees that everything is ready, and that
-   render can begin.
+The `zero-md-error` event is deprecated - read which [events](./advanced-usage.md#events) are fired.
+
+#### 8. Legacy builds
+
+Web components are standard now so legacy (transpiled) builds will cease.

@@ -1,4 +1,4 @@
-![GitHub package.json version](https://img.shields.io/github/package-json/v/zerodevx/zero-md)
+![v2](https://img.shields.io/badge/version-2.5.4-blue)
 ![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md)
 
 # &lt;zero-md&gt;

@@ -32,6 +32,7 @@ Featuring:
 - Hash-link scroll handling
 - FOUC prevention
 - Auto re-render on input changes
+- Light and dark themes
 - Spec-compliant extensibility
 
 > [!NOTE]  

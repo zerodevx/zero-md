@@ -8,7 +8,7 @@
 ## Migration Guide
 
 This documents migration from `v2` to `v3`. The motivations for `v3` include spec compliance, first
-class support for math and diagrams, and upgrading to the latest ESM rewrites of `marked`.
+class support for math and diagrams, and upgrading to ESM consumption of libraries.
 
 > [!WARNING]  
 > These are breaking changes! Please read through the list carefully!

@@ -30,12 +30,12 @@ Featuring:
 > Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
 > _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
+Read the docs: https://zerodevx.github.com/zero-md/
+
 > [!NOTE]  
 > This is the V3 branch. If you're looking for the older version, see the
 > [V2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you are upgrading from V2, read the
 > [migration guide](docs/migration.md).
-
-Read the docs: https://zerodevx.github.com/zero-md/
 
 ## Installation
 
@@ -80,6 +80,7 @@ app.render(`<zero-md src=${src}></zero-md>`, target)
 
 ## Basic usage
 
+<!-- prettier-ignore -->
 ```html
 <!-- Simply set the `src` attribute and win -->
 <zero-md src="https://example.com/markdown.md"></zero-md>
@@ -88,7 +89,7 @@ app.render(`<zero-md src=${src}></zero-md>`, target)
 <zero-md>
   <!-- Write your markdown inside a `<script type="text/markdown">` tag -->
   <script type="text/markdown">
-    # **This** is my [markdown](https://example.com)
+# **This** is my [markdown](https://example.com)
   </script>
 </zero-md>
 
@@ -97,9 +98,7 @@ app.render(`<zero-md src=${src}></zero-md>`, target)
   <!-- Wrap `style` tags inside `template` -->
   <template data-append>
     <style>
-      p {
-        color: red;
-      }
+      p { color: red; }
     </style>
   </template>
 </zero-md>

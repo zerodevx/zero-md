@@ -1,36 +1,41 @@
-![GitHub package.json version](https://img.shields.io/github/package-json/v/zerodevx/zero-md)
-![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md)
+![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
+![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
+![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
+![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
 
 # &lt;zero-md&gt;
 
 > Ridiculously simple zero-config markdown displayer
 
-A native markdown-to-html web component based on
+A vanilla markdown-to-html web component based on
 [Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/) to load and display an external
-MD file. Under the hood, it uses [Marked](https://github.com/markedjs/marked) for super-fast
-markdown transformation, and [Prism](https://github.com/PrismJS/prism) for feature-packed syntax
-highlighting - automagically rendering into its own self-contained shadow DOM container, while
-encapsulating implementation details into one embarassingly easy-to-use package.
-
-**NOTE: This is the V2 branch. If you're looking for the older version, see the
-[V1 branch](https://github.com/zerodevx/zero-md/tree/v1).**
+MD file. Under the hood, it uses [marked](https://github.com/markedjs/marked) for super-fast
+markdown transformation, and [highlight.js](https://github.com/highlightjs/highlight.js) for
+lightning-quick syntax highlighting - automagically rendering into its own self-contained shadow DOM
+container, while encapsulating implementation details into one embarassingly easy-to-use package.
 
 Featuring:
 
-- [x] Automated hash-link scrolls
-- [x] Built-in FOUC prevention
-- [x] Automatically rewrite URLs relative to `src`
-- [x] Automatically re-render when `src` changes
-- [x] Automatically re-render when inline markdown or style template changes
-- [x] Support for >200 code languages with detection for unhinted code blocks
-- [x] Easy styling mechanism
-- [x] Highly extensible
+- [x] Math rendering via [KaTeX](https://github.com/KaTeX/KaTeX)
+- [x] [Mermaid](https://github.com/mermaid-js/mermaid) diagrams
+- [x] Syntax highlighting via [highlight.js](https://github.com/highlightjs/highlight.js)
+- [x] Language detection for unhinted code blocks
+- [x] Hash-link scroll handling
+- [x] FOUC prevention
+- [x] Auto re-render on input changes
+- [x] Light and dark themes
+- [x] Spec-compliant extensibility
 
-Documentation: https://zerodevx.github.io/zero-md/
+> [!IMPORTANT]  
+> Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
+> _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
-**NOTE: Your markdown file(s) needs to be hosted! Browsers don't generally allow javascript to
-access files on the local hard drive because of security concerns. Standard
-[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.**
+> [!NOTE]  
+> This is the V3 branch. If you're looking for the older version, see the
+> [V2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you are upgrading from V2, read the
+> [migration guide](docs/migration.md).
+
+Read the docs: https://zerodevx.github.com/zero-md/
 
 ## Installation
 
@@ -42,32 +47,22 @@ script from CDN and consuming the component directly should suffice.
 ```html
 <head>
   ...
-  <!-- Import element definition -->
-  <script
-    type="module"
-    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
-  ></script>
-  ...
+  <!-- Import element definition and auto-register -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
 </head>
 <body>
   ...
   <!-- Profit! -->
-  <zero-md src="/example.md"></zero-md>
-  ...
+  <zero-md src="example.md"></zero-md>
 </body>
 ```
 
-Latest stable: `https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js`
+### Use in web projects
 
-Latest beta: `https://cdn.jsdelivr.net/npm/zero-md@next/dist/zero-md.min.js`
-
-### Install in web projects
-
-Install package with `npm` or `yarn`. Note that you'll need [Node.js](https://nodejs.org/)
-installed.
+Install the package.
 
 ```
-$ npm install --save zero-md
+$ npm i zero-md
 ```
 
 Import the class, register the element, and use anywhere.
@@ -83,247 +78,24 @@ customElements.define('zero-md', ZeroMd)
 app.render(`<zero-md src=${src}></zero-md>`, target)
 ```
 
-Or load the distribution directly in HTML.
-
-```html
-<script type="module" src="/node_modules/zero-md/dist/zero-md.min.js"></script>
-...
-<zero-md src="example.md"></zero-md>
-```
-
-## Basic Usage
-
-### Display an external markdown file
+## Basic usage
 
 ```html
 <!-- Simply set the `src` attribute and win -->
 <zero-md src="https://example.com/markdown.md"></zero-md>
-```
 
-At its most basic, `<zero-md>` loads and displays an external MD file with **default stylesheets** -
-a Github-themed stylesheet paired with a light-themed one for code blocks, just like what you see in
-these docs. So internally, the above code block is semantically equivalent to the one below:
-
-```html
-<zero-md src="https://example.com/markdown.md">
-  <!-- By default, this style template gets loaded -->
-  <template>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
-    />
-  </template>
-</zero-md>
-```
-
-### Using your own styles
-
-To override the default theme, supply your own style template.
-
-```html
-<zero-md src="https://example.com/markdown.md">
-  <!-- Wrap with a <template> tag -->
-  <template>
-    <!-- Define your own styles inside a `<style>` tag -->
-    <style>
-      h1 {
-        color: red;
-      }
-      ...;
-    </style>
-  </template>
-</zero-md>
-```
-
-### Or your own stylesheets
-
-```html
-<zero-md src="https://example.com/markdown.md">
-  <!-- Wrap with a <template> tag -->
-  <template>
-    <!-- Load external stylesheets with a `<link rel="stylesheet">` tag -->
-    <link rel="stylesheet" href="markdown-styles.css" />
-    <link rel="stylesheet" href="highlight-styles.css" />
-  </template>
-</zero-md>
-```
-
-### Or both
-
-```html
-<zero-md src="https://example.com/markdown.md">
-  <template>
-    <!-- The CSS load order is respected -->
-    <link rel="stylesheet" href="markdown-styles.css" />
-    <style>
-      h1 {
-        color: red;
-      }
-    </style>
-    <link rel="stylesheet" href="highlight-styles.css" />
-    <style>
-      code {
-        background: yellow;
-      }
-    </style>
-  </template>
-</zero-md>
-```
-
-### Write markdown inline
-
-You can pass in your markdown inline too.
-
-```html
-<!-- Do not set the `src` attribute -->
+<!-- Or write markdown inline -->
 <zero-md>
   <!-- Write your markdown inside a `<script type="text/markdown">` tag -->
   <script type="text/markdown">
     # **This** is my [markdown](https://example.com)
   </script>
 </zero-md>
-```
 
-By default, `<zero-md>` first tries to render `src`. If `src` is falsy (undefined, file not found,
-empty file etc), it **falls-back** to the contents inside the `<script type="text/markdown">` tag.
-
-### Put it all together
-
-```html
+<!-- Or update the style -->
 <zero-md src="https://example.com/markdown.md">
-  <template>
-    <link rel="stylesheet" href="markdown-styles.css" />
-    <style>
-      h1 {
-        color: red;
-      }
-    </style>
-    <link rel="stylesheet" href="highlight-styles.css" />
-    <style>
-      code {
-        background: yellow;
-      }
-    </style>
-  </template>
-  <script type="text/markdown">
-    This is the fall-back markdown that will **only show** when `src` is falsy.
-  </script>
-</zero-md>
-```
-
-## API
-
-Advanced usage: https://zerodevx.github.io/zero-md/advanced-usage/
-
-Attributes and helpers: https://zerodevx.github.io/zero-md/attributes-and-helpers/
-
-Configuration: https://zerodevx.github.io/zero-md/configuration/
-
-## Migrating from V1 to V2
-
-1. Support for `<xmp>` tag is removed; use `<script type="text/markdown">` instead.
-
-<!-- prettier-ignore -->
-```html
-<!-- Previous -->
-<zero-md>
-  <template>
-    <xmp>
-# `This` is my [markdown](example.md)
-    </xmp>
-  </template>
-</zero-md>
-
-<!-- Now -->
-<zero-md>
-  <!-- No need to wrap with <template> tag -->
-  <script type="text/markdown">
-    # `This` is my [markdown](example.md)
-  </script>
-</zero-md>
-
-<!-- If you need your code to be pretty, -->
-<zero-md>
-  <!-- Set `data-dedent` to opt-in to dedent the text during render -->
-  <script type="text/markdown" data-dedent>
-    # It is important to be pretty
-
-    So having spacing makes me happy.
-  </script>
-</zero-md>
-```
-
-2. Markdown source behaviour has changed. Think of `<script type="text/markdown">` as a "fallback".
-
-<!-- prettier-ignore -->
-```html
-<!-- Previous -->
-<zero-md src="will-not-render.md">
-  <template>
-    <xmp>
-# This has first priority and will be rendered instead of `will-not-render.md`
-    </xmp>
-  </template>
-<zero-md>
-
-<!-- Now -->
-<zero-md src="will-render-unless-falsy.md">
-  <script type="text/markdown">
-    # This will NOT be rendered _unless_ `src` resolves to falsy
-  </script>
-</zero-md>
-```
-
-3. The `css-urls` attribute is deprecated. Use `<link rel="stylesheet">` instead.
-
-<!-- prettier-ignore -->
-```html
-<!-- Previous -->
-<zero-md src="example.md" css-urls='["/style1.css", "/style2.css"]'><zero-md>
-  
-<!-- Now, this... -->
-<zero-md src="example.md"></zero-md>
-
-<!-- ...is actually equivalent to this -->
-<zero-md src="example.md">
-  <template>
-    <!-- These are the default stylesheets -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/sindresorhus/github-markdown-css@4/github-markdown.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/PrismJS/prism@1/themes/prism.min.css"
-    />
-  </template>
-</zero-md>
-
-<!-- So, to apply your own external stylesheets... -->
-<zero-md src="example.md">
-  <!-- ...you overwrite the default template -->
-  <template>
-    <!-- Use <link> tags to reference your own stylesheets -->
-    <link rel="stylesheet" href="/style1.css" />
-    <link rel="stylesheet" href="/style2.css" />
-    <!-- You can even apply additional styles -->
-    <style>
-      p {
-        color: red;
-      }
-    </style>
-  </template>
-</zero-md>
-
-<!-- If you like the default stylesheets but wish to apply some overrides -->
-<zero-md src="example.md">
-  <!-- Set `data-merge` to "append" to apply this template AFTER the default template -->
-  <!-- Or "prepend" to apply this template BEFORE -->
-  <template data-merge="append">
+  <!-- Wrap `style` tags inside `template` -->
+  <template data-append>
     <style>
       p {
         color: red;
@@ -333,50 +105,7 @@ Configuration: https://zerodevx.github.io/zero-md/configuration/
 </zero-md>
 ```
 
-4. The attributes `marked-url` and `prism-url` are deprecated. To load `marked` or `prism` from
-   another location, simply load their scripts _before_ importing `zero-md`.
-
-```html
-<head>
-  ...
-  <script defer src="/lib/marked.js"></script>
-  <script defer src="/lib/prism.js"></script>
-  <script type="module" src="/lib/zero-md.min.js"></script>
-</head>
-```
-
-5. The global config object has been renamed from `ZeroMd.config` to `ZeroMdConfig`.
-
-```html
-<!-- Previous -->
-<script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-<script>
-  window.ZeroMd = {
-    config: {
-      cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-    }
-  }
-</script>
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"
-></script>
-
-<!-- Now -->
-<script>
-  window.ZeroMdConfig = {
-    cssUrls: ['/styles/my-markdown-theme.css', '/styles/my-highlight-theme.css']
-  }
-</script>
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
-></script>
-```
-
-6. The convenience events `zero-md-marked-ready` and `zero-md-prism-ready` are removed and **will no
-   longer fire**. Instead, the `zero-md-ready` event guarantees that everything is ready, and that
-   render can begin.
+Read the docs: https://zerodevx.github.com/zero-md/
 
 ## Contributing
 
@@ -387,7 +116,8 @@ Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github rep
 
 ### Development
 
-Standard Github [contribution workflow](https://github.com/firstcontributions/first-contributions)
+Standard Github
+[contribution workflow](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
 applies.
 
 #### Run the dev server
@@ -396,31 +126,24 @@ applies.
 $ npm run dev
 ```
 
-Point your browser to `http://localhost:8000` and you should see the test suite running.
+We use [Vite](https://github.com/vitejs/vite) for tooling. Point your browser to
+`http://localhost:5173` and you should see the test page. Library code is at `src/lib/`.
 
-#### Testing
-
-Tests are browser-based and run on [Mocha](https://mochajs.org/) with
-[Chai](https://www.chaijs.com/) asserts. If you're adding a new feature or bugfixing, please add the
-corresponding regression test into `test/index.spec.js` accordingly.
-
-#### Format and lint
+### Testing
 
 ```
-$ npm run format
-$ npm run lint
+$ npm test
 ```
 
-Formatting and linting by [prettier](https://github.com/prettier/prettier) and
-[eslint](https://github.com/eslint/eslint) respectively.
+Tests are through [Playwright](https://github.com/microsoft/playwright). Add tests in
+`src/index.spec.js`. Be sure tests pass in your PR.
 
-#### Making changes to docs
+### Updating docs
 
-Documentation is in the `/docs` folder in the form of `readme.md` files, and published on
-[Github Pages](https://pages.github.com/). This setup is based on
-[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs).
-
-To make changes to docs, simply raise a PR on any `readme.md` files should suffice.
+Documentation is in the `/docs` folder. Submit PRs onto the `.md` files directly and the changes
+will automatically be published when merged. The public docs setup is based on
+[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs), where one can instantly publish markdown
+docs from the Github `docs/` folder.
 
 ## Changelog
 

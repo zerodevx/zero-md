@@ -1,5 +1,4 @@
-const DEFAULT_HOST_CSS =
-  '<style>:host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}</style>'
+import { DEFAULT_HOST_CSS } from './const.js'
 
 /**
  * @typedef {object} ZeroMdRenderObject
@@ -11,7 +10,7 @@ const DEFAULT_HOST_CSS =
  * @property {boolean} [stamped]
  */
 
-class ZeroMdBase extends HTMLElement {
+export default class ZeroMdBase extends HTMLElement {
   get src() {
     return this.getAttribute('src')
   }
@@ -272,6 +271,3 @@ class ZeroMdBase extends HTMLElement {
     return detail
   }
 }
-
-export { DEFAULT_HOST_CSS }
-export default ZeroMdBase

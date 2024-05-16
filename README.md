@@ -111,7 +111,7 @@ Read the docs: https://zerodevx.github.com/zero-md/
 ### Noticed a bug? Have a feature request?
 
 Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
-[PR](https://github.com/zerodevx/zero-md/pulls)! I'd be stoked to accept any contributions!
+[PR](https://github.com/zerodevx/zero-md/pulls) - I'd be stoked to hear from you!
 
 ### Development
 
@@ -126,23 +126,23 @@ $ npm run dev
 ```
 
 We use [Vite](https://github.com/vitejs/vite) for tooling. Point your browser to
-`http://localhost:5173` and you should see the test page. Library code is at `src/lib/`.
+`http://localhost:5173` and you should see the test page. Library code in `src/lib/`.
 
-### Testing
+#### Testing
 
 ```
 $ npm test
 ```
 
-Tests are through [Playwright](https://github.com/microsoft/playwright). Add tests in
-`src/index.spec.js`. Be sure tests pass in your PR.
+Tests via [Playwright](https://github.com/microsoft/playwright). Test specs in `src/index.spec.js`.
+Be sure tests pass in your PR.
 
 ### Updating docs
 
-Documentation is in the `/docs` folder. Submit PRs onto the `.md` files directly and the changes
-will automatically be published when merged. The public docs setup is based on
-[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs), where one can instantly publish markdown
-docs from the Github `docs/` folder.
+Documentation is in the `/docs` folder. Submit PRs onto the `.md` files directly and changes will be
+automatically published upon merge. Documentation website uses
+[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to instantly publish markdown from the
+Github `docs/` folder.
 
 ## Changelog
 

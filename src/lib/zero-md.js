@@ -136,6 +136,7 @@ export default class ZeroMd extends ZeroMdBase {
   }
 
   parseKatex(text = '', opts = {}) {
+    opts.output = 'mathml'
     return this.katex.renderToString(text, { ...opts, throwOnError: false })
   }
 

@@ -8,23 +8,27 @@ let uid = 0
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 export default class ZeroMd extends ZeroMdBase {
-  async load({
-    marked = LOADERS.marked,
-    markedBaseUrl = LOADERS.markedBaseUrl,
-    markedHighlight = LOADERS.markedHighlight,
-    markedGfmHeadingId = LOADERS.markedGfmHeadingId,
-    markedAlert = LOADERS.markedAlert,
-    hljs = LOADERS.hljs,
-    mermaid = LOADERS.mermaid,
-    katex = LOADERS.katex,
-    katexOptions = { nonStandard: true, throwOnError: false }
-  } = {}) {
+  async load(loaders = {}) {
+    const {
+      marked,
+      markedBaseUrl,
+      markedHighlight,
+      markedGfmHeadingId,
+      markedAlert,
+      hljs,
+      mermaid,
+      katex,
+      katexOptions
+    } = { katexOptions: { nonStandard: true, throwOnError: false }, ...LOADERS, ...loaders }
     this.template = STYLES.preset()
     this.marked = await marked()
     this.setBaseUrl = await markedBaseUrl()
-    const parseKatex = async (text = '', opts = {}) => {
+    const parseKatex = async (
+      /** @type {string} */ text,
+      /** @type {boolean|undefined} */ displayMode
+    ) => {
       if (!this.katex) this.katex = await katex()
-      return this.katex.renderToString(text, { ...katexOptions, ...opts })
+      return `${this.katex.renderToString(text, { ...katexOptions, displayMode })}${displayMode ? '' : '\n'}`
     }
     this.marked.use(
       (await markedGfmHeadingId())(),
@@ -41,7 +45,7 @@ export default class ZeroMd extends ZeroMdBase {
               const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
               return svg
             }
-            if (lang === 'math') return await parseKatex(code, { displayMode: true })
+            if (lang === 'math') return await parseKatex(code, true)
             if (!this.hljs) this.hljs = await hljs()
             return this.hljs.getLanguage(lang)
               ? this.hljs.highlight(code, { language: lang }).value
@@ -59,9 +63,8 @@ export default class ZeroMd extends ZeroMdBase {
       {
         ...katexExtension(katexOptions),
         walkTokens: async (/** @type {*} */ token) => {
-          if (['inlineKatex', 'blockKatex'].includes(token.type)) {
-            token.text = await parseKatex(token.text, { displayMode: token.type === 'blockKatex' })
-          }
+          if (['inlineKatex', 'blockKatex'].includes(token.type))
+            token.text = await parseKatex(token.text, token.type === 'blockKatex')
         }
       }
     )

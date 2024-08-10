@@ -7,7 +7,7 @@ let uid = 0
 /**
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
-class ZeroMd extends ZeroMdBase {
+export default class ZeroMd extends ZeroMdBase {
   async load({
     marked = LOADERS.marked,
     markedBaseUrl = LOADERS.markedBaseUrl,
@@ -49,10 +49,10 @@ class ZeroMd extends ZeroMdBase {
           }
         }),
         renderer: {
-          code: (code = '', lang = '') => {
-            if (lang === 'mermaid') return `<div class="mermaid">${code}</div>`
-            if (lang === 'math') return code
-            return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${code}\n</code></pre>`
+          code: ({ text = '', lang = '' }) => {
+            if (lang === 'mermaid') return `<div class="mermaid">${text}</div>`
+            if (lang === 'math') return text
+            return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${text}\n</code></pre>`
           }
         }
       },
@@ -72,5 +72,3 @@ class ZeroMd extends ZeroMdBase {
     return this.marked.parse(text)
   }
 }
-
-export default ZeroMd

@@ -3,23 +3,23 @@
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
 ![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
 
-# &lt;zero-md&gt;
+# <zero-md>
 
 > Ridiculously simple zero-config markdown displayer
 
 A vanilla markdown-to-html web component based on
 [Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/) to load and display an external
-MD file. Under the hood, it uses [marked](https://github.com/markedjs/marked) for super-fast
-markdown transformation, and [highlight.js](https://github.com/highlightjs/highlight.js) for
+MD file. Under the hood, it uses [`marked`](https://github.com/markedjs/marked) for super-fast
+markdown transformation, and [`highlight.js`](https://github.com/highlightjs/highlight.js) for
 lightning-quick syntax highlighting - automagically rendering into its own self-contained shadow DOM
-container, while encapsulating implementation details into one embarassingly easy-to-use package.
+container, while encapsulating implementation details into one embarrassingly easy-to-use package.
 
 Featuring:
 
-- [x] Math rendering via [KaTeX](https://github.com/KaTeX/KaTeX)
-- [x] [Mermaid](https://github.com/mermaid-js/mermaid) diagrams
-- [x] Syntax highlighting via [highlight.js](https://github.com/highlightjs/highlight.js)
-- [x] Language detection for unhinted code blocks
+- [x] Math rendering via [`KaTeX`](https://github.com/KaTeX/KaTeX)
+- [x] [`Mermaid`](https://github.com/mermaid-js/mermaid) diagrams
+- [x] Syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js)
+- [x] Language detection for un-hinted code blocks
 - [x] Hash-link scroll handling
 - [x] FOUC prevention
 - [x] Auto re-render on input changes
@@ -125,7 +125,7 @@ applies.
 $ npm run dev
 ```
 
-We use [Vite](https://github.com/vitejs/vite) for tooling. Point your browser to
+We use [`Vite`](https://github.com/vitejs/vite) for tooling. Point your browser to
 `http://localhost:5173` and you should see the test page. Library code in `src/lib/`.
 
 #### Testing
@@ -139,12 +139,12 @@ Be sure tests pass in your PR.
 
 ### Updating docs
 
-Documentation is in the `/docs` folder. Submit PRs onto the `.md` files directly and changes will be
+Documentation is in the `docs/` folder. Submit PRs onto the `.md` files directly and changes will be
 automatically published upon merge. Documentation website uses
 [`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to instantly publish markdown from the
 Github `docs/` folder.
 
-## Changelog
+## Change-log
 
 Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 

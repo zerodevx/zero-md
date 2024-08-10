@@ -1,4 +1,4 @@
-# &lt;zero-md&gt;
+# <zero-md>
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
@@ -14,6 +14,7 @@
 
 - [API](#api)
 - [Extensibility](#extensibility)
+- [Async Loaders](#async-loaders)
 
 ## API
 
@@ -25,7 +26,7 @@ The following attributes apply to `<zero-md>` element.
 | ---------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
 | src        | String  | URL to external markdown file.                                                                                   |
 | no-auto    | Boolean | If set, disables auto-rendering. Call the `render()` [function](#the-render-function) on that instance manually. |
-| no-shadow  | Boolean | If set, renders and stamps into **light dom** instead. Please know what you are doing.                           |
+| no-shadow  | Boolean | If set, renders and stamps into **light DOM** instead. Please know what you are doing.                           |
 | body-class | String  | Class names forwarded to `.markdown-body` block.                                                                 |
 
 Notes:
@@ -52,10 +53,10 @@ If left unset, `<template>` overrides the default template.
 
 The following convenience events are dispatched.
 
-| Event Name       | Detail                             | Description                                          |
-| ---------------- | ---------------------------------- | ---------------------------------------------------- |
-| zero-md-ready    | `undefined`                        | Instance setup complete and ready to render.         |
-| zero-md-rendered | `{styles: boolean, body: boolean}` | Render completes; returns what was stamped into DOM. |
+| Event Name         | Detail                             | Description                                          |
+| ------------------ | ---------------------------------- | ---------------------------------------------------- |
+| `zero-md-ready`    | `undefined`                        | Instance setup complete and ready to render.         |
+| `zero-md-rendered` | `{styles: boolean, body: boolean}` | Render completes; returns what was stamped into DOM. |
 
 ### The `render()` function
 
@@ -106,6 +107,24 @@ Change the default template globally like so:
 </script>
 ```
 
+#### Force `light` (or `dark`) theme
+
+```html
+<script type="module">
+  import ZeroMd, { STYLES } from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+
+  customElements.define(
+    'zero-md',
+    class extends ZeroMd {
+      async load() {
+        await super.load()
+        this.template = STYLES.preset('light') // or STYLES.preset('dark')
+      }
+    }
+  )
+</script>
+```
+
 #### Adding `marked` extensions
 
 Layer additional [marked extensions](https://marked.js.org/using_advanced#extensions) you may need
@@ -113,7 +132,8 @@ like so:
 
 ```html
 <script type="module">
-  // Add GFM Footnote functionality (https://github.com/bent10/marked-extensions/tree/main/packages/footnote)
+  // Add GFM Footnote functionality
+  // https://github.com/bent10/marked-extensions/tree/main/packages/footnote
   import markedFootnote from 'https://cdn.jsdelivr.net/npm/marked-footnote@1/+esm'
   import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 

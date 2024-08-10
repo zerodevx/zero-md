@@ -1,4 +1,4 @@
-# &lt;zero-md&gt;
+# <zero-md>
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
@@ -18,17 +18,17 @@
 
 A vanilla markdown-to-html web component based on
 [Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/) to load and display an external
-MD file. Under the hood, it uses [marked](https://github.com/markedjs/marked) for super-fast
-markdown transformation, and [highlight.js](https://github.com/highlightjs/highlight.js) for
+MD file. Under the hood, it uses [`marked`](https://github.com/markedjs/marked) for super-fast
+markdown transformation, and [`highlight.js`](https://github.com/highlightjs/highlight.js) for
 lightning-quick syntax highlighting - automagically rendering into its own self-contained shadow DOM
-container, while encapsulating implementation details into one embarassingly easy-to-use package.
+container, while encapsulating implementation details into one embarrassingly easy-to-use package.
 
 Featuring:
 
-- Math rendering via [KaTeX](https://github.com/KaTeX/KaTeX)
-- [Mermaid](https://github.com/mermaid-js/mermaid) diagrams
-- Syntax highlighting via [highlight.js](https://github.com/highlightjs/highlight.js)
-- Language detection for unhinted code blocks
+- Math rendering via [`KaTeX`](https://github.com/KaTeX/KaTeX)
+- [`Mermaid`](https://github.com/mermaid-js/mermaid) diagrams
+- Syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js)
+- Language detection for un-hinted code blocks
 - Hash-link scroll handling
 - FOUC prevention
 - Auto re-render on input changes
@@ -119,7 +119,7 @@ app.render(`<zero-md src=${src}></zero-md>`)
 </zero-md>
 ```
 
-By default, `<zero-md>` first tries to render `src`. If `src` is falsy (`undefined`, `404`, empty
+By default, `<zero-md>` first tries to render `src`. If `src` is `falsy` (`undefined`, `404`, empty
 file etc.), it **falls-back** to the contents inside the `<script type="text/markdown">` tag.
 
 ### Default style template
@@ -241,11 +241,12 @@ diagram rendering via `katex` and `mermaidjs` respectively.
 
 The following extensions are loaded by default.
 
-| Extension                                                                            | Description                                                                                   |
-| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| [marked-base-url](https://github.com/markedjs/marked-base-url)                       | Sets the base url relative to `src` - this allows nested md files to work.                    |
-| [marked-highlight](https://github.com/markedjs/marked-highlight)                     | Prepares syntax highlighting via [highlight.js](https://github.com/highlightjs/highlight.js). |
-| [marked-alert](https://github.com/bent10/marked-extensions/tree/main/packages/alert) | Adds Github-styled [alerts](https://github.com/orgs/community/discussions/16925).             |
+| Extension                                                                              | Description                                                                                     |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [`marked-base-url`](https://github.com/markedjs/marked-base-url)                       | Sets the base url relative to `src` - this allows nested `md` files to work.                    |
+| [`marked-highlight`](https://github.com/markedjs/marked-highlight)                     | Prepares syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js). |
+| [`marked-gfm-heading-id`](https://github.com/markedjs/marked-gfm-heading-id)           | Adds Github-styled element `id`s to headings.                                                   |
+| [`marked-alert`](https://github.com/bent10/marked-extensions/tree/main/packages/alert) | Adds Github-styled [alerts](https://github.com/orgs/community/discussions/16925).               |
 
 ### Math
 
@@ -259,7 +260,7 @@ Render mermaid diagrams with triple-backticks `mermaid` code blocks.
 ````text
 ```mermaid
 sequenceDiagram
-    Pumbaa->>Timon:I ate like a pig.
-    Timon->>Pumbaa:Pumbaa, you ARE a pig.
+    Foo->>Bar:I ate like a pig.
+    Bar->>Foo:Foo, you ARE a pig.
 ```
 ````

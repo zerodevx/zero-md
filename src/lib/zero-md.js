@@ -32,7 +32,7 @@ export default class ZeroMd extends ZeroMdBase {
       {
         ...(await markedHighlight())({
           async: true,
-          highlight: async (code = '', lang = '') => {
+          highlight: async (/** @type {string} */ code, /** @type {string} */ lang) => {
             if (lang === 'mermaid') {
               if (!this.mermaid) {
                 this.mermaid = await mermaid()
@@ -49,7 +49,7 @@ export default class ZeroMd extends ZeroMdBase {
           }
         }),
         renderer: {
-          code: ({ text = '', lang = '' }) => {
+          code: (/** @type {*} */ { text, lang }) => {
             if (lang === 'mermaid') return `<div class="mermaid">${text}</div>`
             if (lang === 'math') return text
             return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${text}\n</code></pre>`
@@ -67,7 +67,8 @@ export default class ZeroMd extends ZeroMdBase {
     )
   }
 
-  async parse({ text = '', baseUrl = '' }) {
+  /** @param {import('./zero-md-base.js').ZeroMdRenderObject} _obj */
+  async parse({ text, baseUrl }) {
     this.marked.use(this.setBaseUrl(baseUrl || ''))
     return this.marked.parse(text)
   }

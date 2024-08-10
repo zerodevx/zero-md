@@ -1,5 +1,3 @@
-import { DEFAULT_HOST_CSS } from './const.js'
-
 /**
  * @typedef {object} ZeroMdRenderObject
  * @property {'styles'|'body'} [target]
@@ -33,7 +31,7 @@ export default class ZeroMdBase extends HTMLElement {
     try {
       this.version = __VERSION__
     } catch {} // eslint-disable-line no-empty
-    this.template = DEFAULT_HOST_CSS
+    this.template = ''
     const handler = (/** @type {*} */ e) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
       const a = e.target?.closest('a')

@@ -1,7 +1,7 @@
 #!/usr/bin/env zx
 /* globals $, chalk */
 
-const lines = $.sync`cat src/lib/const.js`.stdout
+const lines = $.sync`cat src/lib/presets.js`.stdout
   .split('\n')
   .filter((i) => i.includes('jsdelivr('))
   .map((i) => i.split(`'`)[1])

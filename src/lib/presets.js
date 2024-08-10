@@ -41,12 +41,12 @@ export const STYLES = {
 
 export const LOADERS = {
   marked: async () => {
-    const Marked = await load(jsdelivr('marked@12/lib/marked.esm.js'), 'Marked')
+    const Marked = await load(jsdelivr('marked@14/lib/marked.esm.js'), 'Marked')
     return new Marked({ async: true })
   },
   markedBaseUrl: () => load(jsdelivr('marked-base-url@1/+esm'), 'baseUrl'),
   markedHighlight: () => load(jsdelivr('marked-highlight@2/+esm'), 'markedHighlight'),
-  markedGfmHeadingId: () => load(jsdelivr('marked-gfm-heading-id@3/+esm'), 'gfmHeadingId'),
+  markedGfmHeadingId: () => load(jsdelivr('marked-gfm-heading-id@4/+esm'), 'gfmHeadingId'),
   markedAlert: () => load(jsdelivr('marked-alert@2/+esm')),
   hljs: () => load(jsdelivr('@highlightjs/cdn-assets@11/es/highlight.min.js')),
   mermaid: () => load(jsdelivr('mermaid@10/dist/mermaid.esm.min.mjs')),

@@ -2,7 +2,6 @@ import ZeroMdBase from './zero-md-base.js'
 import katexExtension from './katex-extension.js'
 import { STYLES, LOADERS } from './presets.js'
 
-const { HOST, MARKDOWN, HIGHLIGHT_LIGHT, HIGHLIGHT_PREFERS_DARK, KATEX } = STYLES
 let uid = 0
 
 /**
@@ -16,54 +15,56 @@ class ZeroMd extends ZeroMdBase {
     markedGfmHeadingId = LOADERS.markedGfmHeadingId,
     markedAlert = LOADERS.markedAlert,
     hljs = LOADERS.hljs,
-    katex = LOADERS.katex,
     mermaid = LOADERS.mermaid,
+    katex = LOADERS.katex,
     katexOptions = { nonStandard: true, throwOnError: false }
   } = {}) {
-    this.template = HOST + MARKDOWN + HIGHLIGHT_LIGHT + HIGHLIGHT_PREFERS_DARK + KATEX
+    this.template = STYLES.preset()
     this.marked = await marked()
     this.setBaseUrl = await markedBaseUrl()
-    this.marked.use((await markedGfmHeadingId())())
-    this.marked.use((await markedAlert())())
     const parseKatex = async (text = '', opts = {}) => {
       if (!this.katex) this.katex = await katex()
       return this.katex.renderToString(text, { ...katexOptions, ...opts })
     }
-    this.marked.use({
-      ...katexExtension(katexOptions),
-      walkTokens: async (/** @type {*} */ token) => {
-        if (['inlineKatex', 'blockKatex'].includes(token.type)) {
-          token.text = await parseKatex(token.text, { displayMode: token.type === 'blockKatex' })
-        }
-      }
-    })
-    this.marked.use({
-      ...(await markedHighlight())({
-        async: true,
-        highlight: async (code = '', lang = '') => {
-          if (lang === 'mermaid') {
-            if (!this.mermaid) {
-              this.mermaid = await mermaid()
-              this.mermaid.initialize({ startOnLoad: false })
+    this.marked.use(
+      (await markedGfmHeadingId())(),
+      (await markedAlert())(),
+      {
+        ...(await markedHighlight())({
+          async: true,
+          highlight: async (code = '', lang = '') => {
+            if (lang === 'mermaid') {
+              if (!this.mermaid) {
+                this.mermaid = await mermaid()
+                this.mermaid.initialize({ startOnLoad: false })
+              }
+              const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
+              return svg
             }
-            const { svg } = await this.mermaid.render(`mermaid-svg-${uid++}`, code)
-            return svg
+            if (lang === 'math') return await parseKatex(code, { displayMode: true })
+            if (!this.hljs) this.hljs = await hljs()
+            return this.hljs.getLanguage(lang)
+              ? this.hljs.highlight(code, { language: lang }).value
+              : this.hljs.highlightAuto(code).value
           }
-          if (lang === 'math') return await parseKatex(code, { displayMode: true })
-          if (!this.hljs) this.hljs = await hljs()
-          return this.hljs.getLanguage(lang)
-            ? this.hljs.highlight(code, { language: lang }).value
-            : this.hljs.highlightAuto(code).value
+        }),
+        renderer: {
+          code: (code = '', lang = '') => {
+            if (lang === 'mermaid') return `<div class="mermaid">${code}</div>`
+            if (lang === 'math') return code
+            return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${code}\n</code></pre>`
+          }
         }
-      }),
-      renderer: {
-        code: (code = '', lang = '') => {
-          if (lang === 'mermaid') return `<div class="mermaid">${code}</div>`
-          if (lang === 'math') return code
-          return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${code}\n</code></pre>`
+      },
+      {
+        ...katexExtension(katexOptions),
+        walkTokens: async (/** @type {*} */ token) => {
+          if (['inlineKatex', 'blockKatex'].includes(token.type)) {
+            token.text = await parseKatex(token.text, { displayMode: token.type === 'blockKatex' })
+          }
         }
       }
-    })
+    )
   }
 
   async parse({ text = '', baseUrl = '' }) {

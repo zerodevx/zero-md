@@ -14,7 +14,6 @@
 
 - [API](#api)
 - [Extensibility](#extensibility)
-- [Async Loaders](#async-loaders)
 
 ## API
 
@@ -149,6 +148,32 @@ like so:
 </script>
 ```
 
+#### Async loaders
+
+Dependency libraries can be passed into the `load()` function through async loaders that look like:
+
+```js
+const lib = () => import('/path/to/lib')
+```
+
+This may be useful if you like to change CDN hosts, or for web projects that require libraries to be
+self-hosted.
+
+```js
+import ZeroMd from 'zero-md'
+import { Marked } from 'marked'
+
+customElements.define('zero-md', class extends ZeroMd {
+  async load() {
+    await super.load({
+      marked: () => new Marked(), // self-hosted
+      hljs: () => import('path/to/lib'), // change CDN url
+      ...
+    })
+  }
+})
+```
+
 ### The `parse()` function
 
 This is called **during every render** to parse markdown into its HTML string representation, so
@@ -169,7 +194,7 @@ If you are processing potentially unsafe markdown, always use a client-side sani
       class extends ZeroMd {
         async parse(obj) {
           const parsed = await super.parse(obj)
-          return DOMPurify.sanitize(parsed)
+          return window.DOMPurify.sanitize(parsed)
         }
       }
     )

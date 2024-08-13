@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {
@@ -21,7 +21,7 @@
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.9.0",
     "prettier": "^3.3.3",
-    "terser": "^5.31.5",
+    "terser": "^5.31.6",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
   },

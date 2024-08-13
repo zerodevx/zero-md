@@ -1,4 +1,4 @@
-# <zero-md>
+# &lt;zero-md&gt;
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
@@ -8,9 +8,9 @@
 ## Advanced Usage
 
 > [!WARNING]  
-> By default, `<zero-md>` **does not sanitize** the output HTML. If you're processing markdown from
-> **unknown or untrusted** sources, please use a HTML sanitization library
-> [as shown below](#sanitize-html-output).
+> By default, `<zero-md>` **does not sanitise** the output HTML. If you're processing markdown from
+> **unknown or untrusted** sources, please use a HTML sanitisation library
+> [as shown below](#sanitise-html-output).
 
 - [API](#api)
 - [Extensibility](#extensibility)
@@ -179,9 +179,9 @@ customElements.define('zero-md', class extends ZeroMd {
 This is called **during every render** to parse markdown into its HTML string representation, so
 this will be a good place to run any pre or post processing task.
 
-#### Sanitize HTML output
+#### Sanitise HTML output
 
-If you are processing potentially unsafe markdown, always use a client-side sanitization library.
+If you are processing potentially unsafe markdown, always use a client-side sanitisation library.
 
 ```html
 <head>

@@ -24,8 +24,8 @@ auto-register the custom element with the `?register` query param.
 
 #### 2. Syntax highlighting
 
-[Prismjs](https://github.com/PrismJS/prism) is un-maintained and has been replaced by
-[highlightjs](https://github.com/highlightjs/highlight.js).
+[`Prismjs`](https://github.com/PrismJS/prism) is un-maintained and has been replaced by
+[`highlightjs`](https://github.com/highlightjs/highlight.js).
 
 #### 3. Merging style templates
 

@@ -3,7 +3,7 @@
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
 ![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
 
-# <zero-md>
+# &lt;zero-md&gt;
 
 > Ridiculously simple zero-config markdown displayer
 

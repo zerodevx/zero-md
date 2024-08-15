@@ -113,12 +113,11 @@ export default class ZeroMdBase extends HTMLElement {
   /**
    * Async parse function that takes in markdown and returns the html-formatted string.
    * Can use any md parser you prefer, like marked.js
-   * @param {ZeroMdRenderObject} _obj
+   * @param {ZeroMdRenderObject} obj
    * @returns {Promise<string>}
    */
-  // eslint-disable-next-line no-unused-vars
-  async parse(_obj) {
-    return ''
+  async parse({ text = '' }) {
+    return text
   }
 
   /**
@@ -127,7 +126,7 @@ export default class ZeroMdBase extends HTMLElement {
    */
   goto(id) {
     const ctx = this.shadowRoot || document
-    id && ctx.getElementById(id[0] === '#' ? id.slice(1) : id)?.scrollIntoView()
+    id && ctx.getElementById(decodeURIComponent(id[0] === '#' ? id.slice(1) : id))?.scrollIntoView()
   }
 
   /**

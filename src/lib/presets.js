@@ -39,7 +39,7 @@ export const STYLES = {
   }
 }
 
-/** @type {*} */ export const LOADERS = {
+export const LOADERS = {
   marked: async () => {
     const Marked = await load(jsdelivr('marked@14/lib/marked.esm.js'), 'Marked')
     return new Marked({ async: true })

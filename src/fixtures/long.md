@@ -2,6 +2,8 @@
 
 Test [hash-link](#1914-translation-by-h-rackham) scroll.
 
+Test [cyrillic](#кириллический-заголовок) scroll.
+
 ## The standard Lorem Ipsum passage, used since the 1500s
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
@@ -61,7 +63,7 @@ annoyances accepted. The wise man therefore always holds in these matters to thi
 selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid
 worse pains.
 
-## The standard Lorem Ipsum passage, used since the 1500s
+## Кириллический заголовок
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
 et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut

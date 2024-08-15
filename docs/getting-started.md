@@ -132,10 +132,10 @@ styles.
 <!-- By default, this... -->
 <zero-md src="https://example.com/markdown.md"></zero-md>
 
-<!-- ...equals to this: -->
+<!-- ...is semantically equivalent to this -->
 <zero-md src="https://example.com/markdown.md">
-  <!-- Default style template -->
   <template>
+
     <!-- Sensible host style defaults -->
     <style>
       :host { display: block; position: relative; contain: content; }
@@ -148,11 +148,12 @@ styles.
     <!-- Highlightjs Github theme (light) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css" />
 
-    <!-- Highlightjs Github theme (dark) -->
+    <!-- Highlightjs Github theme (prefers dark) -->
     <link rel="stylesheet" media="(prefers-color-scheme:dark)" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css" />
 
     <!-- KaTeX styles (needed for math) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
+
   </template>
 </zero-md>
 ```

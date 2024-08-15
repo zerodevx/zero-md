@@ -1,6 +1,6 @@
 {
   "name": "zero-md",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {

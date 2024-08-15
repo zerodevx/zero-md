@@ -11,17 +11,18 @@ let uid = 0
  * Extends ZeroMdBase with marked.js, syntax highlighting, math and mermaid features
  */
 export default class ZeroMd extends ZeroMdBase {
-  async load({
-    marked,
-    markedBaseUrl,
-    markedHighlight,
-    markedGfmHeadingId,
-    markedAlert,
-    hljs,
-    mermaid,
-    katex,
-    katexOptions = { nonStandard: true, throwOnError: false }
-  } = LOADERS) {
+  async load(loaders = {}) {
+    /** @type {*} */ const {
+      marked,
+      markedBaseUrl,
+      markedHighlight,
+      markedGfmHeadingId,
+      markedAlert,
+      hljs,
+      mermaid,
+      katex,
+      katexOptions = { nonStandard: true, throwOnError: false }
+    } = { ...LOADERS, ...loaders }
     this.template = STYLES.preset()
     const modules = await Promise.all([
       marked(),

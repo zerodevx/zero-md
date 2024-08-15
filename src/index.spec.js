@@ -39,7 +39,13 @@ test.describe('hash link tests', () => {
     expect(await page.evaluate(() => window.scrollY)).toBe(0)
     await page.getByText('hash-link').click()
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await page.evaluate(() => window.scrollTo(0, 0))
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+    await page.getByText('cyrillic').click()
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
     await page.goto('/fixtures/hashlink.html#1914-translation-by-h-rackham')
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await page.goto('/fixtures/hashlink.html#кириллический-заголовок')
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
   })
 
@@ -48,9 +54,11 @@ test.describe('hash link tests', () => {
     expect(await page.evaluate(() => window.scrollY)).toBe(0)
     await page.getByText('hash-link').click()
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
-    await page.goto('/fixtures/hashlink.html#1914-translation-by-h-rackham', {
-      waitUntil: 'networkidle'
-    })
+    await page.evaluate(() => window.scrollTo(0, 0))
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+    await page.getByText('cyrillic').click()
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await page.goto('/fixtures/hashlink-noshadow.html#1914-translation-by-h-rackham')
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
   })
 })

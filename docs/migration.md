@@ -15,7 +15,7 @@ class support for math and diagrams, and upgrading to ESM consumption of librari
 
 #### 1. New CDN URL
 
-```
+```text
 https://cdn.jsdelivr.net/npm/zero-md@3?register
 ```
 

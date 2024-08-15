@@ -87,40 +87,36 @@ to set default values.
 
 Change the default template globally like so:
 
+<!-- prettier-ignore -->
 ```html
 <script type="module">
   import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async load() {
-        await super.load()
-        this.template = `
+  customElements.define('zero-md', class extends ZeroMd {
+    async load() {
+      await super.load()
+      this.template = `
 <style>:host { display: block; }</style>
 <link rel="stylesheet" href="https://example.com/markdown-styles.css" />
 <link rel="stylesheet" href="https://example.com/highlight-styles.css" />`
-      }
     }
-  )
+  })
 </script>
 ```
 
-#### Force `light` (or `dark`) theme
+Or force `light` (or `dark`) theme:
 
+<!-- prettier-ignore -->
 ```html
 <script type="module">
   import ZeroMd, { STYLES } from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async load() {
-        await super.load()
-        this.template = STYLES.preset('light') // or STYLES.preset('dark')
-      }
+  customElements.define('zero-md', class extends ZeroMd {
+    async load() {
+      await super.load()
+      this.template = STYLES.preset('light') // or STYLES.preset('dark')
     }
-  )
+  })
 </script>
 ```
 
@@ -129,6 +125,7 @@ Change the default template globally like so:
 Layer additional [marked extensions](https://marked.js.org/using_advanced#extensions) you may need
 like so:
 
+<!-- prettier-ignore -->
 ```html
 <script type="module">
   // Add GFM Footnote functionality
@@ -136,28 +133,25 @@ like so:
   import markedFootnote from 'https://cdn.jsdelivr.net/npm/marked-footnote@1/+esm'
   import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 
-  customElements.define(
-    'zero-md',
-    class extends ZeroMd {
-      async load() {
-        await super.load()
-        this.marked.use(markedFootnote())
-      }
+  customElements.define('zero-md', class extends ZeroMd {
+    async load() {
+      await super.load()
+      this.marked.use(markedFootnote())
     }
-  )
+  })
 </script>
 ```
 
 #### Async loaders
 
-Dependency libraries can be passed into the `load()` function through async loaders that look like:
+Dependency libraries can be passed into the `load()` function through async loaders looking like:
 
 ```js
 const lib = () => import('/path/to/lib')
 ```
 
 This may be useful if you like to change CDN hosts, or for web projects that require libraries to be
-self-hosted.
+self-hosted (or bundled together).
 
 ```js
 import ZeroMd from 'zero-md'
@@ -183,21 +177,19 @@ this will be a good place to run any pre or post processing task.
 
 If you are processing potentially unsafe markdown, always use a client-side sanitisation library.
 
+<!-- prettier-ignore -->
 ```html
 <head>
   <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
   <script type="module">
     import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 
-    customElements.define(
-      'zero-md',
-      class extends ZeroMd {
-        async parse(obj) {
-          const parsed = await super.parse(obj)
-          return window.DOMPurify.sanitize(parsed)
-        }
+    customElements.define('zero-md', class extends ZeroMd {
+      async parse(obj) {
+        const parsed = await super.parse(obj)
+        return window.DOMPurify.sanitize(parsed)
       }
-    )
+    })
   </script>
 </head>
 <body>

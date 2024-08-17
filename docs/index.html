@@ -9,7 +9,45 @@
     />
     <title>&lt;zero-md&gt;</title>
     <link rel="icon" type="image/png" href="favicon.png" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
+    <script type="module">
+      import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+      customElements.define(
+        'zero-md',
+        class extends ZeroMd {
+          async load() {
+            await super.load()
+            this.template += `<style>.zero-md-copy{position:relative;}.zero-md-copy button{position:absolute;top:0.5rem;right:0.75rem;cursor:pointer;opacity:0.9;}</style>`
+          }
+          async parse(obj) {
+            const parsed = await super.parse(obj)
+            if (!navigator.clipboard) return parsed
+            const tpl = document.createElement('template')
+            tpl.innerHTML = parsed
+            tpl.content.querySelectorAll('pre>code').forEach((code) => {
+              const div = document.createElement('div')
+              div.classList.add('zero-md-copy')
+              div.append(code.parentElement.cloneNode(true))
+              div.insertAdjacentHTML('beforeend', `<button>Copy</button>`)
+              code.parentElement.replaceWith(div)
+            })
+            return tpl.innerHTML
+          }
+          async render(obj) {
+            await super.render(obj)
+            this.root.querySelectorAll('.zero-md-copy button').forEach((btn) => {
+              btn.onclick = () => {
+                navigator.clipboard
+                  .writeText(btn.parentElement.firstChild.firstChild.innerText)
+                  .then(() => {
+                    btn.innerText = 'Copied!'
+                    setTimeout(() => (btn.innerText = 'Copy'), 2500)
+                  })
+              }
+            })
+          }
+        }
+      )
+    </script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md-docs@1"></script>
     <link
       rel="stylesheet"

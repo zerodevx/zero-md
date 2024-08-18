@@ -24,26 +24,24 @@
             const tpl = document.createElement('template')
             tpl.innerHTML = parsed
             tpl.content.querySelectorAll('pre>code').forEach((code) => {
-              const div = document.createElement('div')
-              div.classList.add('zero-md-copy')
-              div.append(code.parentElement.cloneNode(true))
-              div.insertAdjacentHTML('beforeend', `<button>Copy</button>`)
-              code.parentElement.replaceWith(div)
+              const pre = code.parentElement
+              pre.replaceWith(
+                this.frag(`<div class="zero-md-copy">${pre.outerHTML}<button>Copy</button></div>`)
+              )
             })
             return tpl.innerHTML
           }
           async render(obj) {
-            await super.render(obj)
+            const out = await super.render(obj)
             this.root.querySelectorAll('.zero-md-copy button').forEach((btn) => {
-              btn.onclick = () => {
-                navigator.clipboard
-                  .writeText(btn.parentElement.firstChild.firstChild.innerText)
-                  .then(() => {
-                    btn.innerText = 'Copied!'
-                    setTimeout(() => (btn.innerText = 'Copy'), 2500)
-                  })
+              btn.onclick = async () => {
+                const code = btn.previousElementSibling.firstElementChild.innerText
+                await navigator.clipboard.writeText(code)
+                btn.innerText = 'Copied!'
+                setTimeout(() => (btn.innerText = 'Copy'), 2500)
               }
             })
+            return out
           }
         }
       )

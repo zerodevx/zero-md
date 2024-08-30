@@ -97,8 +97,8 @@ Change the default template globally like so:
       await super.load()
       this.template = `
 <style>:host { display: block; }</style>
-<link rel="stylesheet" href="https://example.com/markdown-styles.css" />
-<link rel="stylesheet" href="https://example.com/highlight-styles.css" />`
+<link rel="stylesheet" href="path/to/markdown-styles.css" />
+<link rel="stylesheet" href="path/to/highlight-styles.css" />`
     }
   })
 </script>
@@ -115,6 +115,23 @@ Or force `light` (or `dark`) theme:
     async load() {
       await super.load()
       this.template = STYLES.preset('light') // or STYLES.preset('dark')
+    }
+  })
+</script>
+```
+
+Or set default attributes:
+
+<!-- prettier-ignore -->
+```html
+<script type="module">
+  import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+
+  customElements.define('zero-md', class extends ZeroMd {
+    async load() {
+      await super.load()
+      this.setAttribute('no-auto', '')   // disable auto-render for all instances
+      this.setAttribute('no-shadow', '') // don't use shadow dom
     }
   })
 </script>

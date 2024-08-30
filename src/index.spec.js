@@ -104,3 +104,25 @@ test.describe('feature tests', () => {
     ).toHaveClass('markdown-alert markdown-alert-note')
   })
 })
+
+test.describe('global config', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/fixtures/config.html')
+  })
+
+  test('no-shadow', async ({ page }) => {
+    expect(await page.locator('zero-md').evaluate((el) => !!el.shadowRoot)).toBe(false)
+  })
+
+  test('no-auto', async ({ page }) => {
+    expect(await page.locator('.markdown-body').textContent()).toBe('')
+  })
+
+  test('body-class', async ({ page }) => {
+    await expect(page.locator('.markdown-body')).toHaveClass('markdown-body test')
+  })
+
+  test('src', async ({ page }) => {
+    await expect(page.locator('zero-md')).toHaveAttribute('src', 'basic.md')
+  })
+})

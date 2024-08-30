@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test</title>
+    <script type="module">
+      import ZeroMd from '../lib/index.js'
+      customElements.define(
+        'zero-md',
+        class extends ZeroMd {
+          async load() {
+            await super.load()
+            this.setAttribute('no-shadow', '')
+            this.setAttribute('no-auto', '')
+            this.setAttribute('body-class', 'test')
+            this.src = 'basic.md'
+          }
+        }
+      )
+    </script>
+  </head>
+  <body>
+    <zero-md></zero-md>
+  </body>
+</html>

@@ -1,10 +1,12 @@
 #!/usr/bin/env zx
-/* globals $, chalk */
+/* globals $, chalk, process */
 
 const lines = $.sync`cat src/lib/presets.js`.stdout
   .split('\n')
   .filter((i) => i.includes('jsdelivr('))
   .map((i) => i.split(`'`)[1])
+
+let outdated = false
 
 for (const line of lines) {
   const p = line.split('@')
@@ -16,5 +18,8 @@ for (const line of lines) {
     console.log(chalk.green(line, 'OK'))
   } else {
     console.log(chalk.red(line, latest))
+    outdated = true
   }
 }
+
+if (outdated) process.exit(1)

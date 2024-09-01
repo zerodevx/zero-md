@@ -49,6 +49,6 @@ export const LOADERS = {
   markedGfmHeadingId: () => load(jsdelivr('marked-gfm-heading-id@4/+esm'), 'gfmHeadingId'),
   markedAlert: () => load(jsdelivr('marked-alert@2/+esm')),
   hljs: () => load(jsdelivr('@highlightjs/cdn-assets@11/es/highlight.min.js')),
-  mermaid: () => load(jsdelivr('mermaid@10/dist/mermaid.esm.min.mjs')),
+  mermaid: () => load(jsdelivr('mermaid@11/dist/mermaid.esm.min.mjs')),
   katex: () => load(jsdelivr('katex@0/dist/katex.mjs'))
 }

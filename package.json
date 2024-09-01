@@ -1,14 +1,15 @@
 {
   "name": "zero-md",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "Ridiculously simple zero-config markdown displayer",
   "author": "Jason Lee <jason@zerodevx.com>",
   "scripts": {
-    "dev": "vite -c vite.config.js src",
     "dev:docs": "vite docs",
-    "build": "vite build && npm run build:min && npm run build:tsc && npx publint",
+    "dev": "vite -c vite.config.js src",
     "build:min": "terser -c -m --module dist/index.js > dist/index.min.js",
     "build:tsc": "tsc src/lib/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/types",
+    "build": "vite build && npm run build:min && npm run build:tsc",
+    "package": "npm run check && npm run build && npx publint",
     "check": "zx outdated.mjs",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint",

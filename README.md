@@ -144,7 +144,7 @@ automatically published upon merge. Documentation website uses
 [`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to instantly publish markdown from the
 Github `docs/` folder.
 
-## Change-log
+## Changelog
 
 Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 

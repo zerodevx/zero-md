@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test'
 
-// test('', async ({ page }) => {})
-
 test.describe('basic tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
@@ -65,7 +63,7 @@ test.describe('hash link tests', () => {
 
 test.describe('feature tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/fixtures/feat.html')
+    await page.goto('/fixtures/feat.html', { waitUntil: 'networkidle' })
   })
 
   test('js is highlighted', async ({ page }) => {

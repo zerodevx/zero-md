@@ -35,7 +35,8 @@ Featuring:
 - Light and dark themes
 - Spec-compliant extensibility
 
-> [!NOTE]  
+> [!NOTE]
+>
 > Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
 > _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
@@ -59,7 +60,8 @@ script from CDN and consuming the component directly should suffice.
 </body>
 ```
 
-> [!TIP]  
+> [!TIP]
+>
 > To auto-register the custom element, import with `?register` query param.
 
 The above can be re-written as:
@@ -231,7 +233,8 @@ This is the fall-back markdown that will **only show** when `src` is falsy.
 
 ## Baked-in features
 
-> [!NOTE]  
+> [!NOTE]
+>
 > For optimal performance, any required library is dynamically imported from CDN **only when the
 > need arises**.
 

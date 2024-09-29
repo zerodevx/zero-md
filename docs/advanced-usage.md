@@ -7,7 +7,8 @@
 
 ## Advanced Usage
 
-> [!WARNING]  
+> [!WARNING]
+>
 > By default, `<zero-md>` **does not sanitise** the output HTML. If you're processing markdown from
 > **unknown or untrusted** sources, please use a HTML sanitisation library
 > [as shown below](#sanitise-html-output).

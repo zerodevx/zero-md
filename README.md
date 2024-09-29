@@ -26,15 +26,17 @@ Featuring:
 - [x] Light and dark themes
 - [x] Spec-compliant extensibility
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
+>
 > Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
 > _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
 Read the docs: https://zerodevx.github.io/zero-md/
 
-> [!NOTE]  
+> [!NOTE]
+>
 > This is the V3 branch. If you're looking for the older version, see the
-> [V2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you are upgrading from V2, read the
+> [V2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you're upgrading from V2, read the
 > [migration guide](docs/migration.md).
 
 ## Installation

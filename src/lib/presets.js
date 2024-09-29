@@ -5,7 +5,7 @@ const load = async (/** @type {string} */ url, name = 'default') =>
   (await import(/* @vite-ignore */ url))[name]
 
 export const STYLES = {
-  HOST: '<style>:host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}.markdown-body .markdown-alert{padding:0.25rem 0 0 1rem;}</style>',
+  HOST: '<style>:host{display:block;position:relative;contain:content;}:host([hidden]){display:none;}</style>',
   MARKDOWN: link(jsdelivr('github-markdown-css@5/github-markdown.min.css')),
   MARKDOWN_LIGHT: link(jsdelivr('github-markdown-css@5/github-markdown-light.min.css')),
   MARKDOWN_DARK: link(jsdelivr('github-markdown-css@5/github-markdown-dark.min.css')),

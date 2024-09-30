@@ -211,6 +211,6 @@ If you are processing potentially unsafe markdown, always use a client-side sani
   </script>
 </head>
 <body>
-  <zero-md src="https://danger.com/unsafe.md">
+  <zero-md src="https://danger.com/unsafe.md"></zero-md>
 </body>
 ```

@@ -72,7 +72,7 @@ export default class ZeroMdBase extends HTMLElement {
   async connectedCallback() {
     if (!this._loaded) {
       await this.load()
-      if (!this.hasAttribute('no-shadow')) this.root = this.attachShadow({ mode: 'open' })
+      if (!this.hasAttribute('no-shadow')) this.root = this.shadowRoot ?? this.attachShadow({ mode: 'open' })
       this.root.prepend(
         this.frag(`<div class="markdown-styles"></div><div class="${this.bodyClass}"></div>`)
       )

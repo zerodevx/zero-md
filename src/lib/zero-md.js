@@ -38,7 +38,7 @@ export default class ZeroMd extends ZeroMdBase {
       /** @type {boolean|undefined} */ displayMode
     ) => {
       if (!katexHoisted) katexHoisted = await katex()
-      return `${katexHoisted.renderToString(text, { ...katexOptions, displayMode })}${displayMode ? '' : '\n'}`
+      return `${katexHoisted.renderToString(text, { ...katexOptions, displayMode })}`
     }
     this.marked.use(
       modules[2](),

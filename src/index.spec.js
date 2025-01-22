@@ -85,7 +85,9 @@ test.describe('feature tests', () => {
   })
 
   test('math code block', async ({ page }) => {
-    await expect(page.locator('p:has-text("Math code block:")+span')).toHaveClass('katex-display')
+    await expect(page.locator('p:has-text("Math code block:")+pre>span')).toHaveClass(
+      'katex-display'
+    )
   })
 
   test('mermaid flowchart', async ({ page }) => {

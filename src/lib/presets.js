@@ -41,7 +41,7 @@ export const STYLES = {
 
 export const LOADERS = {
   marked: async () => {
-    const Marked = await load(jsdelivr('marked@14/lib/marked.esm.js'), 'Marked')
+    const Marked = await load(jsdelivr('marked@15/lib/marked.esm.js'), 'Marked')
     return new Marked({ async: true })
   },
   markedBaseUrl: () => load(jsdelivr('marked-base-url@1/+esm'), 'baseUrl'),

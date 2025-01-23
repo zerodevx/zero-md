@@ -186,6 +186,33 @@ customElements.define('zero-md', class extends ZeroMd {
 })
 ```
 
+#### `Katex` options
+
+The full list of options is referenced in the `katex`
+[website](https://katex.org/docs/options.html). To apply, set options globally:
+
+<!--prettier-ignore-->
+```html
+<script type="module">
+  import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+
+  customElements.define('zero-md', class extends ZeroMd {
+    async load() {
+      await super.load({
+        katexOptions: {
+          macros: {
+            N: '{\\mathbb{N}}',
+            Z: '\\mathbb{Z}',
+            Q: '\\mathbb{Q}',
+            R: '\\mathbb{R}'
+          }
+        }
+      })
+    }
+  })
+</script>
+```
+
 ### The `parse()` function
 
 This is called **during every render** to parse markdown into its HTML string representation, so

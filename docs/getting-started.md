@@ -256,6 +256,46 @@ The following extensions are loaded by default.
 
 Write mathematic equations in LaTeX syntax, similar to
 [how Github does so](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions).
+Three rendering styles are supported:
+
+#### Inline math
+
+```text
+$\sqrt{3x-1}+(1+x)^2$
+```
+
+Renders into: $\sqrt{3x-1}+(1+x)^2$
+
+#### Block level math
+
+```text
+$$
+\sqrt{3x-1}+(1+x)^2
+$$
+```
+
+Renders into:
+
+$$
+\sqrt{3x-1}+(1+x)^2
+$$
+
+#### Math code block
+
+````text
+```math
+\sqrt{3x-1}+(1+x)^2
+```
+````
+
+Renders into:
+
+```math
+\sqrt{3x-1}+(1+x)^2
+```
+
+Additional `katex` options can be applied using the global
+[load function](./advanced-usage.md#katex-options).
 
 ### Mermaid
 

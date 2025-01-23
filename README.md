@@ -156,12 +156,7 @@ ISC
 
 ## Acknowledgement
 
-A big thank you to the following contributors and sponsors! :pray:
-
-### Contributors
-
-<!-- prettier-ignore -->
-<kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd> <kbd>[<img src="https://github.com/EmilePerron.png" width="60px;"/>](https://github.com/EmilePerron)</kbd> <kbd>[<img src="https://github.com/bennypowers.png" width="60px;"/>](https://github.com/bennypowers)</kbd> <kbd>[<img src="https://github.com/TheUnlocked.png" width="60px;"/>](https://github.com/TheUnlocked)</kbd> <kbd>[<img src="https://github.com/ernsheong.png" width="60px;"/>](https://github.com/ernsheong)</kbd>
+A big thank you to the project contributors and sponsors! :pray:
 
 ### Sponsors
 

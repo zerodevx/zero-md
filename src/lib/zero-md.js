@@ -1,10 +1,11 @@
+// @ts-nocheck
 import ZeroMdBase from './zero-md-base.js'
 import katexExtension from './katex-extension.js'
 import { STYLES, LOADERS } from './presets.js'
 
-/** @type {*} */ let hljsHoisted
-/** @type {*} */ let mermaidHoisted
-/** @type {*} */ let katexHoisted
+let hljsHoisted
+let mermaidHoisted
+let katexHoisted
 let uid = 0
 
 /**
@@ -12,7 +13,7 @@ let uid = 0
  */
 export default class ZeroMd extends ZeroMdBase {
   async load(loaders = {}) {
-    /** @type {*} */ const {
+    const {
       marked,
       markedBaseUrl,
       markedHighlight,
@@ -33,12 +34,9 @@ export default class ZeroMd extends ZeroMdBase {
     ])
     this.marked = modules[0]
     this.setBaseUrl = modules[1]
-    const parseKatex = async (
-      /** @type {string} */ text,
-      /** @type {boolean|undefined} */ displayMode
-    ) => {
+    const parseKatex = async (text, displayMode) => {
       if (!katexHoisted) katexHoisted = await katex()
-      return `${katexHoisted.renderToString(text, { ...katexOptions, displayMode })}${displayMode ? '' : '\n'}`
+      return katexHoisted.renderToString(text, { displayMode, ...katexOptions })
     }
     this.marked.use(
       modules[2](),
@@ -46,7 +44,7 @@ export default class ZeroMd extends ZeroMdBase {
       {
         ...modules[4]({
           async: true,
-          highlight: async (/** @type {string} */ code, /** @type {string} */ lang) => {
+          highlight: async (code, lang) => {
             if (lang === 'mermaid') {
               if (!mermaidHoisted) {
                 mermaidHoisted = await mermaid()
@@ -55,7 +53,7 @@ export default class ZeroMd extends ZeroMdBase {
               const { svg } = await mermaidHoisted.render(`mermaid-svg-${uid++}`, code)
               return svg
             }
-            if (lang === 'math') return await parseKatex(code, true)
+            if (lang === 'math') return `<pre class="math">${await parseKatex(code, true)}</pre>`
             if (!hljsHoisted) hljsHoisted = await hljs()
             return hljsHoisted.getLanguage(lang)
               ? hljsHoisted.highlight(code, { language: lang }).value
@@ -63,7 +61,7 @@ export default class ZeroMd extends ZeroMdBase {
           }
         }),
         renderer: {
-          code: (/** @type {*} */ { text, lang }) => {
+          code: ({ text, lang }) => {
             if (lang === 'mermaid') return `<div class="mermaid">${text}</div>`
             if (lang === 'math') return text
             return `<pre><code class="hljs${lang ? ` language-${lang}` : ''}">${text}\n</code></pre>`
@@ -72,9 +70,13 @@ export default class ZeroMd extends ZeroMdBase {
       },
       {
         ...katexExtension(katexOptions),
-        walkTokens: async (/** @type {*} */ token) => {
-          if (['inlineKatex', 'blockKatex'].includes(token.type))
-            token.text = await parseKatex(token.text, token.type === 'blockKatex')
+        walkTokens: async (token) => {
+          const types = ['inlineKatex', 'blockKatex']
+          if (types.includes(token.type)) {
+            token.text =
+              (await parseKatex(token.text, token.displayMode)) +
+              (token.type === types[1] ? '\n' : '')
+          }
         }
       }
     )

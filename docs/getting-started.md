@@ -299,7 +299,7 @@ Additional `katex` options can be applied using the global
 
 ### Mermaid
 
-Render mermaid diagrams with triple-backticks `mermaid` code blocks.
+Create mermaid diagrams with triple-backticks `mermaid` code blocks.
 
 ````text
 ```mermaid
@@ -308,3 +308,11 @@ sequenceDiagram
     Bar->>Foo:Foo, you ARE a pig.
 ```
 ````
+
+Renders into:
+
+```mermaid
+sequenceDiagram
+    Foo->>Bar:I ate like a pig.
+    Bar->>Foo:Foo, you ARE a pig.
+```

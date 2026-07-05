@@ -1,5 +1,5 @@
 const jsdelivr = (/** @type {string} */ repo) => `https://cdn.jsdelivr.net/npm/${repo}`
-const link = (/** @type {string} */ href, /** @type {string|undefined} */ attrs) =>
+const link = (/** @type {string} */ href, /** @type {string|undefined} */ attrs = undefined) =>
   `<link rel="stylesheet" href="${href}"${attrs ? ` ${attrs}` : ''}>`
 const load = async (/** @type {string} */ url, name = 'default') =>
   (await import(/* @vite-ignore */ url))[name]
@@ -41,7 +41,7 @@ export const STYLES = {
 
 export const LOADERS = {
   marked: async () => {
-    const Marked = await load(jsdelivr('marked@15/lib/marked.esm.min.js'), 'Marked')
+    const Marked = await load(jsdelivr('marked@18/lib/marked.esm.min.js'), 'Marked')
     return new Marked({ async: true })
   },
   markedBaseUrl: () => load(jsdelivr('marked-base-url@1/+esm'), 'baseUrl'),

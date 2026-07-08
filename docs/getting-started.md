@@ -99,6 +99,9 @@ customElements.define('zero-md', ZeroMd)
 app.render(`<zero-md src=${src}></zero-md>`)
 ```
 
+Or check out [`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled) if you prefer a
+self-contained bundle.
+
 ## Usage
 
 ### Display an external markdown file

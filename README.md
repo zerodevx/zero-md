@@ -80,6 +80,9 @@ customElements.define('zero-md', ZeroMd)
 app.render(`<zero-md src=${src}></zero-md>`, target)
 ```
 
+Or check out [`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled) if you prefer a
+self-contained bundle.
+
 ## Basic usage
 
 <!-- prettier-ignore -->
@@ -153,12 +156,3 @@ Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 ## License
 
 ISC
-
-## Acknowledgement
-
-A big thank you to the project contributors and sponsors! :pray:
-
-### Sponsors
-
-<!-- prettier-ignore -->
-<kbd>[<img src="https://github.com/RootofalleviI.png" width="60px;"/>](https://github.com/RootofalleviI)</kbd><kbd>[<img src="https://github.com/alifeee.png" width="60px;"/>](https://github.com/alifeee)</kbd>

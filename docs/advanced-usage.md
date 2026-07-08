@@ -160,6 +160,26 @@ like so:
 </script>
 ```
 
+With the `marked-emoji` extension.
+
+<!-- prettier-ignore -->
+```js
+import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+import { markedEmoji } from 'https://cdn.jsdelivr.net/npm/marked-emoji@1/src/index.js'
+import { Octokit } from 'https://esm.sh/@octokit/rest'
+
+const octokit = new Octokit()
+const res = await octokit.rest.emojis.get()
+const emojis = res.data
+
+customElements.define('zero-md', class extends ZeroMd {
+  async load() {
+    await super.load()
+    this.marked.use(markedEmoji({ emojis, unicode: false }))
+  }
+})
+```
+
 #### Async loaders
 
 Dependency libraries can be passed into the `load()` function through async loaders looking like:
@@ -182,6 +202,29 @@ customElements.define('zero-md', class extends ZeroMd {
       hljs: () => import('path/to/lib'), // change CDN url
       ...
     })
+  }
+})
+```
+
+Or disable syntax highlighting globally. Ugly but it works.
+
+<!-- prettier-ignore -->
+```js
+import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+import hljs from 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
+
+function stub() {
+  return {
+    getLanguage() {},
+    highlightAuto(code) {
+      return hljs.highlight(code, { language: 'text' })
+    }
+  }
+}
+
+customElements.define('zero-md', class extends ZeroMd {
+  async load() {
+    await super.load({ hljs: stub })
   }
 })
 ```

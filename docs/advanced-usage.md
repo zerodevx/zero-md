@@ -211,13 +211,12 @@ Or disable syntax highlighting globally. Ugly but it works.
 <!-- prettier-ignore -->
 ```js
 import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
-import hljs from 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/es/highlight.min.js'
 
 function stub() {
   return {
     getLanguage() {},
     highlightAuto(code) {
-      return hljs.highlight(code, { language: 'text' })
+      return { value: code }
     }
   }
 }

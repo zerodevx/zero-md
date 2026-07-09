@@ -63,8 +63,8 @@ script from CDN and consuming the component directly should suffice.
 
 Install the package.
 
-```
-$ npm i zero-md
+```bash
+npm install zero-md
 ```
 
 Import the class, register the element, and use anywhere.
@@ -111,36 +111,57 @@ self-contained bundle.
 
 Read the docs: https://zerodevx.github.io/zero-md/
 
-## Contributing
+## Browser Support
 
-### Noticed a bug? Have a feature request?
+| Feature               | Chrome | Safari | Firefox | Edge | Mobile Safari | Mobile Chrome |
+| --------------------- | ------ | ------ | ------- | ---- | ------------- | ------------- |
+| ES6 Classes           | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
+| Shadow DOM            | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
+| Custom Elements       | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
+| Fetch API             | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
+| Custom CSS Properties | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
 
-Open a new [issue](https://github.com/zerodevx/zero-md/issues) in the Github repo, or raise a
-[PR](https://github.com/zerodevx/zero-md/pulls) - I'd be stoked to hear from you!
+## Development
 
-### Development
+### Setup
 
-Standard Github
-[contribution workflow](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
-applies.
+Clone the repository and install dependencies.
 
-#### Run the dev server
-
+```bash
+git clone https://github.com/zerodevx/zero-md.git
+cd zero-md
+npm install
 ```
-$ npm run dev
+
+### Run the dev server
+
+```bash
+npm run dev
 ```
 
 We use [`Vite`](https://github.com/vitejs/vite) for tooling. Point your browser to
 `http://localhost:5173` and you should see the test page. Library code in `src/lib/`.
 
-#### Testing
+### Run tests
 
-```
-$ npm test
+```bash
+npm test
 ```
 
 Tests via [Playwright](https://github.com/microsoft/playwright). Test specs in `src/index.spec.js`.
 Be sure tests pass in your PR.
+
+## Contributing
+
+### Bugs and feature requests
+
+Open a new issue or discussion - I'd be stoked to hear from you!
+
+### Raise a PR
+
+Standard Github
+[contribution workflow](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
+applies.
 
 ### Updating docs
 
@@ -148,10 +169,6 @@ Documentation is in the `docs/` folder. Submit PRs onto the `.md` files directly
 automatically published upon merge. Documentation website uses
 [`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to instantly publish markdown from the
 Github `docs/` folder.
-
-## Changelog
-
-Check out the [releases](https://github.com/zerodevx/zero-md/releases) page.
 
 ## License
 

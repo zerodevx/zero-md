@@ -1,92 +1,89 @@
-# &lt;zero-md&gt;
+# zero-md
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
-![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
+![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr%28old%29&color=lightgray)
 
 ## Advanced Usage
 
 > [!WARNING]
 >
-> By default, `<zero-md>` **does not sanitise** the output HTML. If you're processing markdown from
-> **unknown or untrusted** sources, please use a HTML sanitisation library
-> [as shown below](#sanitise-html-output).
+> By default, `<zero-md>` **does not sanitize** the output HTML. If you render markdown from
+> untrusted sources, you must use an HTML sanitization library. See
+> [Sanitize HTML Output](#sanitize-html-output) for an example.
 
 - [API](#api)
 - [Extensibility](#extensibility)
 
 ## API
 
-### Element attributes
+### Element Attributes
 
-The following attributes apply to `<zero-md>` element.
+The following attributes are supported on the `<zero-md>` element:
 
-| Attribute  | Type    | Description                                                                                                      |
-| ---------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
-| src        | String  | URL to external markdown file.                                                                                   |
-| no-auto    | Boolean | If set, disables auto-rendering. Call the `render()` [function](#the-render-function) on that instance manually. |
-| no-shadow  | Boolean | If set, renders and stamps into **light DOM** instead. Please know what you are doing.                           |
-| body-class | String  | Class names forwarded to `.markdown-body` block.                                                                 |
+| Attribute    | Type    | Description                                                                           |
+| ------------ | ------- | ------------------------------------------------------------------------------------- |
+| `src`        | String  | The URL of the external markdown file to load.                                        |
+| `no-auto`    | Boolean | Disables automatic rendering. When set, you must call the `render()` method manually. |
+| `no-shadow`  | Boolean | Renders the HTML directly into the Light DOM instead of the Shadow DOM.               |
+| `body-class` | String  | CSS class names to apply to the `.markdown-body` container.                           |
 
-Notes:
+#### Notes
 
-1. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply; the `src`
-   file (if fetched from another origin) should be served with the corresponding
-   `Access-Control-Allow-Origin` headers.
+1. **CORS Policies**: Standard CORS rules apply. Files fetched from another origin must be served
+   with appropriate `Access-Control-Allow-Origin` headers.
+2. **Shadow DOM**: The `no-shadow` attribute is immutable. It must be declared when the element is
+   created and cannot be changed dynamically.
 
-2. `no-shadow` is immutable; it must be declared on element creation time and should not be
-   dynamically changed.
+### Style Template Attributes
 
-### Style template attributes
+The following attributes are supported on child `<template>` tags:
 
-The following attributes apply to `<template>` tags.
+| Attribute      | Type    | Description                                                |
+| -------------- | ------- | ---------------------------------------------------------- |
+| `data-append`  | Boolean | Applies the template styles **after** the default styles.  |
+| `data-prepend` | Boolean | Applies the template styles **before** the default styles. |
 
-| Attribute    | Type    | Description                                 |
-| ------------ | ------- | ------------------------------------------- |
-| data-append  | Boolean | Apply template **after** default template.  |
-| data-prepend | Boolean | Apply template **before** default template. |
-
-If left unset, `<template>` overrides the default template.
+If neither attribute is set, the `<template>` overrides the default styles completely.
 
 ### Events
 
-The following convenience events are dispatched.
+The element dispatches the following custom events:
 
-| Event Name         | Detail                             | Description                                          |
-| ------------------ | ---------------------------------- | ---------------------------------------------------- |
-| `zero-md-ready`    | `undefined`                        | Instance setup complete and ready to render.         |
-| `zero-md-rendered` | `{styles: boolean, body: boolean}` | Render completes; returns what was stamped into DOM. |
+| Event Name         | Detail                             | Description                                                                         |
+| ------------------ | ---------------------------------- | ----------------------------------------------------------------------------------- |
+| `zero-md-ready`    | `undefined`                        | Dispatched when the instance setup is complete and ready to render.                 |
+| `zero-md-rendered` | `{styles: boolean, body: boolean}` | Dispatched when a render completes. Details which blocks were stamped into the DOM. |
 
-### The `render()` function
+### The `render()` Function
 
-By default, `render()` is automatically called once when the component is ready, and whenever a
-mutation is detected. To control when rendering happens, set `no-auto` on this instance.
+By default, `<zero-md>` automatically renders when the component is ready and whenever markdown
+content or attributes change. To control rendering manually, add the `no-auto` attribute:
 
 ```html
 <zero-md src="example.md" no-auto></zero-md>
 <script>
-  // Render once when component is ready, but not when mutated
+  // Render manually once when the component is ready
   addEventListener('zero-md-ready', (e) => e.target.render())
 </script>
 ```
 
-The function returns a promise that resolves to `{styles: boolean, body: boolean}` detailing which
-block was stamped into DOM.
+The `render()` function returns a `Promise` that resolves to `{ styles: boolean, body: boolean }`.
 
 ## Extensibility
 
-Extending functionality should be done the spec-compliant way (i.e. by extending the `ZeroMd` class)
-in line with the spirit of the [Custom Elements V1 spec](https://www.w3.org/TR/custom-elements/).
+Extend the component's functionality by creating a subclass of `ZeroMd`. This aligns with the
+standard Custom Elements V1 specification.
 
-### The `load()` function
+### The `load()` Function
 
-This runs **once** per element creation, just like the `constructor()`, so this will be a good place
-to set default values.
+The `load()` function runs once when the element is created. It is the best place to configure
+defaults.
 
-#### Global config
+#### Global Config
 
-Change the default template globally like so:
+Override the default style template globally:
 
 <!-- prettier-ignore -->
 ```html
@@ -105,7 +102,9 @@ Change the default template globally like so:
 </script>
 ```
 
-Or force `light` (or `dark`) theme:
+#### Set Themes Globally
+
+Force a light or dark theme preset globally:
 
 <!-- prettier-ignore -->
 ```html
@@ -121,7 +120,9 @@ Or force `light` (or `dark`) theme:
 </script>
 ```
 
-Or set default attributes:
+#### Set Default Attributes
+
+Apply default attributes to all instances:
 
 <!-- prettier-ignore -->
 ```html
@@ -132,22 +133,20 @@ Or set default attributes:
     async load() {
       await super.load()
       this.setAttribute('no-auto', '')   // disable auto-render for all instances
-      this.setAttribute('no-shadow', '') // don't use shadow dom
+      this.setAttribute('no-shadow', '') // render in Light DOM by default
     }
   })
 </script>
 ```
 
-#### Adding `marked` extensions
+#### Add `marked` Extensions
 
-Layer additional [marked extensions](https://marked.js.org/using_advanced#extensions) you may need
-like so:
+Register additional markdown features using `marked` extensions:
 
 <!-- prettier-ignore -->
 ```html
 <script type="module">
-  // Add GFM Footnote functionality
-  // https://github.com/bent10/marked-extensions/tree/main/packages/footnote
+  // Example: Add GitHub-style footnote support
   import markedFootnote from 'https://cdn.jsdelivr.net/npm/marked-footnote@1/+esm'
   import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
 
@@ -160,7 +159,7 @@ like so:
 </script>
 ```
 
-With the `marked-emoji` extension.
+You can also load extensions that require API calls (like custom emojis):
 
 <!-- prettier-ignore -->
 ```js
@@ -180,33 +179,29 @@ customElements.define('zero-md', class extends ZeroMd {
 })
 ```
 
-#### Async loaders
+#### Custom Async Loaders
 
-Dependency libraries can be passed into the `load()` function through async loaders looking like:
-
-```js
-const lib = () => import('/path/to/lib')
-```
-
-This may be useful if you like to change CDN hosts, or for web projects that require libraries to be
-self-hosted (or bundled together).
+You can customize how libraries are loaded. This is useful if you want to change CDN hosts, load
+libraries locally, or bundle them:
 
 ```js
 import ZeroMd from 'zero-md'
 import { Marked } from 'marked'
 
-customElements.define('zero-md', class extends ZeroMd {
-  async load() {
-    await super.load({
-      marked: () => new Marked(), // self-hosted
-      hljs: () => import('path/to/lib'), // change CDN url
-      ...
-    })
+customElements.define(
+  'zero-md',
+  class extends ZeroMd {
+    async load() {
+      await super.load({
+        marked: () => new Marked(), // load self-hosted Marked library
+        hljs: () => import('path/to/lib') // change highlight.js load source
+      })
+    }
   }
-})
+)
 ```
 
-Or disable syntax highlighting globally. Ugly but it works.
+You can also use an async loader stub to disable syntax highlighting entirely:
 
 <!-- prettier-ignore -->
 ```js
@@ -228,12 +223,12 @@ customElements.define('zero-md', class extends ZeroMd {
 })
 ```
 
-#### `Katex` options
+#### KaTeX Options
 
-The full list of options is referenced in the `katex`
-[website](https://katex.org/docs/options.html). To apply, set options globally:
+Pass custom options to the mathematical equations renderer (see
+[KaTeX options](https://katex.org/docs/options.html)):
 
-<!--prettier-ignore-->
+<!-- prettier-ignore -->
 ```html
 <script type="module">
   import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
@@ -255,14 +250,14 @@ The full list of options is referenced in the `katex`
 </script>
 ```
 
-### The `parse()` function
+### The `parse()` Function
 
-This is called **during every render** to parse markdown into its HTML string representation, so
-this will be a good place to run any pre or post processing task.
+The `parse()` function runs during every render to convert the markdown string into HTML. You can
+override it to perform pre- or post-processing.
 
-#### Sanitise HTML output
+#### Sanitize HTML Output
 
-If you are processing potentially unsafe markdown, always use a client-side sanitisation library.
+To sanitize HTML output using a client-side library like DOMPurify:
 
 <!-- prettier-ignore -->
 ```html

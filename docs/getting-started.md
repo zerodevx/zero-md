@@ -1,9 +1,9 @@
-# &lt;zero-md&gt;
+# zero-md
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
-![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
+![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr%28old%29&color=lightgray)
 
 ## Getting Started
 
@@ -16,131 +16,127 @@
 
 > Ridiculously simple zero-config markdown displayer
 
-A vanilla markdown-to-html web component based on
-[Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/) to load and display an external
-MD file. Under the hood, it uses [`marked`](https://github.com/markedjs/marked) for super-fast
-markdown transformation, and [`highlight.js`](https://github.com/highlightjs/highlight.js) for
-lightning-quick syntax highlighting - automagically rendering into its own self-contained shadow DOM
-container, while encapsulating implementation details into one embarrassingly easy-to-use package.
+A zero-config web component that converts markdown to HTML. Built on the
+[Custom Elements V1 specification](https://www.w3.org/TR/custom-elements/), it renders markdown
+inside a self-contained Shadow DOM container. Under the hood, it uses
+[`marked`](https://github.com/markedjs/marked) for parsing and
+[`highlight.js`](https://github.com/highlightjs/highlight.js) for syntax highlighting.
 
-Featuring:
+### Key Features
 
-- Math rendering via [`KaTeX`](https://github.com/KaTeX/KaTeX)
-- [`Mermaid`](https://github.com/mermaid-js/mermaid) diagrams
-- Syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js)
-- Language detection for un-hinted code blocks
-- Hash-link scroll handling
-- FOUC prevention
-- Auto re-render on input changes
-- Light and dark themes
-- Spec-compliant extensibility
+- **Math rendering** via [`KaTeX`](https://github.com/KaTeX/KaTeX)
+- **Diagrams** via [`Mermaid`](https://github.com/mermaid-js/mermaid)
+- **Syntax highlighting** with auto-language detection
+- **Hash-link scroll handling** for anchor navigation
+- **FOUC prevention** (Flash of Unstyled Content)
+- **Auto re-render** when inputs or attributes change
+- **Light and dark themes** out of the box
+- **Spec-compliant extensibility**
 
-> [!NOTE]
+> [!IMPORTANT]
 >
-> Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
-> _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
+> Markdown files must be served over HTTP/HTTPS. Browsers restrict local file access (via the
+> `file://` protocol) due to security policies, and standard
+> [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
 ## Installation
 
-### Load via CDN (recommended)
+### Load via CDN (Recommended)
 
-`zero-md` is designed to be zero-config with good defaults. For most use-cases, just importing the
-script from CDN and consuming the component directly should suffice.
+To load `zero-md` with its default settings, import the script directly from CDN:
 
 ```html
 <head>
-  ...
   <!-- Import element definition and auto-register -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
 </head>
 <body>
-  ...
-  <!-- Profit! -->
   <zero-md src="example.md"></zero-md>
 </body>
 ```
 
 > [!TIP]
 >
-> To auto-register the custom element, import with `?register` query param.
+> Use the `?register` query parameter to automatically register the custom element as `<zero-md>`.
 
-The above can be re-written as:
+If you prefer to define the element manually, omit the query parameter and use
+`customElements.define()`:
 
 ```html
 <head>
-  ...
   <script type="module">
     // Import element definition
     import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
-    // Register
+    // Register manually
     customElements.define('zero-md', ZeroMd)
   </script>
 </head>
 ```
 
-### Use in web projects
+### Use in Web Projects
 
-Install the package.
+Install the package via npm:
 
 ```text
-$ npm install zero-md
+npm i zero-md
 ```
 
-Import the class, register the element, use anywhere.
+Import and register the element in your JavaScript application:
 
 ```js
-// Import element definition
 import ZeroMd from 'zero-md'
 
-// Register custom element
+// Register the custom element
 customElements.define('zero-md', ZeroMd)
-
-// Render anywhere
-app.render(`<zero-md src=${src}></zero-md>`)
 ```
 
-Or check out [`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled) if you prefer a
-self-contained bundle.
+For a self-contained, pre-bundled package, check out
+[`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled).
 
 ## Usage
 
-### Display an external markdown file
+### Display an External Markdown File
+
+Set the `src` attribute to the URL of the markdown file:
 
 ```html
-<!-- Simply set the `src` attribute and win -->
 <zero-md src="https://example.com/markdown.md"></zero-md>
 ```
 
-### Write markdown inline
+### Write Inline Markdown
 
-<!--prettier-ignore-->
+To write markdown directly inside your HTML, wrap the content in a `<script type="text/markdown">`
+tag and omit the `src` attribute:
+
+<!-- prettier-ignore -->
 ```html
-<!-- Don't set the `src` attribute -->
 <zero-md>
-  <!-- Write your markdown inside a `<script type="text/markdown">` tag -->
   <script type="text/markdown">
-# **This** is my [markdown](https://example.com)
+# This is my [markdown](https://example.com)
   </script>
 </zero-md>
 ```
 
-By default, `<zero-md>` first tries to render `src`. If `src` is `falsy` (`undefined`, `404`, empty
-file etc.), it **falls-back** to the contents inside the `<script type="text/markdown">` tag.
+> [!NOTE]
+>
+> `zero-md` first attempts to load from the `src` attribute. If `src` is missing or fails to load,
+> it falls back to the inline markdown inside the `<script>` tag.
 
-### Default style template
+### Default Style Template
 
-By default, `<zero-md>` displays markdown with a set of **default stylesheets** that mimics Github's
-styles.
+By default, `zero-md` styles markdown using a theme that mimics GitHub (supporting both light and
+dark modes). Specifying:
+
+```html
+<zero-md src="example.md"></zero-md>
+```
+
+is equivalent to manually defining the following style template:
 
 <!-- prettier-ignore -->
 ```html
-<!-- By default, this... -->
-<zero-md src="https://example.com/markdown.md"></zero-md>
-
-<!-- ...is semantically equivalent to this -->
-<zero-md src="https://example.com/markdown.md">
+<zero-md src="example.md">
   <template>
-
     <!-- Sensible host style defaults -->
     <style>
       :host { display: block; position: relative; contain: content; }
@@ -158,40 +154,36 @@ styles.
 
     <!-- KaTeX styles (needed for math) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css" />
-
   </template>
 </zero-md>
 ```
 
-### Use your own style template
+### Custom Style Template
 
-To override defaults, supply your own style template.
+You can override the default styles by supplying your own `<template>` containing custom `<style>`
+or `<link>` tags:
 
 ```html
-<zero-md src="https://example.com/markdown.md">
-  <!-- Wrap with a <template> tag -->
+<zero-md src="example.md">
   <template>
-    <!-- Define your own styles inside a `<style>` tag -->
     <style>
       h1 {
         color: red;
       }
     </style>
-    <!-- Or your own stylesheets with `<link>` tags -->
-    <link rel="stylesheet" href="markdown-styles.css" />
-    <link rel="stylesheet" href="highlight-styles.css" />
+    <link rel="stylesheet" href="custom-markdown-styles.css" />
   </template>
 </zero-md>
 ```
 
-### Append or prepend a style template
+### Append or Prepend Styles
 
-To append styles **after** the default template (or prepend **before**), set `data-append` (or
-`data-prepend`) to the `<template>` tag accordingly.
+To add custom styles without losing the default GitHub styles, add `data-append` or `data-prepend`
+to your `<template>` tag:
 
 ```html
-<zero-md src="https://example.com/markdown.md">
-  <!-- We apply this style template after defaults -->
+<zero-md src="example.md">
+  <!-- This template is applied after the default styles -->
   <template data-append>
     <style>
       h1 {
@@ -202,27 +194,25 @@ To append styles **after** the default template (or prepend **before**), set `da
 </zero-md>
 ```
 
-### Putting it all together
+### Full Example
+
+Here is how you can combine custom styles, fallback content, and inline markdown:
 
 <!-- prettier-ignore -->
 ```html
-<zero-md src="https://example.com/markdown.md">
+<zero-md src="example.md">
   <template>
     <link rel="stylesheet" href="markdown-styles.css" />
     <style>
-      h1 {
-        color: red;
-      }
+      h1 { color: red; }
     </style>
     <link rel="stylesheet" href="highlight-styles.css" />
     <style>
-      code {
-        background: yellow;
-      }
+      code { background: yellow; }
     </style>
   </template>
   <script type="text/markdown">
-This is the fall-back markdown that will **only show** when `src` is falsy.
+This is the fallback markdown. It will only show if `src` is missing or fails to load.
   </script>
 </zero-md>
 
@@ -238,38 +228,35 @@ This is the fall-back markdown that will **only show** when `src` is falsy.
 
 > [!NOTE]
 >
-> For optimal performance, any required library is dynamically imported from CDN **only when the
-> need arises**.
+> To optimize performance, external libraries (like KaTeX and Mermaid) are dynamically imported from
+> CDN only when they are needed.
 
-`<zero-md>` comes with a set of default `marked` settings, and first-class support for math and
-diagram rendering via `katex` and `mermaidjs` respectively.
+### Marked Extensions
 
-### Marked
+The following extensions are loaded by default to extend the markdown parser:
 
-The following extensions are loaded by default.
-
-| Extension                                                                              | Description                                                                                     |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [`marked-base-url`](https://github.com/markedjs/marked-base-url)                       | Sets the base url relative to `src` - this allows nested `md` files to work.                    |
-| [`marked-highlight`](https://github.com/markedjs/marked-highlight)                     | Prepares syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js). |
-| [`marked-gfm-heading-id`](https://github.com/markedjs/marked-gfm-heading-id)           | Adds Github-styled element `id`s to headings.                                                   |
-| [`marked-alert`](https://github.com/bent10/marked-extensions/tree/main/packages/alert) | Adds Github-styled [alerts](https://github.com/orgs/community/discussions/16925).               |
+| Extension                                                                              | Description                                                                                      |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [`marked-base-url`](https://github.com/markedjs/marked-base-url)                       | Sets the base URL relative to `src` so nested asset links resolve correctly.                     |
+| [`marked-highlight`](https://github.com/markedjs/marked-highlight)                     | Sets up syntax highlighting using [`highlight.js`](https://github.com/highlightjs/highlight.js). |
+| [`marked-gfm-heading-id`](https://github.com/markedjs/marked-gfm-heading-id)           | Generates GitHub-style heading IDs for anchor links.                                             |
+| [`marked-alert`](https://github.com/bent10/marked-extensions/tree/main/packages/alert) | Supports GitHub-style [alerts](https://github.com/orgs/community/discussions/16925).             |
 
 ### Math
 
-Write mathematic equations in LaTeX syntax, similar to
-[how Github does so](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions).
-Three rendering styles are supported:
+Write mathematical equations using LaTeX syntax, matching
+[GitHub's math formatting](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions).
+Three styles are supported:
 
-#### Inline math
+#### Inline Math
 
 ```text
 $\sqrt{3x-1}+(1+x)^2$
 ```
 
-Renders into: $\sqrt{3x-1}+(1+x)^2$
+Renders as: $\sqrt{3x-1}+(1+x)^2$
 
-#### Block level math
+#### Block-level Math
 
 ```text
 $$
@@ -277,13 +264,13 @@ $$
 $$
 ```
 
-Renders into:
+Renders as:
 
 $$
 \sqrt{3x-1}+(1+x)^2
 $$
 
-#### Math code block
+#### Math Code Block
 
 ````text
 ```math
@@ -291,18 +278,18 @@ $$
 ```
 ````
 
-Renders into:
+Renders as:
 
 ```math
 \sqrt{3x-1}+(1+x)^2
 ```
 
-Additional `katex` options can be applied using the global
+Configure custom KaTeX options globally using the
 [load function](./advanced-usage.md#katex-options).
 
-### Mermaid
+### Mermaid Diagrams
 
-Create mermaid diagrams with triple-backticks `mermaid` code blocks.
+Generate diagrams using ` ```mermaid ` code blocks:
 
 ````text
 ```mermaid
@@ -312,10 +299,10 @@ sequenceDiagram
 ```
 ````
 
-Renders into:
+Renders as:
 
 ```mermaid
 sequenceDiagram
-    Foo->>Bar:I ate like a pig.
-    Bar->>Foo:Foo, you ARE a pig.
+    Foo->>Bar: I ate like a pig.
+    Bar->>Foo: Foo, you ARE a pig.
 ```

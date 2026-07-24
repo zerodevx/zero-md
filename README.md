@@ -1,73 +1,88 @@
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
-![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
+![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr%28old%29&color=lightgray)
+![jsdelivr](https://data.jsdelivr.com/v1/package/npm/zero-md/badge)
 
-# &lt;zero-md&gt;
+# zero-md
 
 > Ridiculously simple zero-config markdown displayer
 
-A vanilla markdown-to-html web component based on
-[Custom Elements V1 specs](https://www.w3.org/TR/custom-elements/) to load and display an external
-MD file. Under the hood, it uses [`marked`](https://github.com/markedjs/marked) for super-fast
-markdown transformation, and [`highlight.js`](https://github.com/highlightjs/highlight.js) for
-lightning-quick syntax highlighting - automagically rendering into its own self-contained shadow DOM
-container, while encapsulating implementation details into one embarrassingly easy-to-use package.
+A zero-config web component that converts markdown to HTML. Built on the
+[Custom Elements V1 specification](https://www.w3.org/TR/custom-elements/), it renders markdown
+inside a self-contained Shadow DOM container. Under the hood, it uses
+[`marked`](https://github.com/markedjs/marked) for parsing and
+[`highlight.js`](https://github.com/highlightjs/highlight.js) for syntax highlighting.
 
-Featuring:
+### Key Features
 
-- [x] Math rendering via [`KaTeX`](https://github.com/KaTeX/KaTeX)
-- [x] [`Mermaid`](https://github.com/mermaid-js/mermaid) diagrams
-- [x] Syntax highlighting via [`highlight.js`](https://github.com/highlightjs/highlight.js)
-- [x] Language detection for un-hinted code blocks
-- [x] Hash-link scroll handling
-- [x] FOUC prevention
-- [x] Auto re-render on input changes
-- [x] Light and dark themes
-- [x] Spec-compliant extensibility
+- **Math rendering** via [`KaTeX`](https://github.com/KaTeX/KaTeX)
+- **Diagrams** via [`Mermaid`](https://github.com/mermaid-js/mermaid)
+- **Syntax highlighting** with auto-language detection
+- **Hash-link scroll handling** for anchor navigation
+- **FOUC prevention** (Flash of Unstyled Content)
+- **Auto re-render** when inputs or attributes change
+- **Light and dark themes** out of the box
+- **Spec-compliant extensibility**
 
 > [!IMPORTANT]
 >
-> Your markdown file(s) must be hosted! Browsers restrict local file access in javascript because
-> _security_. Standard [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
+> Markdown files must be served over HTTP/HTTPS. Browsers restrict local file access (via the
+> `file://` protocol) due to security policies, and standard
+> [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) rules apply.
 
-Read the docs: https://zerodevx.github.io/zero-md/
+Read the documentation: https://zerodevx.github.io/zero-md/
 
 > [!NOTE]
 >
-> This is the V3 branch. If you're looking for the older version, see the
-> [V2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you're upgrading from V2, read the
+> This is the `v3` branch. If you are looking for the older version, see the
+> [v2 branch](https://github.com/zerodevx/zero-md/tree/v2). If you are upgrading from `v2`, read the
 > [migration guide](docs/migration.md).
 
 ## Installation
 
-### Load via CDN (recommended)
+### Load via CDN (Recommended)
 
-`zero-md` is designed to be zero-config with good defaults. For most use-cases, just importing the
-script from CDN and consuming the component directly should suffice.
+`zero-md` is designed to be zero-config with good defaults. For most use-cases, simply import the
+script directly from CDN:
 
 ```html
 <head>
-  ...
   <!-- Import element definition and auto-register -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
 </head>
 <body>
-  ...
   <!-- Profit! -->
   <zero-md src="example.md"></zero-md>
 </body>
 ```
 
-### Use in web projects
+> [!TIP]
+>
+> To auto-register the custom element, import with the `?register` query param.
 
-Install the package.
+The above is semantically equivalent to the below loading pattern:
 
-```bash
-npm install zero-md
+```html
+<head>
+  <script type="module">
+    // Import element definition
+    import ZeroMd from 'https://cdn.jsdelivr.net/npm/zero-md@3'
+    // Register
+    customElements.define('zero-md', ZeroMd)
+  </script>
+</head>
 ```
 
-Import the class, register the element, and use anywhere.
+### Use in Web Projects
+
+Install the package via npm:
+
+```txt
+npm i zero-md
+```
+
+Import and register the element in your JavaScript application:
 
 ```js
 // Import the element definition
@@ -80,27 +95,25 @@ customElements.define('zero-md', ZeroMd)
 app.render(`<zero-md src=${src}></zero-md>`, target)
 ```
 
-Or check out [`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled) if you prefer a
-self-contained bundle.
+For a self-contained, pre-bundled package, check out
+[`zero-md-bundled`](https://github.com/zerodevx/zero-md-bundled).
 
-## Basic usage
+## Basic Usage
 
 <!-- prettier-ignore -->
 ```html
-<!-- Simply set the `src` attribute and win -->
+<!-- Display an external markdown file -->
 <zero-md src="https://example.com/markdown.md"></zero-md>
 
-<!-- Or write markdown inline -->
+<!-- Write markdown inline -->
 <zero-md>
-  <!-- Write your markdown inside a `<script type="text/markdown">` tag -->
   <script type="text/markdown">
-# **This** is my [markdown](https://example.com)
+# This is my [markdown](https://example.com)
   </script>
 </zero-md>
 
-<!-- Or update the style -->
+<!-- Add custom styles while keeping defaults -->
 <zero-md src="https://example.com/markdown.md">
-  <!-- Wrap `style` tags inside `template` -->
   <template data-append>
     <style>
       p { color: red; }
@@ -109,66 +122,63 @@ self-contained bundle.
 </zero-md>
 ```
 
-Read the docs: https://zerodevx.github.io/zero-md/
+Read the documentation: https://zerodevx.github.io/zero-md/
 
-## Browser Support
-
-| Feature               | Chrome | Safari | Firefox | Edge | Mobile Safari | Mobile Chrome |
-| --------------------- | ------ | ------ | ------- | ---- | ------------- | ------------- |
-| ES6 Classes           | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
-| Shadow DOM            | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
-| Custom Elements       | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
-| Fetch API             | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
-| Custom CSS Properties | ✅     | ✅     | ✅      | ✅   | ✅            | ✅            |
+> [!NOTE]
+>
+> Requires a modern evergreen browser (Shadow DOM + Custom Elements v1 support). No IE11 support.
 
 ## Development
 
 ### Setup
 
-Clone the repository and install dependencies.
+Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/zerodevx/zero-md.git
 cd zero-md
-npm install
+npm i
 ```
 
-### Run the dev server
+### Run the Dev Server
+
+Start the development server (powered by [Vite](https://github.com/vitejs/vite)):
 
 ```bash
 npm run dev
 ```
 
-We use [`Vite`](https://github.com/vitejs/vite) for tooling. Point your browser to
-`http://localhost:5173` and you should see the test page. Library code in `src/lib/`.
+Open `http://localhost:5173` in your browser to view the test page. The library source files are
+located in `src/lib/`.
 
-### Run tests
+### Run Tests
+
+Run the test suite using [Playwright](https://github.com/microsoft/playwright):
 
 ```bash
 npm test
 ```
 
-Tests via [Playwright](https://github.com/microsoft/playwright). Test specs in `src/index.spec.js`.
-Be sure tests pass in your PR.
+Test specifications are located in `src/index.spec.js`. Please ensure all tests pass before
+submitting a pull request.
 
 ## Contributing
 
-### Bugs and feature requests
+### Bugs and Feature Requests
 
-Open a new issue or discussion - I'd be stoked to hear from you!
+Please open a new issue or discussion on GitHub to request features or report bugs.
 
-### Raise a PR
+### Pull Requests
 
-Standard Github
-[contribution workflow](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
-applies.
+We follow the standard
+[GitHub contribution workflow](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
 
-### Updating docs
+### Updating Documentation
 
-Documentation is in the `docs/` folder. Submit PRs onto the `.md` files directly and changes will be
-automatically published upon merge. Documentation website uses
-[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to instantly publish markdown from the
-Github `docs/` folder.
+Documentation source files are located in the `docs/` folder. Submit pull requests to the `.md`
+files directly. The documentation website uses
+[`zero-md-docs`](https://github.com/zerodevx/zero-md-docs) to automatically publish changes from the
+`docs/` folder upon merge.
 
 ## License
 

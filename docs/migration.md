@@ -1,18 +1,18 @@
-# &lt;zero-md&gt;
+# zero-md
 
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
 ![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
-![old](<https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr(old)&color=lightgray>)
+![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr%28old%29&color=lightgray)
 
 ## Migration Guide
 
-This documents migration from `v2` to `v3`. The motivations for `v3` include spec compliance, first
-class support for math and diagrams, and upgrading to ESM consumption of libraries.
+This guide helps you upgrade from `v2` to `v3`. The new version focuses on browser specification
+compliance, built-in support for math and diagrams, and modern ES modules.
 
 > [!WARNING]
 >
-> These are breaking changes! Please read through the list carefully!
+> This guide contains breaking changes. Please review them carefully before upgrading.
 
 #### 1. New CDN URL
 
@@ -20,37 +20,37 @@ class support for math and diagrams, and upgrading to ESM consumption of librari
 https://cdn.jsdelivr.net/npm/zero-md@3?register
 ```
 
-By default, the component definition is **not** defined into the `CustomElementRegistry`; opt-in to
-auto-register the custom element with the `?register` query param.
+By default, the component is not automatically registered. Add the `?register` query parameter to
+the script URL to register the custom element automatically.
 
-#### 2. Syntax highlighting
+#### 2. Syntax Highlighting
 
-[`Prismjs`](https://github.com/PrismJS/prism) is un-maintained and has been replaced by
-[`highlightjs`](https://github.com/highlightjs/highlight.js).
+`Prism.js` is no longer maintained and has been replaced by `highlight.js`.
 
-#### 3. Merging style templates
+#### 3. Merging Style Templates
 
-`data-merge="append"` and `data-merge="prepend"` template tag attributes renamed to `data-append`
-and `data-prepend` respectively.
+The template attributes `data-merge="append"` and `data-merge="prepend"` have been renamed to
+`data-append` and `data-prepend`.
 
-#### 4. Normalising indentation
+#### 4. Indentation Normalization
 
-`data-dedent` script tag attribute is deprecated; please use **spec-compliant** markdown in your
-inline-markdown.
+The `data-dedent` attribute on script tags is deprecated. Write standard, spec-compliant indentation
+in your markdown.
 
-#### 5. Manual render
+#### 5. Manual Render Attribute
 
-`manual-render` element attribute has been renamed to `no-auto`.
+The `manual-render` attribute on the element has been renamed to `no-auto`.
 
-#### 6. Global config
+#### 6. Global Configuration
 
-The `ZeroMdConfig` global is deprecated. Set global config the
-[spec-compliant way](./advanced-usage.md#global-config) instead.
+The global `ZeroMdConfig` object is deprecated. Configure globally by
+[extending the class](./advanced-usage.md#global-config) instead.
 
 #### 7. Events
 
-The `zero-md-error` event is deprecated - read which [events](./advanced-usage.md#events) are fired.
+The `zero-md-error` event is deprecated. Use the new standard [events](./advanced-usage.md#events)
+instead.
 
-#### 8. Legacy builds
+#### 8. Legacy Builds
 
-Web components are standard now so legacy (transpiled) builds will cease.
+Transpiled legacy builds are discontinued since modern browsers natively support Web Components.

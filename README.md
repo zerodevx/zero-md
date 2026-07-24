@@ -1,8 +1,7 @@
 ![version](https://img.shields.io/npm/v/zero-md) ![license](https://img.shields.io/npm/l/zero-md)
 ![stars](https://img.shields.io/github/stars/zerodevx/zero-md?style=flat&color=yellow)
-![downloads](https://img.shields.io/jsdelivr/npm/hm/zero-md)
-![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsdelivr%28old%29&color=lightgray)
 ![jsdelivr](https://data.jsdelivr.com/v1/package/npm/zero-md/badge)
+![old](https://img.shields.io/jsdelivr/gh/hm/zerodevx/zero-md?label=jsDelivr%28old%29&color=lightgray)
 
 # zero-md
 
